@@ -1,7 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { ref } from 'vue'
 import Card from 'primevue/card';
 
 defineProps({
@@ -9,7 +8,7 @@ defineProps({
         type: Object
     }
 })
-const first = ref(0);
+
 </script>
 
 <template>
