@@ -25,7 +25,7 @@ const first = ref(0);
                 <div v-for="user in users.data" :key="user.id" class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3">
                     <Card>
                         <template #content>
-                            <div>
+                            <div class="font-bold">
                                 {{user.name}}
                             </div>
                         </template>
