@@ -35,7 +35,7 @@ defineProps({
         <div class="text-white flex pb-5">
             <div class="mx-auto">
                 <Link v-for="links in users.links" :href="links.url" class="p-3">
-                    <span v-html="links.label" :class="{'bg-gray-600 p-2 rounded-xl': users.current_page == links.label}"></span>
+                    <span v-html="links.label" :class="{'bg-gray-600 p-2 rounded-xl': users.current_page === Number.parseInt(links.label)}"></span>
                 </Link>
             </div>
         </div>
