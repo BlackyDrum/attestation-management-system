@@ -1,6 +1,15 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue'
+import Card from 'primevue/card';
+
+defineProps({
+    users: {
+        type: Object
+    }
+})
+const first = ref(0);
 </script>
 
 <template>
@@ -13,9 +22,22 @@ import { Head } from '@inertiajs/vue3';
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-
+                <div v-for="user in users.data" :key="user.id" class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3">
+                    <Card>
+                        <template #content>
+                            <div>
+                                {{user.name}}
+                            </div>
+                        </template>
+                    </Card>
                 </div>
+            </div>
+        </div>
+        <div class="text-white flex pb-5">
+            <div class="mx-auto">
+                <Link v-for="links in users.links" :href="links.url" class="p-3">
+                    <span v-html="links.label" :class="{'bg-gray-600 p-2 rounded-xl': users.current_page == links.label}"></span>
+                </Link>
             </div>
         </div>
     </AuthenticatedLayout>
