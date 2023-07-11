@@ -11,10 +11,6 @@ class UserController extends Controller
 {
     public function show(Request $request)
     {
-        if (!Auth::check() || !Auth::user()->admin)
-        {
-            abort(403);
-        }
         return Inertia::render('User', [
             'users' => User::query()->paginate(20)
         ]);
