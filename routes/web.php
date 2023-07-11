@@ -30,7 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/user', [\App\Http\Controllers\UserController::class, 'show'])->name('user')
-    ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
+        ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
+    Route::get('/user/search',[\App\Http\Controllers\UserController::class,'getUserBySearch'])
+        ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
 });
 
 require __DIR__.'/auth.php';
