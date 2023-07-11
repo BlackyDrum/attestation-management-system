@@ -14,7 +14,7 @@ class UserController extends Controller
         $search = $request->input('search') ?? "";
 
         return Inertia::render('User', [
-            'users' => User::query()->where('name', 'ILIKE','%'.$search.'%')->orderByRaw("SPLIT_PART(name,' ', -1)")->paginate(20),
+            'users' => User::query()->where('name', 'ILIKE', '%' . $search . '%')->orderByRaw("SPLIT_PART(name,' ', -1)")->paginate(20),
             'search' => $search
         ]);
     }
@@ -23,7 +23,7 @@ class UserController extends Controller
     {
         $search = $request->input('search') ?? "";
 
-        $user = User::query()->where('name', 'ILIKE','%'.$search.'%')->orderByRaw("SPLIT_PART(name,' ', -1)")->paginate(20);
+        $user = User::query()->where('name', 'ILIKE', '%' . $search . '%')->orderByRaw("SPLIT_PART(name,' ', -1)")->paginate(20);
 
         return response()->json($user);
     }
