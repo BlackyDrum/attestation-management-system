@@ -12,7 +12,7 @@ class UserController extends Controller
     public function show(Request $request)
     {
         return Inertia::render('User', [
-            'users' => User::query()->paginate(20)
+            'users' => User::query()->orderByRaw("SPLIT_PART(name,' ', -1)")->paginate(20)
         ]);
     }
 }
