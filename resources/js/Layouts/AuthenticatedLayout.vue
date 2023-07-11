@@ -119,6 +119,9 @@ const showingNavigationDropdown = ref(false);
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink v-if="$page.props.auth.user.admin" :href="route('user')" :active="route().current('user')">
+                            User
+                        </ResponsiveNavLink>
                     </div>
 
                     <!-- Responsive Settings Options -->
