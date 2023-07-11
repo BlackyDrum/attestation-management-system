@@ -16,9 +16,11 @@ defineProps({
 const page = usePage();
 let search = ref("");
 let searchError = ref("");
+let empty = ref(false);
 
 onMounted(() => {
-    search.value = page.props.search
+    search.value = page.props.search;
+    empty.value = page.props.users.data.length === 0;
 })
 
 function handleSearchRequest() {
@@ -26,16 +28,16 @@ function handleSearchRequest() {
         .then(response => {
             page.props.users = response.data;
             for (let link in page.props.users.links) {
-                if (page.props.users.links[link].url === null) continue;
+                if (page.props.users.links[link].url === null)
+                    continue;
                 page.props.users.links[link].url = page.props.users.links[link].url.replace('/search','');
             }
+            empty.value = page.props.users.data.length === 0;
         })
         .catch(error => {
             searchError.value = error;
         })
 }
-
-
 </script>
 
 <template>
@@ -60,6 +62,11 @@ function handleSearchRequest() {
                         </template>
                     </Card>
                 </div>
+            </div>
+        </div>
+        <div v-if="empty" class="text-white flex">
+            <div class="mx-auto text-3xl p-5">
+                User Not Found
             </div>
         </div>
         <div class="text-white flex pb-5">
