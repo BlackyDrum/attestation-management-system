@@ -34,8 +34,13 @@ class UserController extends Controller
 
         $userid = $request->input('userid');
 
-        User::query()->where('id','=',$userid)->where('admin','=','false')->delete();
+        $count = User::query()->where('id','=',$userid)->where('admin','=','false')->delete();
 
-        return response()->json(['userid' => $userid]);
+        if ($count === 0)
+        {
+            return response()->json(['success' => false, 'message' => 'User ID '.$userid.' not found']);
+        }
+
+        return response()->json(['success' => true,'userid' => $userid]);
     }
 }

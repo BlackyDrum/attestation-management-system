@@ -62,6 +62,11 @@ const confirm2 = (userid) => {
                 }
             })
                 .then(response => {
+                    if (!response.data.success) {
+                        errorShow.value = true;
+                        errorMessage.value = response.data.message;
+                        return;
+                    }
                     success.value = true;
                     for (let i = 0; i < page.props.users.data.length; i++) {
                         if (page.props.users.data[i].id === response.data.userid) {
@@ -74,7 +79,6 @@ const confirm2 = (userid) => {
                 .catch(error => {
                     errorShow.value = true;
                     errorMessage.value = error;
-                    console.log(error);
                 })
         },
         reject: () => {
