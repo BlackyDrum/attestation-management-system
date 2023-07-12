@@ -5,6 +5,7 @@ import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
 import {onMounted, onUpdated, ref, watch} from 'vue';
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Dialog from 'primevue/dialog';
 
 defineProps({
     users: {
@@ -16,8 +17,9 @@ defineProps({
 })
 const page = usePage();
 let search = ref("");
-let searchError = ref("");
+let searchError = ref(null);
 let empty = ref(false);
+let visible = ref(false);
 
 onMounted(() => {
     search.value = page.props.search;
@@ -32,13 +34,18 @@ function handleSearchRequest() {
         })
         .catch(error => {
             searchError.value = error;
+            visible.value = true;
         })
 }
 </script>
 
 <template>
     <Head title="User"/>
-
+    <Dialog v-model:visible="visible" header="Error" class="bg-white rounded-lg p-2 font-bold" :style="{ width: '50vw' }" position="topleft" :modal="false" :draggable="false">
+        <p class="text-red-600 font-medium">
+            {{searchError}}
+        </p>
+    </Dialog>
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">User</h2>
