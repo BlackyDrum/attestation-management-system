@@ -140,6 +140,16 @@ let visiblePrivacy = ref(false);
                                            :active="route().current('user')">
                             User
                         </ResponsiveNavLink>
+                        <NavLink :no-link="true" @click="visiblePrivacy = true">
+                            <div class="text-white mx-4">
+                                Privacy Statement
+                            </div>
+                        </NavLink>
+                        <NavLink :no-link="true" @click="visibleImprint = true">
+                            <div class="text-white mx-4">
+                                Imprint
+                            </div>
+                        </NavLink>
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -169,12 +179,14 @@ let visiblePrivacy = ref(false);
             </header>
 
             <!-- Dialogs -->
-            <Dialog v-model:visible="visibleImprint" modal header="Imprint" class="bg-gray-200 font-bold  p-2 rounded-md"
-                    :style="{ width: '50vw' }">
+            <Dialog v-model:visible="visibleImprint" modal header="Imprint"
+                    class="bg-gray-200 font-bold  p-2 rounded-md"
+                    :style="{ width: '75vw' }">
                 <imprint></imprint>
             </Dialog>
-            <Dialog v-model:visible="visiblePrivacy" modal header="Privacy Statement" class="bg-gray-200 font-bold p-2 rounded-md"
-                    :style="{ width: '50vw' }">
+            <Dialog v-model:visible="visiblePrivacy" modal header="Privacy Statement"
+                    class="bg-gray-200 font-bold p-2 rounded-md"
+                    :style="{ width: '75vw' }">
                 <privacy-statement></privacy-statement>
             </Dialog>
 

@@ -56,7 +56,7 @@ const confirm2 = (userid) => {
         acceptClass: 'p-button-danger',
 
         accept: () => {
-            axios.delete('/user',{
+            axios.delete('/user', {
                 data: {
                     userid: userid,
                 }
@@ -71,7 +71,7 @@ const confirm2 = (userid) => {
                     for (let i = 0; i < page.props.users.data.length; i++) {
                         if (page.props.users.data[i].id === response.data.userid) {
                             successMessage.value = `User '${page.props.users.data[i].name}' with ID ${response.data.userid} was successfully deleted`;
-                            page.props.users.data.splice(i,1);
+                            page.props.users.data.splice(i, 1);
                             break;
                         }
                     }
@@ -124,9 +124,9 @@ const confirm2 = (userid) => {
                                 <span>{{ user.name }}</span>
                                 <span class="ml-auto mr-5 flex flex-wrap gap- justify-content-center">
                                     <button v-if="!user.admin" @click="confirm2(user.id)"
-                                            class="pi pi-trash mr-5 bg-red-600 rounded-md py-2 px-6 active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"></button>
+                                            class="pi pi-trash mr-5 bg-red-600 rounded-md py-2 px-6 max-md:p-1 active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"></button>
                                     <button
-                                        class="bg-green-600 rounded-md py-2 px-6 active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+                                        class="bg-green-600 rounded-md py-2 px-6 active:bg-gray-900 max-md:p-1 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
                                         Edit
                                     </button>
                                 </span>

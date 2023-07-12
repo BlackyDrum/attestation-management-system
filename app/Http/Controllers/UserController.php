@@ -15,8 +15,7 @@ class UserController extends Controller
 
         $user = User::query()->where('name', 'ILIKE', '%' . $search . '%')->orderByRaw("SPLIT_PART(name,' ', -1)")->paginate(20);
 
-        if (!empty($request->input('response')) && $request->input('response'))
-        {
+        if (!empty($request->input('response')) && $request->input('response')) {
             return response()->json($user);
         }
 
@@ -34,13 +33,12 @@ class UserController extends Controller
 
         $userid = $request->input('userid');
 
-        $count = User::query()->where('id','=',$userid)->where('admin','=','false')->delete();
+        $count = User::query()->where('id', '=', $userid)->where('admin', '=', 'false')->delete();
 
-        if ($count === 0)
-        {
-            return response()->json(['success' => false, 'message' => 'User ID '.$userid.' not found']);
+        if ($count === 0) {
+            return response()->json(['success' => false, 'message' => 'User ID ' . $userid . ' not found']);
         }
 
-        return response()->json(['success' => true,'userid' => $userid]);
+        return response()->json(['success' => true, 'userid' => $userid]);
     }
 }
