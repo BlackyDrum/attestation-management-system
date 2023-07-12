@@ -25,14 +25,9 @@ onMounted(() => {
 })
 
 function handleSearchRequest() {
-    axios.get(`/user/search?search=${search.value}`)
+    axios.get(`/user/?search=${search.value}&response=true`)
         .then(response => {
             page.props.users = response.data;
-            for (let link in page.props.users.links) {
-                if (page.props.users.links[link].url === null)
-                    continue;
-                page.props.users.links[link].url = page.props.users.links[link].url.replace('/search', '');
-            }
             empty.value = page.props.users.data.length === 0;
         })
         .catch(error => {
