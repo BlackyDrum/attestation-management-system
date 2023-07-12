@@ -119,7 +119,7 @@ const confirm2 = (userid) => {
                             <div class="font-bold flex items-center">
                                 <span>{{ user.name }}</span>
                                 <span class="ml-auto mr-5 flex flex-wrap gap- justify-content-center">
-                                    <button v-if="!user.admin" :label="user.id" @click="confirm2(user.id)"
+                                    <button v-if="!user.admin" @click="confirm2(user.id)"
                                             class="pi pi-trash mr-5 bg-red-600 rounded-md py-2 px-6 active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"></button>
                                     <button
                                         class="bg-green-600 rounded-md py-2 px-6 active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
