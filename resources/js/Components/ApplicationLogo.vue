@@ -12,5 +12,5 @@ const uri = ref("/static/img/logo.png");
 </script>
 
 <template>
-    <img :src="uri" alt="logo">
+    <img :src="uri" alt="logo" :width="size">
 </template>

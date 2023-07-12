@@ -4,17 +4,23 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
+import Imprint from '@/Components/Imprint.vue';
+import PrivacyStatement from '@/Components/PrivacyStatement.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import {Link} from '@inertiajs/vue3';
+import Dialog from 'primevue/dialog';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const showingNavigationDropdown = ref(false);
+
+let visibleImprint = ref(false);
+let visiblePrivacy = ref(false);
 </script>
 
 <template>
     <div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <nav class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+            <nav class="bg-white dark:bg-gray-800 border-b  border-gray-100 dark:border-gray-700">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -23,7 +29,7 @@ const showingNavigationDropdown = ref(false);
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
                                     <ApplicationLogo
-                                        class="block w-24 w-auto fill-current text-gray-800 dark:text-gray-200"
+                                        class="block fill-current text-gray-800 dark:text-gray-200"
                                     />
                                 </Link>
                             </div>
@@ -42,7 +48,16 @@ const showingNavigationDropdown = ref(false);
                         </div>
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <!-- Settings Dropdown -->
-                            <primary-button v-if="$page.props.auth.user.admin">Create new Attestation</primary-button>
+                            <NavLink :no-link="true" @click="visiblePrivacy = true">
+                                <div class="text-white mx-4">
+                                    Privacy Statement
+                                </div>
+                            </NavLink>
+                            <NavLink :no-link="true" @click="visibleImprint = true">
+                                <div class="text-white mx-4">
+                                    Imprint
+                                </div>
+                            </NavLink>
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
@@ -152,6 +167,16 @@ const showingNavigationDropdown = ref(false);
                     <slot name="header"/>
                 </div>
             </header>
+
+            <!-- Dialogs -->
+            <Dialog v-model:visible="visibleImprint" modal header="Imprint" class="bg-gray-200 font-bold  p-2 rounded-md"
+                    :style="{ width: '50vw' }">
+                <imprint></imprint>
+            </Dialog>
+            <Dialog v-model:visible="visiblePrivacy" modal header="Privacy Statement" class="bg-gray-200 font-bold p-2 rounded-md"
+                    :style="{ width: '50vw' }">
+                <privacy-statement></privacy-statement>
+            </Dialog>
 
             <!-- Page Content -->
             <main>

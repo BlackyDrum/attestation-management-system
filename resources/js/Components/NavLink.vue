@@ -10,6 +10,10 @@ const props = defineProps({
     active: {
         type: Boolean,
     },
+    noLink: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const classes = computed(() =>
@@ -20,7 +24,10 @@ const classes = computed(() =>
 </script>
 
 <template>
-    <Link :href="href" :class="classes">
+    <Link :href="href" :class="classes" v-if="!noLink">
         <slot />
     </Link>
+    <button v-else :class="classes">
+        <slot />
+    </button>
 </template>
