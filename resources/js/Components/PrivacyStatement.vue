@@ -51,7 +51,7 @@
         <span class="font-bold">Links to Third-Party Websites</span><br>
         Our website may contain links to third-party websites or services. We have no control over the privacy practices or
         content of those websites, and we are not responsible for the practices employed by third-party websites. We
-        encourage you to review the privacy policies of those websites before providing any personal information.
+        encourage you to review the privacy policies of those websites before providing any personal information.<br><br>
 
         <span class="font-bold">Updates to This Privacy Statement</span><br>
         We may update this Privacy Statement from time to time to reflect changes in our practices or applicable laws. We
