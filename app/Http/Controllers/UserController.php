@@ -36,7 +36,7 @@ class UserController extends Controller
         $count = User::query()->where('id', '=', $userid)->where('admin', '=', 'false')->delete();
 
         if ($count === 0) {
-            return response()->json(['success' => false, 'message' => 'User ID ' . $userid . ' not found']);
+            return response()->json(['success' => false, 'message' => 'User ID ' . $userid . ' not found'],404);
         }
 
         return response()->json(['success' => true, 'userid' => $userid]);
