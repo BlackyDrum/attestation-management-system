@@ -25,4 +25,17 @@ class UserController extends Controller
             'search' => $search
         ]);
     }
+
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'userid' => 'required',
+        ]);
+
+        $userid = $request->input('userid');
+
+        User::query()->where('id','=',$userid)->where('admin','=','false')->delete();
+
+        return response()->json(['userid' => $userid]);
+    }
 }

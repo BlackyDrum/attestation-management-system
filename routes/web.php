@@ -31,6 +31,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/user', [\App\Http\Controllers\UserController::class, 'show'])->name('user')
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
+    Route::delete('/user', [\App\Http\Controllers\UserController::class, 'delete'])
+        ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
 });
 
 require __DIR__ . '/auth.php';
