@@ -1,15 +1,17 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Head, Link, usePage, useForm} from '@inertiajs/vue3';
-import Card from 'primevue/card';
-import InputText from 'primevue/inputtext';
+
 import {onMounted, ref} from 'vue';
-import Dialog from 'primevue/dialog';
-import ConfirmDialog from 'primevue/confirmdialog';
 import {useConfirm} from "primevue/useconfirm";
+
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import ProgressSpinner from 'primevue/progressspinner';
+import Dialog from 'primevue/dialog';
+import ConfirmDialog from 'primevue/confirmdialog';
+import InputText from 'primevue/inputtext';
+import Checkbox from 'primevue/checkbox';
 
 defineProps({
     users: {
