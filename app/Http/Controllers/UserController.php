@@ -9,11 +9,6 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('throttle:searches')->only('search');
-    }
-
     public function show(Request $request)
     {
         $search = $request->input('search') ?? "";
