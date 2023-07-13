@@ -43,7 +43,7 @@ const handleSearchRequest = () => {
             empty.value = page.props.users.data.length === 0;
         })
         .catch(error => {
-            errorMessage.value = error;
+            errorMessage.value = error.message;
             errorShow.value = true;
         })
 }
@@ -78,7 +78,7 @@ const confirm2 = (userid, username) => {
                 })
                 .catch(error => {
                     errorShow.value = true;
-                    errorMessage.value = error;
+                    errorMessage.value = error.message;
                 })
         },
         reject: () => {
