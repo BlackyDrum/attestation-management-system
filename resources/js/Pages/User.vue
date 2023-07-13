@@ -140,7 +140,7 @@ const confirm2 = (userid, username) => {
                      class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3">
                     <div>
                             <div class="font-bold flex items-center text-white p-2">
-                                <span>{{ user.name }}</span>
+                                <span>{{ user.name }} <span v-if="user.admin" class="pi pi-android"></span></span>
                                 <span class="ml-auto mr-5 flex flex-wrap  justify-content-center">
                                     <button v-if="!user.admin" @click="confirm2(user.id, user.name)"
                                             class="pi pi-trash mr-5 bg-red-600 rounded-md py-2 px-6 max-md:p-1 active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"></button>
