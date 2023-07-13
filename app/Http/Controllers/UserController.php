@@ -56,23 +56,18 @@ class UserController extends Controller
         $id = $request->input('id');
         $name = $request->input('name');
         $email = $request->input('email');
-        $password = $request->input('password') ?? null;
+        $password = $request->input('password');
 
-        if ($password)
-        {
-            User::query()->find($id)->fill([
-               'name' => $name,
-               'email' => $email,
-               'password' => Hash::make($password)
-            ])->save();
-
-            return to_route('user');
-        }
-
-        User::query()->find($id)->fill([
+        $user = User::query()->find($id)->fill([
             'name' => $name,
             'email' => $email,
-        ])->save();
+        ]);
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($password);
+        }
+
+        $user->save();
 
         return to_route('user');
     }
