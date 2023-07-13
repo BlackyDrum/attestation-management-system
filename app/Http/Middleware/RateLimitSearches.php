@@ -28,7 +28,7 @@ class RateLimitSearches
         // Check if the request is within the rate limits
         if ($this->limiter->tooManyAttempts($key, $rules['max_attempts'])) {
             // If the user has exceeded the rate limit, return a response
-            return new Response('Too Many Requests', 429);
+            abort(429);
         }
 
         // Increment the attempts for the IP address

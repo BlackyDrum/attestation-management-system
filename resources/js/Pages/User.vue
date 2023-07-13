@@ -1,13 +1,15 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import {Head, Link, usePage} from '@inertiajs/vue3';
+import {Head, Link, usePage, useForm} from '@inertiajs/vue3';
 import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
 import {onMounted, ref} from 'vue';
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
 import {useConfirm} from "primevue/useconfirm";
-
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import ProgressSpinner from 'primevue/progressspinner';
 
 defineProps({
     users: {
@@ -15,6 +17,9 @@ defineProps({
     },
     search: {
         type: String
+    },
+    errors: {
+        type: Object
     }
 })
 
@@ -23,6 +28,12 @@ onMounted(() => {
     empty.value = page.props.users.data.length === 0;
 })
 
+let userForm = useForm({
+    id: null,
+    name: null,
+    email: null,
+    password: null,
+})
 
 const page = usePage();
 const confirm = useConfirm();
@@ -33,8 +44,11 @@ let empty = ref(false);
 let errorShow = ref(false);
 let errorMessage = ref(null);
 
-let success = ref(false);
+let successShow = ref(false);
 let successMessage = ref(null);
+
+let editShow = ref(false);
+let selectedUser = ref(null);
 
 const handleSearchRequest = () => {
     axios.get(`/user/?search=${search.value}&response=true`)
@@ -46,6 +60,21 @@ const handleSearchRequest = () => {
             errorMessage.value = error.message;
             errorShow.value = true;
         })
+}
+
+const handleUserEdit = (user) => {
+    editShow.value = true;
+    selectedUser.value = user;
+
+    userForm.id = user.id;
+    userForm.name = user.name;
+    userForm.email = user.email;
+}
+
+const handleUserEditClose = () => {
+    editShow.value = false;
+    page.props.errors = {};
+    userForm.password = null;
 }
 
 const confirm2 = (userid, username) => {
@@ -67,7 +96,7 @@ const confirm2 = (userid, username) => {
                         errorMessage.value = response.data.message;
                         return;
                     }
-                    success.value = true;
+                    successShow.value = true;
                     for (let i = 0; i < page.props.users.data.length; i++) {
                         if (page.props.users.data[i].id === response.data.userid) {
                             successMessage.value = `User '${page.props.users.data[i].name}' with ID ${response.data.userid} was successfully deleted`;
@@ -91,48 +120,34 @@ const confirm2 = (userid, username) => {
 <template>
     <Head title="User"/>
 
-    <Dialog v-model:visible="errorShow" header="Error" class="bg-white rounded-lg p-2 font-bold"
-            :style="{ width: '50vw' }" position="topleft" :modal="false" :draggable="false">
-        <p class="text-red-600 font-medium">
-            {{ errorMessage }}
-        </p>
-    </Dialog>
-
-    <Dialog v-model:visible="success" header="Confirmation" class="bg-white rounded-lg p-2 font-bold"
-            :style="{ width: '50vw' }" position="topleft" :modal="false" :draggable="false">
-        <p class="text-green-600 font-medium">
-            {{ successMessage }}
-        </p>
-    </Dialog>
-
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">User</h2>
         </template>
-
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="w-full text-right">
-                    <input-text type="text" class="rounded-xl text-black lg:w-1/4" placeholder="Search user"
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <input-text type="text" class="rounded-xl text-black" placeholder="Search user"
                                 @input="handleSearchRequest" v-model="search"></input-text>
+                    </span>
                 </div>
                 <div v-for="user in users.data" :key="user.id"
                      class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3">
-                    <Card>
-                        <template #content>
-                            <div class="font-bold flex items-center">
+                    <div>
+                            <div class="font-bold flex items-center text-white p-2">
                                 <span>{{ user.name }}</span>
-                                <span class="ml-auto mr-5 flex flex-wrap gap- justify-content-center">
+                                <span class="ml-auto mr-5 flex flex-wrap  justify-content-center">
                                     <button v-if="!user.admin" @click="confirm2(user.id, user.name)"
                                             class="pi pi-trash mr-5 bg-red-600 rounded-md py-2 px-6 max-md:p-1 active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"></button>
-                                    <button
+                                    <button :value="user.id" @click="handleUserEdit(user)"
                                         class="bg-green-600 rounded-md py-2 px-6 active:bg-gray-900 max-md:p-1 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
                                         Edit
                                     </button>
                                 </span>
                             </div>
-                        </template>
-                    </Card>
+                    </div>
                 </div>
 
                 <ConfirmDialog ref="confirmDialog"
@@ -157,6 +172,55 @@ const confirm2 = (userid, username) => {
             </div>
         </div>
     </AuthenticatedLayout>
+
+    <!-- Dialogs -->
+    <Dialog v-model:visible="errorShow" header="Error" class="bg-white rounded-lg p-2 font-bold"
+            :style="{ width: '50vw' }" position="topleft" :modal="false" :draggable="false">
+        <p class="text-red-600 font-medium">
+            {{ errorMessage }}
+        </p>
+    </Dialog>
+
+    <Dialog v-model:visible="successShow" header="Confirmation" class="bg-white rounded-lg p-2 font-bold"
+            :style="{ width: '50vw' }" position="topleft" :modal="false" :draggable="false">
+        <p class="text-green-600 font-medium">
+            {{ successMessage }}
+        </p>
+    </Dialog>
+
+    <Dialog v-model:visible="editShow" :closable="false" v-if="selectedUser" :header="selectedUser.name" class="bg-gray-200 rounded-lg p-2 font-bold"
+            :style="{ width: '80vw' }" :modal="true" :draggable="false">
+        <form @submit.prevent>
+            <div class="p-inputgroup mt-2">
+            <span class="p-inputgroup-addon">
+                <i class="pi pi-user mr-2"></i>
+            </span>
+                <InputText type="text" required v-model="userForm.name" placeholder="Name" class="border border-black rounded-md p-1"/>
+            </div>
+            <div class="ml-6 text-red-600" v-if="errors.name">{{errors.name}}</div>
+            <div class="p-inputgroup mt-2">
+            <span class="p-inputgroup-addon">
+                <i class="pi pi-at mr-2"></i>
+            </span>
+                <InputText type="email" required v-model="userForm.email" placeholder="E-Mail-Adress" class="border border-black rounded-md p-1"/>
+            </div>
+            <div class="ml-6 text-red-600" v-if="errors.email">{{errors.email}}</div>
+            <div class="p-inputgroup mt-2">
+            <span class="p-inputgroup-addon">
+                <i class="pi pi-lock mr-2"></i>
+            </span>
+                <InputText type="password" v-model="userForm.password" placeholder="New Password" class="border border-black rounded-md p-1"/>
+            </div>
+            <div class="ml-6 text-red-600" v-if="errors.password">{{errors.password}}</div>
+            <div class="mt-4 flex justify-end">
+                <primary-button class="mr-5" :disabled="userForm.processing" @click="userForm.post('/user')">Save Changes</primary-button>
+                <secondary-button @click="handleUserEditClose">Cancel</secondary-button>
+            </div>
+            <div v-if="userForm.progress">{{userForm.progress.percentage}}</div>
+            <ProgressSpinner v-if="userForm.processing" style="width: 50px; height: 50px" strokeWidth="8" fill="var(--surface-ground)"
+                             animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+        </form>
+    </Dialog>
 </template>
 
 <style>

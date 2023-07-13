@@ -33,6 +33,8 @@ Route::middleware('auth')->group(function () {
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
     Route::delete('/user', [\App\Http\Controllers\UserController::class, 'delete'])
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
+    Route::post('/user', [\App\Http\Controllers\UserController::class, 'edit'])
+        ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
 });
 
 require __DIR__ . '/auth.php';

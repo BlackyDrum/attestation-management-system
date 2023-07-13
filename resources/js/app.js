@@ -1,6 +1,7 @@
 import './bootstrap';
 import '../css/app.css';
 import 'primeicons/primeicons.css'
+import "primevue/resources/themes/lara-light-indigo/theme.css";
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
