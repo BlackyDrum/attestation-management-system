@@ -75,6 +75,7 @@ const handleUserEditClose = () => {
     editShow.value = false;
     page.props.errors = {};
     userForm.password = null;
+    userForm.wasSuccessful = false;
 }
 
 const confirm2 = (userid, username) => {
@@ -219,6 +220,9 @@ const confirm2 = (userid, username) => {
             <div v-if="userForm.progress">{{userForm.progress.percentage}}</div>
             <ProgressSpinner v-if="userForm.processing" style="width: 50px; height: 50px" strokeWidth="8" fill="var(--surface-ground)"
                              animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+            <div v-if="userForm.wasSuccessful" class="text-green-600 font-bold">
+                User credentials successfully updated
+            </div>
         </form>
     </Dialog>
 </template>
