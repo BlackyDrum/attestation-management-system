@@ -8,7 +8,7 @@
 
 <br />
 
-[![Generic badge](https://img.shields.io/badge/License-MIT-<COLOR>.svg)](https://shields.io/) [![Generic badge](https://img.shields.io/badge/Status-In_Development-<COLOR>.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/Status-In_Development-orange.svg)](https://shields.io/) [![Generic badge](https://img.shields.io/badge/License-MIT-<COLOR>.svg)](https://shields.io/) 
  
 <br />
 
