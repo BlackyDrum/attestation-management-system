@@ -1,4 +1,3 @@
-<br />
 
 <img align="left" src="https://github.com/BlackyDrum/attestation-management-system/assets/111639941/805b8fc1-eef5-439d-8dd7-094f6133d108" />
 
