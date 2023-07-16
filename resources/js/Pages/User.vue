@@ -80,6 +80,12 @@ const handleUserEditClose = () => {
     userForm.wasSuccessful = false;
 }
 
+const sendEditForm = () => {
+    userForm.post('/user', {
+        onStart: () => userForm.reset('password')
+    });
+}
+
 const confirm2 = (userid, username) => {
     confirm.require({
         message: `Do you want to delete user '${username}'?`,
@@ -216,7 +222,7 @@ const confirm2 = (userid, username) => {
             </div>
             <div class="ml-6 text-red-600" v-if="errors.password">{{errors.password}}</div>
             <div class="mt-4 flex justify-end">
-                <primary-button class="mr-5" :disabled="userForm.processing" @click="userForm.post('/user')">Save Changes</primary-button>
+                <primary-button class="mr-5" :disabled="userForm.processing" @click="sendEditForm">Save Changes</primary-button>
                 <secondary-button @click="handleUserEditClose">Cancel</secondary-button>
             </div>
             <div v-if="userForm.progress">{{userForm.progress.percentage}}</div>
