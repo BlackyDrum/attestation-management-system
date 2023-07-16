@@ -81,6 +81,8 @@ const handleUserEditClose = () => {
 }
 
 const sendEditForm = () => {
+    if ((selectedUser.value.name === userForm.name && selectedUser.value.email === userForm.email)) return;
+
     userForm.post('/user', {
         preserveScroll: true,
         onStart: () => userForm.reset('password'),
