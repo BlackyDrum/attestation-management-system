@@ -82,7 +82,8 @@ const handleUserEditClose = () => {
 
 const sendEditForm = () => {
     userForm.post('/user', {
-        onStart: () => userForm.reset('password')
+        onStart: () => userForm.reset('password'),
+        onSuccess: () => selectedUser.value.name = userForm.name
     });
 }
 
