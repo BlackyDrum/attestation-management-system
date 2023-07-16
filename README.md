@@ -1,8 +1,8 @@
-<img align="left" src="https://github.com/BlackyDrum/attestation-management-system/assets/111639941/805b8fc1-eef5-439d-8dd7-094f6133d108" />
+<img align="left" src="https://github.com/BlackyDrum/attestation-management-system/assets/111639941/27316b55-87b6-417c-8ee0-65441b4dabfb" />
 
 <br />
 
-<img src="https://github.com/BlackyDrum/attestation-management-system/assets/111639941/3654a4f9-438a-441d-92c5-d3d3936d40e6"></a><br /><br />
+<img src="https://github.com/BlackyDrum/attestation-management-system/assets/111639941/3d8807dd-d4cd-4b25-a63f-2ffa4adfa747"></a><br /><br />
 
 **Create, track and manage attestations efficiently**
 
