@@ -82,8 +82,13 @@ const handleUserEditClose = () => {
 
 const sendEditForm = () => {
     userForm.post('/user', {
+        preserveScroll: true,
         onStart: () => userForm.reset('password'),
-        onSuccess: () => selectedUser.value.name = userForm.name
+        onSuccess: () => {
+            selectedUser.value.id = userForm.id;
+            selectedUser.value.name = userForm.name;
+            selectedUser.value.email = userForm.email;
+        }
     });
 }
 
@@ -223,7 +228,7 @@ const confirm2 = (userid, username) => {
             </div>
             <div class="ml-6 text-red-600" v-if="errors.password">{{errors.password}}</div>
             <div class="mt-4 flex justify-end">
-                <primary-button class="mr-5" :disabled="userForm.processing" @click="sendEditForm">Save Changes</primary-button>
+                <primary-button class="mr-5" :disabled="userForm.processing || (selectedUser.name === userForm.name && selectedUser.email === userForm.email)" @click="sendEditForm">Save Changes</primary-button>
                 <secondary-button @click="handleUserEditClose">Cancel</secondary-button>
             </div>
             <div v-if="userForm.progress">{{userForm.progress.percentage}}</div>
