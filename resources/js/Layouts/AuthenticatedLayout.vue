@@ -39,6 +39,9 @@ let visiblePrivacy = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
+                                <NavLink :href="route('attestations')" :active="route().current('attestations')">
+                                    Attestations
+                                </NavLink>
                                 <NavLink v-if="$page.props.auth.user.admin" :href="route('user')"
                                          :active="route().current('user')">
                                     User

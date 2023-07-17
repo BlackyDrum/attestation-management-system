@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('/attestations', [\App\Http\Controllers\AttestationController::class, 'show'])->name('attestations');
+
     Route::get('/user', [\App\Http\Controllers\UserController::class, 'show'])->name('user')
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
     Route::delete('/user', [\App\Http\Controllers\UserController::class, 'delete'])
