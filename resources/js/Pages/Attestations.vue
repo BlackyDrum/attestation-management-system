@@ -6,7 +6,7 @@ import Dialog from "primevue/dialog";
 import MultiSelect from 'primevue/multiselect';
 import InputText from "primevue/inputtext";
 import InputNumber from 'primevue/inputnumber';
-import {ref} from "vue";
+import {computed, ref, watch} from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Dropdown from 'primevue/dropdown';
 import ProgressSpinner from "primevue/progressspinner";
@@ -23,6 +23,7 @@ defineProps({
     }
 })
 
+
 let attestationForm = useForm({
     users: null,
     subjectNumber: null,
@@ -38,14 +39,21 @@ const handleDialogClose = () => {
 }
 
 const handleForm = () => {
-
     attestationForm
         .transform((data) => ({
             ...data,
             semester: data.semester ? data.semester.semester : null,
         }))
-        .post('/attestations')
+        .post('/attestations', {
+            onSuccess: () => attestationForm.reset(),
+            onError: (error) => {
+                for (let e in error) {
+                    attestationForm.reset(e)
+                }
+            }
+        })
 }
+
 </script>
 
 <template>
@@ -112,6 +120,9 @@ const handleForm = () => {
                 <ProgressSpinner v-if="attestationForm.processing" style="width: 50px; height: 50px" strokeWidth="8" fill="var(--surface-ground)"
                                  animationDuration=".5s" aria-label="Custom ProgressSpinner" />
             </form>
+            <div v-if="attestationForm.wasSuccessful" class="text-green-600 font-bold">
+                New Subject for attestation successfully created
+            </div>
         </Dialog>
     </AuthenticatedLayout>
 </template>
