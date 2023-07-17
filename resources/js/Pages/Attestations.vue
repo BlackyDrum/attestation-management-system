@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import {Head, useForm} from '@inertiajs/vue3';
+import {Head, useForm, usePage} from '@inertiajs/vue3';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Dialog from "primevue/dialog";
 import MultiSelect from 'primevue/multiselect';
@@ -9,12 +9,16 @@ import InputNumber from 'primevue/inputnumber';
 import {ref} from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Dropdown from 'primevue/dropdown';
+import ProgressSpinner from "primevue/progressspinner";
 
 defineProps({
     users: {
         type: Object
     },
     semester: {
+        type: Object
+    },
+    errors: {
         type: Object
     }
 })
@@ -26,8 +30,22 @@ let attestationForm = useForm({
     semester: null
 })
 
+const page = usePage();
 let showDialog = ref(false);
 
+const handleDialogClose = () => {
+    showDialog.value = false;
+}
+
+const handleForm = () => {
+
+    attestationForm
+        .transform((data) => ({
+            ...data,
+            semester: data.semester ? data.semester.semester : null,
+        }))
+        .post('/attestations')
+}
 </script>
 
 <template>
@@ -54,28 +72,45 @@ let showDialog = ref(false);
         </div>
 
         <Dialog v-model:visible="showDialog" modal header="Create new Attestation" :style="{ width: '80vw' }">
-            <form @submit.prevent>
+            <form @submit.prevent="handleForm">
                 <MultiSelect :loading="!$props.users" v-model="attestationForm.users" :options="users" filter optionLabel="name" placeholder="Select Users"
                              :maxSelectedLabels="3" :virtualScrollerOptions="{ itemSize: 44 }" class="w-full md:w-20rem" />
+                <div v-if="errors.users" class="text-red-600">
+                    {{errors.users}}
+                </div>
+                <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))" class="text-red-600">
+                    The selected User is invalid
+                </div>
                 <div class="my-4">
                     <span class="p-input-icon-right w-full">
                         <i class="pi pi-hashtag" />
                         <input-number v-model="attestationForm.subjectNumber" :useGrouping="false" class="w-full" placeholder="Subject Number"></input-number>
                     </span>
+                    <div v-if="errors.subjectNumber" class="text-red-600">
+                        {{errors.subjectNumber}}
+                    </div>
                 </div>
                 <div class="my-4">
                     <span class="p-input-icon-right w-full">
                         <i class="pi pi-book" />
                         <input-text v-model="attestationForm.subjectName" class="w-full" placeholder="Subject Name"></input-text>
                     </span>
+                    <div v-if="errors.subjectName" class="text-red-600">
+                        {{errors.subjectName}}
+                    </div>
                 </div>
                 <div class="my-4">
                     <Dropdown v-model="attestationForm.semester" :options="semester" optionLabel="semester" placeholder="Select a semester" class="md:w-14rem" />
+                    <div v-if="errors.semester" class="text-red-600">
+                        {{errors.semester}}
+                    </div>
                 </div>
                 <div class="mt-4 flex justify-end">
                     <primary-button class="mr-5">Save Changes</primary-button>
-                    <secondary-button @click="showDialog = false">Cancel</secondary-button>
+                    <secondary-button @click="handleDialogClose">Cancel</secondary-button>
                 </div>
+                <ProgressSpinner v-if="attestationForm.processing" style="width: 50px; height: 50px" strokeWidth="8" fill="var(--surface-ground)"
+                                 animationDuration=".5s" aria-label="Custom ProgressSpinner" />
             </form>
         </Dialog>
     </AuthenticatedLayout>

@@ -16,4 +16,15 @@ class AttestationController extends Controller
             'semester' => Semester::all(),
         ]);
     }
+
+    public function create(Request $request)
+    {
+        $request->validate([
+           'users' => 'required|array|min:1',
+            'users.*.id' => 'required|exists:users,id',
+            'subjectNumber' => 'required|integer', // add unique constraint here
+            'subjectName' => 'required|max:255',
+            'semester' => 'required|exists:semester,semester'
+        ]);
+    }
 }
