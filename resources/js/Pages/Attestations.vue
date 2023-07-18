@@ -51,16 +51,22 @@ const handleForm = () => {
             semester: data.semester ? data.semester.semester : null,
         }))
         .post('/attestations', {
-            onSuccess: () => {
-                attestationForm.reset();
-                fieldCount.value = 1;
-            },
+            onSuccess: () => reset(),
             onError: (error) => {
                 for (let e in error) {
                     attestationForm.reset(e)
                 }
             }
         })
+}
+
+const reset = () => {
+    attestationForm.reset();
+    fieldCount.value = 1;
+
+    for (let e in page.props.errors) {
+        delete page.props.errors[e];
+    }
 }
 
 const addField = () => {
@@ -104,6 +110,9 @@ const removeField = () => {
 
         <Dialog v-model:visible="showDialog" modal header="Create new Attestation" :style="{ width: '80vw' }">
             <form @submit.prevent="handleForm">
+                <div class="mb-4 mt-1">
+                    <Button severity="danger" aria-label="Cancel" @click="reset">Reset Form</Button>
+                </div>
                 <MultiSelect :loading="!$props.users" v-model="attestationForm.users" :options="users" filter optionLabel="name" placeholder="Select Users"
                              :maxSelectedLabels="3" :virtualScrollerOptions="{ itemSize: 44 }" class="w-full md:w-20rem" />
                 <div v-if="errors.users" class="text-red-600">
@@ -162,12 +171,16 @@ const removeField = () => {
                 <div v-if="errors.attestations" class="text-red-600 mt-2">
                     {{errors.attestations}}
                 </div>
-                <div class="my-4 flex justify-end">
-                    <primary-button class="mr-5">Save Changes</primary-button>
-                    <secondary-button @click="handleDialogClose">Cancel</secondary-button>
+                <div class="my-4 grid grid-cols-2">
+                    <div class="justify-center">
+                        <ProgressSpinner v-if="attestationForm.processing" style="width: 50px; height: 3rem" strokeWidth="8" fill="var(--surface-ground)"
+                                         animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+                    </div>
+                    <div class="flex justify-end" style="height: 3rem">
+                        <primary-button class="mr-5">Save Changes</primary-button>
+                        <secondary-button @click="handleDialogClose">Cancel</secondary-button>
+                    </div>
                 </div>
-                <ProgressSpinner v-if="attestationForm.processing" style="width: 50px; height: 50px" strokeWidth="8" fill="var(--surface-ground)"
-                                 animationDuration=".5s" aria-label="Custom ProgressSpinner" />
             </form>
             <div v-if="attestationForm.wasSuccessful" class="text-green-600 font-bold">
                 New Subject for attestation successfully created
