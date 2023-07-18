@@ -14,6 +14,12 @@
 
 <img src="https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white"> <img src="https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D"> <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white"> <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white">
 
+
+
+<p>
+The Attestation Management System is a web application built using Laravel and Vue.js, designed specifically for universities to streamline the process of tracking student tasks and providing attestation. This system aims to simplify the workflow between professors and students, making it easier to monitor the progress and completion of various tasks assigned to students.
+</p>
+
 ## Installation
 **Follow these steps to get the Attestation Management System up and running on your local machine:**
 1. **Clone the repository:**
