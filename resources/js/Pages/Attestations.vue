@@ -93,17 +93,17 @@ const handleForm = () => {
                     <span class="p-input-icon-right w-full">
                         <i class="pi pi-hashtag" />
                         <input-number v-model="attestationForm.subjectNumber" :useGrouping="false" class="w-full" placeholder="Subject Number"></input-number>
-                    </span>
-                    <div v-if="errors.subjectNumber" class="text-red-600">
+                        <div v-if="errors.subjectNumber" class="text-red-600">
                         {{errors.subjectNumber}}
-                    </div>
+                        </div>
+                    </span>
                     <span class="p-input-icon-right w-full">
                         <i class="pi pi-book" />
                         <input-text v-model="attestationForm.subjectName" class="w-full" placeholder="Subject Name"></input-text>
-                    </span>
-                    <div v-if="errors.subjectName" class="text-red-600">
+                        <div v-if="errors.subjectName" class="text-red-600">
                         {{errors.subjectName}}
-                    </div>
+                        </div>
+                    </span>
                 </div>
                 <div class="my-4">
                     <Dropdown v-model="attestationForm.semester" :options="semester" optionLabel="semester" placeholder="Select a semester" class="md:w-14rem" />
