@@ -89,7 +89,7 @@ const handleForm = () => {
                 <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))" class="text-red-600">
                     The selected User is invalid
                 </div>
-                <div class="my-4">
+                <div class="my-4 flex gap-6">
                     <span class="p-input-icon-right w-full">
                         <i class="pi pi-hashtag" />
                         <input-number v-model="attestationForm.subjectNumber" :useGrouping="false" class="w-full" placeholder="Subject Number"></input-number>
@@ -97,8 +97,6 @@ const handleForm = () => {
                     <div v-if="errors.subjectNumber" class="text-red-600">
                         {{errors.subjectNumber}}
                     </div>
-                </div>
-                <div class="my-4">
                     <span class="p-input-icon-right w-full">
                         <i class="pi pi-book" />
                         <input-text v-model="attestationForm.subjectName" class="w-full" placeholder="Subject Name"></input-text>
