@@ -51,7 +51,10 @@ const handleForm = () => {
             semester: data.semester ? data.semester.semester : null,
         }))
         .post('/attestations', {
-            onSuccess: () => attestationForm.reset(),
+            onSuccess: () => {
+                attestationForm.reset();
+                fieldCount.value = 1;
+            },
             onError: (error) => {
                 for (let e in error) {
                     attestationForm.reset(e)
