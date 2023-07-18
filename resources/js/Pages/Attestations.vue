@@ -177,7 +177,7 @@ const removeField = () => {
                                          animationDuration=".5s" aria-label="Custom ProgressSpinner" />
                     </div>
                     <div class="flex justify-end" style="height: 3rem">
-                        <primary-button class="mr-5">Save Changes</primary-button>
+                        <primary-button class="mr-5" :disabled="attestationForm.processing">Save Changes</primary-button>
                         <secondary-button @click="handleDialogClose">Cancel</secondary-button>
                     </div>
                 </div>
