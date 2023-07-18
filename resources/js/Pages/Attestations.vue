@@ -115,7 +115,7 @@ const handleForm = () => {
                         {{errors.semester}}
                     </div>
                 </div>
-                <div class="mt-4 flex justify-end">
+                <div class="my-4 flex justify-end">
                     <primary-button class="mr-5">Save Changes</primary-button>
                     <secondary-button @click="handleDialogClose">Cancel</secondary-button>
                 </div>
