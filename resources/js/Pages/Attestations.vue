@@ -10,6 +10,8 @@ import {computed, ref, watch} from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Dropdown from 'primevue/dropdown';
 import ProgressSpinner from "primevue/progressspinner";
+import Button from 'primevue/button';
+import Textarea from 'primevue/textarea';
 
 defineProps({
     users: {
@@ -28,11 +30,15 @@ let attestationForm = useForm({
     users: null,
     subjectNumber: null,
     subjectName: null,
-    semester: null
+    semester: null,
+    attestations: [],
 })
 
 const page = usePage();
+
 let showDialog = ref(false);
+
+let fieldCount = ref(1);
 
 const handleDialogClose = () => {
     showDialog.value = false;
@@ -52,6 +58,19 @@ const handleForm = () => {
                 }
             }
         })
+}
+
+const addField = () => {
+    attestationForm.attestations.push({
+        id: fieldCount.value++,
+        title: null,
+        description: null,
+    })
+}
+
+const removeField = () => {
+    attestationForm.attestations.pop();
+    fieldCount.value--;
 }
 
 </script>
@@ -74,7 +93,7 @@ const handleForm = () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-
+                    {{attestationForm.attestations}}
                 </div>
             </div>
         </div>
@@ -109,11 +128,32 @@ const handleForm = () => {
                         </div>
                     </div>
                 </div>
-                <div class="my-4">
+                <div>
                     <Dropdown v-model="attestationForm.semester" :options="semester" optionLabel="semester" placeholder="Select a semester" class="md:w-14rem" />
                     <div v-if="errors.semester" class="text-red-600">
                         {{errors.semester}}
                     </div>
+                </div>
+                <div class="mt-4">
+                    <div v-for="field in attestationForm.attestations" :key="field.id" class="my-4 w-full">
+                        <div class="mb-1 font-bold">
+                            {{field.id}}. Attestation
+                        </div>
+                        <div>
+                            <input-text v-model="attestationForm.attestations[field.id - 1].title" class="w-full" placeholder="Title"></input-text>
+                            <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (field.id - 1)))" class="text-red-600">
+                                The title field is required.
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <Textarea v-model="attestationForm.attestations[field.id - 1].description" placeholder="Description" autoResize rows="5" class="w-full"/>
+                        </div>
+                    </div>
+                </div>
+                <Button @click="addField" icon="pi pi-plus" aria-label="Filter" />
+                <span v-if="attestationForm.attestations.length > 0" class="ml-3"><Button @click="removeField" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
+                <div v-if="errors.attestations" class="text-red-600 mt-2">
+                    {{errors.attestations}}
                 </div>
                 <div class="my-4 flex justify-end">
                     <primary-button class="mr-5">Save Changes</primary-button>

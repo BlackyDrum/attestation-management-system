@@ -24,7 +24,10 @@ class AttestationController extends Controller
             'users.*.id' => 'required|exists:users,id',
             'subjectNumber' => 'required|integer|min:1', // add unique constraint here
             'subjectName' => 'required|string|max:255',
-            'semester' => 'required|exists:semester,semester'
+            'semester' => 'required|exists:semester,semester',
+            'attestations' => 'required|array|min:1',
+            'attestations.*.title' => 'required|string|max:255',
+            'attestations.*.description' => 'nullable|string|max:2500',
         ]);
     }
 }
