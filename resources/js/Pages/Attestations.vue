@@ -71,6 +71,7 @@ const addField = () => {
 const removeField = () => {
     attestationForm.attestations.pop();
     fieldCount.value--;
+    delete page.props.errors['attestations.' + (fieldCount.value - 1) + '.title'];
 }
 
 </script>
@@ -93,7 +94,7 @@ const removeField = () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    {{attestationForm.attestations}}
+
                 </div>
             </div>
         </div>
@@ -141,12 +142,15 @@ const removeField = () => {
                         </div>
                         <div>
                             <input-text v-model="attestationForm.attestations[field.id - 1].title" class="w-full" placeholder="Title"></input-text>
-                            <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (field.id - 1)))" class="text-red-600">
-                                The title field is required.
+                            <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (field.id - 1) + '.title'))" class="text-red-600">
+                                {{errors['attestations.' + (field.id - 1) + '.title']}}
                             </div>
                         </div>
                         <div class="mt-2">
                             <Textarea v-model="attestationForm.attestations[field.id - 1].description" placeholder="Description" autoResize rows="5" class="w-full"/>
+                            <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (field.id - 1) + '.description'))" class="text-red-600">
+                                {{errors['attestations.' + (field.id - 1) + '.description']}}
+                            </div>
                         </div>
                     </div>
                 </div>
