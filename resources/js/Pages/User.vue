@@ -242,37 +242,3 @@ const confirm2 = (userid, username) => {
         </form>
     </Dialog>
 </template>
-
-<style>
-.p-dialog-title {
-    font-weight: bold;
-    font-size: larger;
-}
-
-.p-confirm-dialog-message {
-    margin-left: 1vw;
-    font-size: large;
-    color: dimgray;
-}
-
-.p-confirm-dialog-icon {
-    color: dimgray;
-}
-
-.p-dialog-footer {
-    display: grid;
-    grid-template-columns: auto auto;
-}
-
-.p-confirm-dialog-reject {
-    color: royalblue;
-}
-
-.p-confirm-dialog-accept {
-    color: white;
-    background-color: red;
-    padding-bottom: 1rem;
-    padding-top: 1rem;
-    border-radius: 0.375rem;
-}
-</style>
