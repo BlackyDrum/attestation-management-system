@@ -34,7 +34,7 @@ class AttestationController extends Controller
             'attestations.*.description' => 'nullable|string|max:2500',
         ]);
 
-        $attestationId = Attestation::query()->create([
+        $attestation = Attestation::query()->create([
            'subject_number' => $request->input('subjectNumber'),
            'subject_name' => $request->input('subjectName'),
            'current_semester' => (Semester::query()->where('semester','=',$request->input('semester'))->first())->id,
@@ -43,7 +43,7 @@ class AttestationController extends Controller
 
         foreach ($request->input('attestations') as $field) {
             AttestationFields::query()->create([
-                'attestation_id' => $attestationId['id'],
+                'attestation_id' => $attestation['id'],
                 'title' => $field['title'],
                 'description' => $field['description']
             ]);
@@ -52,7 +52,7 @@ class AttestationController extends Controller
         foreach ($request->input('users') as $user) {
             UserHasAttestation::query()->create([
                 'user_id' => $user['id'],
-                'attestation_id' => $attestationId['id']
+                'attestation_id' => $attestation['id']
             ]);
         }
     }
