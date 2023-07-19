@@ -110,9 +110,6 @@ const removeField = () => {
 
         <Dialog v-model:visible="showDialog" modal header="Create new Attestation" :style="{ width: '80vw' }">
             <form @submit.prevent="handleForm">
-                <div class="mb-4 mt-1">
-                    <Button severity="danger" aria-label="Cancel" @click="reset">Reset Form</Button>
-                </div>
                 <MultiSelect :loading="!$props.users" v-model="attestationForm.users" :options="users" filter optionLabel="name" placeholder="Select Users"
                              :maxSelectedLabels="3" :virtualScrollerOptions="{ itemSize: 44 }" class="w-full md:w-20rem" />
                 <div v-if="errors.users" class="text-red-600">
@@ -179,6 +176,9 @@ const removeField = () => {
                     <div class="flex justify-end" style="height: 3rem">
                         <primary-button class="mr-5" :disabled="attestationForm.processing">Save Changes</primary-button>
                         <secondary-button @click="handleDialogClose">Cancel</secondary-button>
+                        <span class="ml-10">
+                            <Button severity="danger" aria-label="Cancel" @click="reset">Reset</Button>
+                        </span>
                     </div>
                 </div>
             </form>
