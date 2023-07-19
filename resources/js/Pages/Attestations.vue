@@ -6,7 +6,7 @@ import Dialog from "primevue/dialog";
 import MultiSelect from 'primevue/multiselect';
 import InputText from "primevue/inputtext";
 import InputNumber from 'primevue/inputnumber';
-import {computed, ref, watch} from "vue";
+import {onMounted, ref} from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Dropdown from 'primevue/dropdown';
 import ProgressSpinner from "primevue/progressspinner";
@@ -39,52 +39,57 @@ let attestationForm = useForm({
 
 const page = usePage();
 
-// Groups the database records into a compact array to work with
-const combinedData = ref(page.props.attestations.reduce((acc, item) => {
-    const foundItem = acc.find(entry => (
-        entry.id === item.id &&
-        entry.subject_name === item.subject_name &&
-        entry.subject_number === item.subject_number &&
-        entry.creator_id === item.creator_id &&
-        entry.semester === item.semester
-    ));
-
-    const field = {
-        title: item.title,
-        description: item.description,
-        user_id: item.user_id,
-        name: item.name,
-        checked: item.checked,
-    };
-
-    if (foundItem) {
-        const existingFieldIndex = foundItem.fields.findIndex(f => (
-            f.title === field.title &&
-            f.description === field.description &&
-            f.user_id === field.user_id &&
-            f.name === field.name && f.checked === field.checked
-        ));
-
-        if (existingFieldIndex === -1) {
-            foundItem.fields.push(field);
-        }
-    } else {
-        acc.push({
-            id: item.id,
-            subject_name: item.subject_name,
-            subject_number: item.subject_number,
-            creator_id: item.creator_id,
-            semester: item.semester,
-            fields: [field],
-        });
-    }
-
-    return acc;
-}, []));
-
 let showDialog = ref(false);
 
 let fieldCount = ref(1);
+
+// Groups the database records into a compact array to work with
+const combine = () => {
+    return page.props.attestations.reduce((acc, item) => {
+        const foundItem = acc.find(entry => (
+            entry.id === item.id &&
+            entry.subject_name === item.subject_name &&
+            entry.subject_number === item.subject_number &&
+            entry.creator_id === item.creator_id &&
+            entry.semester === item.semester
+        ));
+
+        const field = {
+            field_id: item.field_id,
+            title: item.title,
+            description: item.description,
+            user_id: item.user_id,
+            name: item.name,
+            checked: item.checked,
+        };
+
+        if (foundItem) {
+            const existingFieldIndex = foundItem.fields.findIndex(f => (
+                f.title === field.title &&
+                f.description === field.description &&
+                f.user_id === field.user_id &&
+                f.name === field.name && f.checked === field.checked
+            ));
+
+            if (existingFieldIndex === -1) {
+                foundItem.fields.push(field);
+            }
+        } else {
+            acc.push({
+                id: item.id,
+                subject_name: item.subject_name,
+                subject_number: item.subject_number,
+                creator_id: item.creator_id,
+                semester: item.semester,
+                fields: [field],
+            });
+        }
+
+        return acc;
+    }, []);
+}
+
+let combinedData = ref(combine());
 
 const handleDialogClose = () => {
     showDialog.value = false;
@@ -97,7 +102,10 @@ const handleForm = () => {
             semester: data.semester ? data.semester.semester : null,
         }))
         .post('/attestations', {
-            onSuccess: () => reset(),
+            onSuccess: () => {
+                reset();
+                combinedData.value = combine();
+            },
             onError: (error) => {
                 for (let e in error) {
                     attestationForm.reset(e)

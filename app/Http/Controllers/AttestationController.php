@@ -35,7 +35,8 @@ class AttestationController extends Controller
                 'attestation_fields.description',
                 'user_has_attestation.user_id',
                 'users.name',
-                'user_has_checked_field.checked'
+                'user_has_checked_field.checked',
+                'attestation_fields.id AS field_id'
             ])
             ->orderBy('attestation_fields.id')
             ->get();
