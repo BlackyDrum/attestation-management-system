@@ -16,11 +16,15 @@ class AttestationController extends Controller
 {
     public function show(Request $request)
     {
-        $attestations = Attestation::query()->join('semester','attestation.current_semester','=','semester.id')
-            ->join('attestation_fields','attestation.id','=','attestation_fields.attestation_id')
-            ->crossJoin('users')
-            ->join('user_has_attestation','user_has_attestation.user_id','=','users.id')
-            ->join('user_has_checked_field','user_has_checked_field.field_id','=','attestation_fields.id')
+        $attestations = Attestation::query()
+            ->join('semester', 'attestation.current_semester', '=', 'semester.id')
+            ->join('attestation_fields', 'attestation.id', '=', 'attestation_fields.attestation_id')
+            ->join('user_has_checked_field', 'user_has_checked_field.field_id', '=', 'attestation_fields.id')
+            ->join('user_has_attestation', function ($join) {
+                $join->on('user_has_attestation.user_id', '=', 'user_has_checked_field.user_id')
+                    ->on('user_has_attestation.attestation_id', '=', 'attestation.id');
+            })
+            ->join('users', 'users.id', '=', 'user_has_attestation.user_id')
             ->select([
                 'attestation.id',
                 'attestation.subject_name',

@@ -39,6 +39,49 @@ let attestationForm = useForm({
 
 const page = usePage();
 
+// Groups the database records into a compact array to work with
+const combinedData = ref(page.props.attestations.reduce((acc, item) => {
+    const foundItem = acc.find(entry => (
+        entry.id === item.id &&
+        entry.subject_name === item.subject_name &&
+        entry.subject_number === item.subject_number &&
+        entry.creator_id === item.creator_id &&
+        entry.semester === item.semester
+    ));
+
+    const field = {
+        title: item.title,
+        description: item.description,
+        user_id: item.user_id,
+        name: item.name,
+        checked: item.checked,
+    };
+
+    if (foundItem) {
+        const existingFieldIndex = foundItem.fields.findIndex(f => (
+            f.title === field.title &&
+            f.description === field.description &&
+            f.user_id === field.user_id &&
+            f.name === field.name && f.checked === field.checked
+        ));
+
+        if (existingFieldIndex === -1) {
+            foundItem.fields.push(field);
+        }
+    } else {
+        acc.push({
+            id: item.id,
+            subject_name: item.subject_name,
+            subject_number: item.subject_number,
+            creator_id: item.creator_id,
+            semester: item.semester,
+            fields: [field],
+        });
+    }
+
+    return acc;
+}, []));
+
 let showDialog = ref(false);
 
 let fieldCount = ref(1);
@@ -109,7 +152,7 @@ const removeField = () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    {{attestations}}
+                    {{combinedData}}
                 </div>
             </div>
         </div>
