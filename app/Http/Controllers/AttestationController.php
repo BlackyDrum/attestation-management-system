@@ -33,6 +33,7 @@ class AttestationController extends Controller
                 'users.name',
                 'user_has_checked_field.checked'
             ])
+            ->orderBy('attestation_fields.id')
             ->get();
 
 
