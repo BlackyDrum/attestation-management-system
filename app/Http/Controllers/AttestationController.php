@@ -55,5 +55,7 @@ class AttestationController extends Controller
                 'attestation_id' => $attestation['id']
             ]);
         }
+
+        return to_route('attestations');
     }
 }
