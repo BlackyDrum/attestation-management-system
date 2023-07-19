@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('description', function (Blueprint $table) {
+        Schema::table('attestation_fields', function (Blueprint $table) {
             $table->string('description',2500)->nullable(false)->change();
         });
     }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('description',2500);
             $table->timestamps();
 
-            $table->foreign('attestation_id')->references('id')->on('attestation');
+            $table->foreign('attestation_id')->references('id')->on('attestation')->onDelete('cascade');
         });
     }
 
