@@ -20,6 +20,9 @@ defineProps({
     semester: {
         type: Object
     },
+    attestations: {
+      type: Array
+    },
     errors: {
         type: Object
     }
@@ -92,7 +95,10 @@ const removeField = () => {
         <template #header>
             <div class="grid grid-cols-2">
                 <div>
-                    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">My Attestations</h2>
+                    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                        <span v-if="$page.props.auth.user.admin">Attestations Admin Panel</span>
+                        <span v-else>My Attestations</span>
+                    </h2>
                 </div>
                 <div class="ml-auto" v-if="$page.props.auth.user.admin">
                     <primary-button @click="showDialog = true">Create new Attestation</primary-button>
@@ -103,7 +109,7 @@ const removeField = () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-
+                    {{attestations}}
                 </div>
             </div>
         </div>

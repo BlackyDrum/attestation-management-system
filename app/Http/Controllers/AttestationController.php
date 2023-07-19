@@ -7,6 +7,7 @@ use App\Models\AttestationFields;
 use App\Models\Semester;
 use App\Models\User;
 use App\Models\UserHasAttestation;
+use App\Models\UserHasCheckedField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -15,9 +16,30 @@ class AttestationController extends Controller
 {
     public function show(Request $request)
     {
+        $attestations = Attestation::query()->join('semester','attestation.current_semester','=','semester.id')
+            ->join('attestation_fields','attestation.id','=','attestation_fields.attestation_id')
+            ->crossJoin('users')
+            ->join('user_has_attestation','user_has_attestation.user_id','=','users.id')
+            ->join('user_has_checked_field','user_has_checked_field.field_id','=','attestation_fields.id')
+            ->select([
+                'attestation.id',
+                'attestation.subject_name',
+                'attestation.subject_number',
+                'attestation.creator_id',
+                'semester.semester',
+                'attestation_fields.title',
+                'attestation_fields.description',
+                'user_has_attestation.user_id',
+                'users.name',
+                'user_has_checked_field.checked'
+            ])
+            ->get();
+
+
         return Inertia::render('Attestations', [
             'users' => User::all(),
             'semester' => Semester::all(),
+            'attestations' => $attestations,
         ]);
     }
 
@@ -42,7 +64,7 @@ class AttestationController extends Controller
         ]);
 
         foreach ($request->input('attestations') as $field) {
-            AttestationFields::query()->create([
+            $f[] = AttestationFields::query()->create([
                 'attestation_id' => $attestation['id'],
                 'title' => $field['title'],
                 'description' => $field['description']
@@ -54,6 +76,13 @@ class AttestationController extends Controller
                 'user_id' => $user['id'],
                 'attestation_id' => $attestation['id']
             ]);
+
+            foreach ($f as $item) {
+                UserHasCheckedField::query()->create([
+                    'user_id' => $user['id'],
+                    'field_id' => $item['id']
+                ]);
+            }
         }
 
         return to_route('attestations');
