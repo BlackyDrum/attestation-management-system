@@ -25,6 +25,7 @@ class AttestationController extends Controller
                     ->on('user_has_attestation.attestation_id', '=', 'attestation.id');
             })
             ->join('users', 'users.id', '=', 'user_has_attestation.user_id')
+            ->orderByRaw("SPLIT_PART(users.name,' ', -1)")
             ->select([
                 'attestation.id',
                 'attestation.subject_name',
