@@ -106,13 +106,7 @@ const combine = () => {
         const subjectNameA = a.subject_name.toLowerCase();
         const subjectNameB = b.subject_name.toLowerCase();
 
-        if (subjectNameA < subjectNameB) {
-            return -1;
-        }
-        if (subjectNameA > subjectNameB) {
-            return 1;
-        }
-        return 0;
+        return subjectNameA < subjectNameB ? -1 : 1;
     });
 
     return combinedData;
