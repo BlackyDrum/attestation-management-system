@@ -186,7 +186,7 @@ let combinedData = ref(null);
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    {{combinedData}}
+
                 </div>
             </div>
         </div>
@@ -259,7 +259,7 @@ let combinedData = ref(null);
                     <div class="flex justify-end" style="height: 3rem">
                         <primary-button class="mr-5" :disabled="attestationForm.processing">Save Changes</primary-button>
                         <secondary-button @click="handleDialogClose">Cancel</secondary-button>
-                        <span class="ml-10">
+                        <span class="ml-10 max-md:hidden">
                             <Button severity="danger" aria-label="Cancel" @click="reset">Reset</Button>
                         </span>
                     </div>
