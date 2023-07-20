@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_has_checked_field', function (Blueprint $table) {
+        Schema::create('user_has_checked_task', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('field_id');
+            $table->unsignedBigInteger('task_id');
             $table->boolean('checked')->default(false);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('field_id')->references('id')->on('attestation_fields')->onDelete('cascade');
+            $table->foreign('task_id')->references('id')->on('attestation_tasks')->onDelete('cascade');
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_has_checked_field');
+        Schema::dropIfExists('user_has_checked_task');
     }
 };

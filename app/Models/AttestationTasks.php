@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserHasCheckedField extends Model
+class AttestationTasks extends Model
 {
     use HasFactory;
 
-    protected $table = "user_has_checked_field";
+    protected $table = "attestation_tasks";
 
     protected $fillable = [
-        'user_id',
-        'field_id',
-        'checked',
+        'attestation_id',
+        'title',
+        'description',
     ];
 }

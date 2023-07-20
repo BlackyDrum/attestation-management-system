@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('attestation_fields', function (Blueprint $table) {
+        Schema::table('attestation_tasks', function (Blueprint $table) {
             $table->string('description',2500)->nullable()->change();
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('attestation_fields', function (Blueprint $table) {
+        Schema::table('attestation_tasks', function (Blueprint $table) {
             $table->string('description',2500)->nullable(false)->change();
         });
     }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attestation_fields', function (Blueprint $table) {
+        Schema::create('attestation_tasks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('attestation_id');
             $table->string('title',255);
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attestation_fields');
+        Schema::dropIfExists('attestation_tasks');
     }
 };

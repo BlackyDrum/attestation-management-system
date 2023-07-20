@@ -56,7 +56,7 @@ const combine = () => {
         ));
 
         const task = {
-            task_id: item.field_id,
+            task_id: item.task_id,
             title: item.title,
             description: item.description,
             user_id: item.user_id,
@@ -65,14 +65,14 @@ const combine = () => {
         };
 
         if (foundItem) {
-            const existingFieldIndex = foundItem.tasks.findIndex(f => (
+            const existingTaskIndex = foundItem.tasks.findIndex(f => (
                 f.title === task.title &&
                 f.description === task.description &&
                 f.user_id === task.user_id &&
                 f.name === task.name && f.checked === task.checked
             ));
 
-            if (existingFieldIndex === -1) {
+            if (existingTaskIndex === -1) {
                 foundItem.tasks.push(task);
             }
         } else {
@@ -82,7 +82,7 @@ const combine = () => {
                 subject_number: item.subject_number,
                 creator_id: item.creator_id,
                 semester: item.semester,
-                tasks: [task], // Renamed 'fields' to 'tasks'
+                tasks: [task],
             });
         }
 
@@ -152,7 +152,7 @@ const reset = () => {
     }
 }
 
-const addField = () => {
+const addTask = () => {
     attestationForm.attestations.push({
         id: taskCount.value++,
         title: null,
@@ -160,7 +160,7 @@ const addField = () => {
     })
 }
 
-const removeField = () => {
+const removeTask = () => {
     attestationForm.attestations.pop();
     taskCount.value--;
     delete page.props.errors['attestations.' + (taskCount.value - 1) + '.title'];
@@ -231,26 +231,26 @@ const removeField = () => {
                     </div>
                 </div>
                 <div class="mt-4">
-                    <div v-for="field in attestationForm.attestations" :key="field.id" class="my-4 w-full">
+                    <div v-for="task in attestationForm.attestations" :key="task.id" class="my-4 w-full">
                         <div class="mb-1 font-bold">
-                            {{field.id}}. Attestation
+                            {{task.id}}. Attestation
                         </div>
                         <div>
-                            <input-text v-model="attestationForm.attestations[field.id - 1].title" class="w-full" placeholder="Title"></input-text>
-                            <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (field.id - 1) + '.title'))" class="text-red-600">
-                                {{errors['attestations.' + (field.id - 1) + '.title']}}
+                            <input-text v-model="attestationForm.attestations[task.id - 1].title" class="w-full" placeholder="Title"></input-text>
+                            <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.title'))" class="text-red-600">
+                                {{errors['attestations.' + (task.id - 1) + '.title']}}
                             </div>
                         </div>
                         <div class="mt-2">
-                            <Textarea v-model="attestationForm.attestations[field.id - 1].description" placeholder="Description" autoResize rows="5" class="w-full"/>
-                            <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (field.id - 1) + '.description'))" class="text-red-600">
-                                {{errors['attestations.' + (field.id - 1) + '.description']}}
+                            <Textarea v-model="attestationForm.attestations[task.id - 1].description" placeholder="Description" autoResize rows="5" class="w-full"/>
+                            <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.description'))" class="text-red-600">
+                                {{errors['attestations.' + (task.id - 1) + '.description']}}
                             </div>
                         </div>
                     </div>
                 </div>
-                <Button @click="addField" icon="pi pi-plus" aria-label="Filter" />
-                <span v-if="attestationForm.attestations.length > 0" class="ml-3"><Button @click="removeField" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
+                <Button @click="addTask" icon="pi pi-plus" aria-label="Filter" />
+                <span v-if="attestationForm.attestations.length > 0" class="ml-3"><Button @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
                 <div v-if="errors.attestations" class="text-red-600 mt-2">
                     {{errors.attestations}}
                 </div>
