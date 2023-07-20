@@ -212,8 +212,8 @@ let combinedData = ref(null);
                             </div>
                         </template>
                         <template #footer>
-                            <Button icon="pi pi-check" label="Edit" severity="success"/>
-                            <Button icon="pi pi-times" label="Delete" severity="danger" style="margin-left: 0.5em" />
+                            <Button icon="pi pi-file-edit" label="Edit" severity="success"/>
+                            <Button icon="pi pi-trash" label="Delete" severity="danger" style="margin-left: 0.5em" />
                         </template>
                     </Card>
                 </div>
