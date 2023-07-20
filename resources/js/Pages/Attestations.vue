@@ -41,7 +41,7 @@ const page = usePage();
 
 let showDialog = ref(false);
 
-let fieldCount = ref(1);
+let taskCount = ref(1);
 
 // Groups the database records into a compact array to work with
 const combine = () => {
@@ -55,8 +55,8 @@ const combine = () => {
             entry.semester === item.semester
         ));
 
-        const field = {
-            field_id: item.field_id,
+        const task = {
+            task_id: item.field_id,
             title: item.title,
             description: item.description,
             user_id: item.user_id,
@@ -65,15 +65,15 @@ const combine = () => {
         };
 
         if (foundItem) {
-            const existingFieldIndex = foundItem.fields.findIndex(f => (
-                f.title === field.title &&
-                f.description === field.description &&
-                f.user_id === field.user_id &&
-                f.name === field.name && f.checked === field.checked
+            const existingFieldIndex = foundItem.tasks.findIndex(f => (
+                f.title === task.title &&
+                f.description === task.description &&
+                f.user_id === task.user_id &&
+                f.name === task.name && f.checked === task.checked
             ));
 
             if (existingFieldIndex === -1) {
-                foundItem.fields.push(field);
+                foundItem.tasks.push(task);
             }
         } else {
             acc.push({
@@ -82,23 +82,23 @@ const combine = () => {
                 subject_number: item.subject_number,
                 creator_id: item.creator_id,
                 semester: item.semester,
-                fields: [field],
+                tasks: [task], // Renamed 'fields' to 'tasks'
             });
         }
 
         return acc;
     }, []);
 
-    // Group the 'fields' array by 'user_id' within each item of 'combinedData'
+    // Group the 'tasks' array by 'user_id' within each item of 'combinedData'
     combinedData.forEach(item => {
-        const fieldsGroupedByUserId = item.fields.reduce((groups, field) => {
-            if (!groups[field.user_id]) {
-                groups[field.user_id] = [];
+        const tasksGroupedByUserId = item.tasks.reduce((groups, task) => {
+            if (!groups[task.user_id]) {
+                groups[task.user_id] = [];
             }
-            groups[field.user_id].push(field);
+            groups[task.user_id].push(task);
             return groups;
         }, {});
-        item.fields = Object.values(fieldsGroupedByUserId);
+        item.tasks = Object.values(tasksGroupedByUserId);
     });
 
     // Sort the 'combinedData' array by 'subject_name'
@@ -145,7 +145,7 @@ const handleForm = () => {
 
 const reset = () => {
     attestationForm.reset();
-    fieldCount.value = 1;
+    taskCount.value = 1;
 
     for (let e in page.props.errors) {
         delete page.props.errors[e];
@@ -154,7 +154,7 @@ const reset = () => {
 
 const addField = () => {
     attestationForm.attestations.push({
-        id: fieldCount.value++,
+        id: taskCount.value++,
         title: null,
         description: null,
     })
@@ -162,8 +162,8 @@ const addField = () => {
 
 const removeField = () => {
     attestationForm.attestations.pop();
-    fieldCount.value--;
-    delete page.props.errors['attestations.' + (fieldCount.value - 1) + '.title'];
+    taskCount.value--;
+    delete page.props.errors['attestations.' + (taskCount.value - 1) + '.title'];
 }
 
 </script>
