@@ -16,6 +16,14 @@ class AttestationController extends Controller
 {
     public function show(Request $request)
     {
+        if (!Auth::user()->admin) {
+            return Inertia::render('Attestations', [
+                'users' => [],
+                'semester' => [],
+                'attestations' => []
+            ]);
+        }
+
         $attestations = Attestation::query()
             ->join('semester', 'attestation.current_semester', '=', 'semester.id')
             ->join('attestation_tasks', 'attestation.id', '=', 'attestation_tasks.attestation_id')

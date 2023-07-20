@@ -12,6 +12,10 @@ import Dropdown from 'primevue/dropdown';
 import ProgressSpinner from "primevue/progressspinner";
 import Button from 'primevue/button';
 import Textarea from 'primevue/textarea';
+import Card from 'primevue/card';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Tooltip from 'primevue/tooltip';
 
 defineProps({
     users: {
@@ -185,7 +189,35 @@ let combinedData = ref(null);
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 p-4 rounded-lg">
+                    <Card class="rounded-lg">
+                        <template #title> {{attestation.subject_name}} ({{attestation.semester}}) </template>
+                        <template #subtitle>Subject Number: {{attestation.subject_number}} </template>
+                        <template #content>
+                            <div class="flex flex-wrap justify-evenly gap-2">
+                                <div class="w-1/2 max-md:w-full">
+                                    <span class="p-input-icon-left w-full">
+                                        <i class="pi pi-user" />
+                                        <InputText class="w-full" disabled :value="`Current Users: ${attestation.tasks.length}`" placeholder="Search"></InputText>
+                                    </span>
+
+                                </div>
+                                <div class="w-1/2 max-md:w-full">
+                                    <span class="p-input-icon-left w-full">
+                                        <i class="pi pi-file" />
+                                        <InputText class="w-full" disabled :value="`Tasks: ${attestation.tasks[0].length}`" placeholder="Search"></InputText>
+                                    </span>
+
+                                </div>
+                            </div>
+                        </template>
+                        <template #footer>
+                            <Button icon="pi pi-check" label="Edit" severity="success"/>
+                            <Button icon="pi pi-times" label="Delete" severity="danger" style="margin-left: 0.5em" />
+                        </template>
+                    </Card>
+                </div>
+                <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
 
                 </div>
             </div>
