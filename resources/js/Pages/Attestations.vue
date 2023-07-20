@@ -28,20 +28,12 @@ defineProps({
     }
 })
 
-
-let attestationForm = useForm({
-    users: null,
-    subjectNumber: null,
-    subjectName: null,
-    semester: null,
-    attestations: [],
+onMounted(() => {
+    combinedData.value = combine();
+    console.log(combinedData.value)
 })
 
 const page = usePage();
-
-let showDialog = ref(false);
-
-let taskCount = ref(1);
 
 // Groups the database records into a compact array to work with
 const combine = () => {
@@ -112,8 +104,6 @@ const combine = () => {
     return combinedData;
 };
 
-let combinedData = ref(combine());
-console.log(combinedData.value)
 const handleDialogClose = () => {
     showDialog.value = false;
 }
@@ -159,6 +149,19 @@ const removeTask = () => {
     taskCount.value--;
     delete page.props.errors['attestations.' + (taskCount.value - 1) + '.title'];
 }
+
+
+let attestationForm = useForm({
+    users: null,
+    subjectNumber: null,
+    subjectName: null,
+    semester: null,
+    attestations: [],
+})
+
+let showDialog = ref(false);
+let taskCount = ref(1);
+let combinedData = ref(null);
 
 </script>
 
