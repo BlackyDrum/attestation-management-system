@@ -45,7 +45,8 @@ let fieldCount = ref(1);
 
 // Groups the database records into a compact array to work with
 const combine = () => {
-    return page.props.attestations.reduce((acc, item) => {
+    const attestations = page.props.attestations;
+    const combinedData = attestations.reduce((acc, item) => {
         const foundItem = acc.find(entry => (
             entry.id === item.id &&
             entry.subject_name === item.subject_name &&
@@ -87,10 +88,38 @@ const combine = () => {
 
         return acc;
     }, []);
-}
+
+    // Group the 'fields' array by 'user_id' within each item of 'combinedData'
+    combinedData.forEach(item => {
+        const fieldsGroupedByUserId = item.fields.reduce((groups, field) => {
+            if (!groups[field.user_id]) {
+                groups[field.user_id] = [];
+            }
+            groups[field.user_id].push(field);
+            return groups;
+        }, {});
+        item.fields = Object.values(fieldsGroupedByUserId);
+    });
+
+    // Sort the 'combinedData' array by 'subject_name'
+    combinedData.sort((a, b) => {
+        const subjectNameA = a.subject_name.toLowerCase();
+        const subjectNameB = b.subject_name.toLowerCase();
+
+        if (subjectNameA < subjectNameB) {
+            return -1;
+        }
+        if (subjectNameA > subjectNameB) {
+            return 1;
+        }
+        return 0;
+    });
+
+    return combinedData;
+};
 
 let combinedData = ref(combine());
-
+console.log(combinedData.value)
 const handleDialogClose = () => {
     showDialog.value = false;
 }
