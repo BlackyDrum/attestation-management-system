@@ -114,6 +114,7 @@ const confirm2 = (userid, username) => {
                             successMessage.value = `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} was successfully deleted`;
                             successShow.value = true;
                             page.props.users.data.splice(i, 1);
+                            empty.value = page.props.users.data.length === 0;
                             break;
                         }
                     }
