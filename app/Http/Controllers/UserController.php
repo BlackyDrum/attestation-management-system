@@ -30,25 +30,19 @@ class UserController extends Controller
     public function delete(Request $request)
     {
         $request->validate([
-            'userid' => 'required',
+            'user_id' => 'required|integer|exists:users,id',
         ]);
 
-        $userid = $request->input('userid');
+        User::query()->where('id', '=', $request->input('user_id'))->where('admin', '=', 'false')->delete();
 
-        $count = User::query()->where('id', '=', $userid)->where('admin', '=', 'false')->delete();
-
-        if ($count === 0) {
-            return response()->json(['success' => false, 'message' => 'User ID ' . $userid . ' not found'],404);
-        }
-
-        return response()->json(['success' => true, 'userid' => $userid]);
+        return response()->json(['success' => true, 'user_id' => $request->input('user_id')]);
     }
 
     public function edit(Request $request)
     {
         $request->validate([
-           'id' => 'required',
-           'name' => 'required|max:255',
+           'id' => 'required|integer|exists:users,id',
+           'name' => 'required|string|max:255',
            'email' => ['required','max:255','email',Rule::unique('users')->ignore($request->input('id'))],
            'password' => 'max:255|min:6|nullable'
         ]);

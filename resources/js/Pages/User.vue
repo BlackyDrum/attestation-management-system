@@ -105,19 +105,14 @@ const confirm2 = (userid, username) => {
         accept: () => {
             axios.delete('/user', {
                 data: {
-                    userid: userid,
+                    user_id: userid,
                 }
             })
                 .then(response => {
-                    if (!response.data.success) {
-                        errorShow.value = true;
-                        errorMessage.value = response.data.message;
-                        return;
-                    }
-                    successShow.value = true;
                     for (let i = 0; i < page.props.users.data.length; i++) {
-                        if (page.props.users.data[i].id === response.data.userid) {
-                            successMessage.value = `User '${page.props.users.data[i].name}' with ID ${response.data.userid} was successfully deleted`;
+                        if (page.props.users.data[i].id === response.data.user_id) {
+                            successMessage.value = `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} was successfully deleted`;
+                            successShow.value = true;
                             page.props.users.data.splice(i, 1);
                             break;
                         }
@@ -125,7 +120,7 @@ const confirm2 = (userid, username) => {
                 })
                 .catch(error => {
                     errorShow.value = true;
-                    errorMessage.value = error.message;
+                    errorMessage.value = error.response.data.message;
                 })
         },
         reject: () => {
