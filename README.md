@@ -58,4 +58,8 @@ $ npm run dev
 ```
 $ php artisan serve
 ```
-10. **Visit http://localhost:8000 in your web browser to access the application.**
+10. **(Optional) Seed the database with initial users**
+```
+$ php artisan db:seed
+```
+11. **Visit http://localhost:8000 in your web browser to access the application.**
