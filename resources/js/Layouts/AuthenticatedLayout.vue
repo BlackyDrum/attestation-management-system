@@ -138,6 +138,9 @@ let visiblePrivacy = ref(false);
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('attestations')" :active="route().current('attestations')">
+                            Attestations
+                        </ResponsiveNavLink>
                         <ResponsiveNavLink v-if="$page.props.auth.user.admin" :href="route('user')"
                                            :active="route().current('user')">
                             User
