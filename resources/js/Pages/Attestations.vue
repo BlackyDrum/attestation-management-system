@@ -179,7 +179,6 @@ const confirm1 = (attestation) => {
                 }
             })
                 .then(response => {
-                    console.log(page.props.errors.attestation_id);
                     for (let i = 0; i < combinedData.value.length; i++) {
                         if (response.data.attestation_id === combinedData.value[i].id) {
                             successMessage.value = `Attestation ${combinedData.value[i].subject_name} with ID ${combinedData.value[i].id} was successfully deleted`;
