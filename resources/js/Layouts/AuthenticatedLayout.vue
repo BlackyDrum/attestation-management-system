@@ -52,12 +52,12 @@ let visiblePrivacy = ref(false);
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <!-- Settings Dropdown -->
                             <NavLink :no-link="true" @click="visiblePrivacy = true">
-                                <div class="text-white mx-4">
+                                <div class="text-white mx-4 max-lg:hidden">
                                     Privacy Statement
                                 </div>
                             </NavLink>
                             <NavLink :no-link="true" @click="visibleImprint = true">
-                                <div class="text-white mx-4">
+                                <div class="text-white mx-4 max-lg:hidden">
                                     Imprint
                                 </div>
                             </NavLink>
@@ -88,6 +88,15 @@ let visiblePrivacy = ref(false);
 
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> Profile</DropdownLink>
+                                        <button @click="visiblePrivacy = true" class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
+                                        >
+                                            Privacy Statement
+                                        </button>
+                                        <button @click="visibleImprint = true" class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
+                                        >
+                                            Imprint
+                                        </button>
+                                        <hr class="lg:hidden">
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Log Out
                                         </DropdownLink>
@@ -185,7 +194,7 @@ let visiblePrivacy = ref(false);
 
             <!-- Dialogs -->
             <Dialog v-model:visible="visibleImprint" modal header="Imprint"
-                    class="bg-gray-200 font-bold  p-2 rounded-md"
+                    class="bg-gray-200 font-bold p-2 rounded-md"
                     :style="{ width: '75vw' }">
                 <imprint></imprint>
             </Dialog>

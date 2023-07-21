@@ -153,11 +153,17 @@ const confirm2 = (userid, username) => {
                             <div class="font-bold flex items-center text-white p-2">
                                 <span>{{ user.name }} <span v-if="user.admin" class="pi pi-android"></span></span>
                                 <span class="ml-auto mr-5 flex flex-wrap  justify-content-center">
-                                    <div class="mr-4">
+                                    <div class="mr-4 md:hidden">
+                                        <Button v-if="!user.admin" @click="confirm2(user.id, user.name)" icon="pi pi-trash" severity="danger" />
+                                    </div>
+                                    <div class="mr-4 max-md:hidden">
                                         <Button v-if="!user.admin" @click="confirm2(user.id, user.name)" label="Delete" icon="pi pi-trash" severity="danger" />
                                     </div>
-                                    <div>
+                                    <div class="max-md:hidden">
                                         <Button @click="handleUserEdit(user)" label="Edit" icon="pi pi-user-edit" severity="success" />
+                                    </div>
+                                    <div class="md:hidden">
+                                        <Button @click="handleUserEdit(user)" icon="pi pi-user-edit" severity="success" />
                                     </div>
                                 </span>
                             </div>
