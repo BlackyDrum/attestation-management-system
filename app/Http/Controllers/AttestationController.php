@@ -102,4 +102,15 @@ class AttestationController extends Controller
 
         return to_route('attestations');
     }
+
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'attestation_id' => 'required|integer|exists:attestation,id'
+        ]);
+
+        Attestation::query()->find($request->input('attestation_id'))->delete();
+
+        return response()->json(['success' => true, 'attestation_id' => $request->input('attestation_id')]);
+    }
 }

@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/attestations', [\App\Http\Controllers\AttestationController::class, 'show'])->name('attestations');
     Route::post('/attestations', [\App\Http\Controllers\AttestationController::class, 'create'])
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
+    Route::delete('/attestations', [\App\Http\Controllers\AttestationController::class, 'delete'])
+        ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
 
     Route::get('/user', [\App\Http\Controllers\UserController::class, 'show'])->name('user')
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);

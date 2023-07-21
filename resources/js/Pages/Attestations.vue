@@ -16,6 +16,8 @@ import Card from 'primevue/card';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Tooltip from 'primevue/tooltip';
+import {useConfirm} from "primevue/useconfirm";
+import ConfirmDialog from 'primevue/confirmdialog';
 
 defineProps({
     users: {
@@ -38,6 +40,7 @@ onMounted(() => {
 })
 
 const page = usePage();
+const confirm = useConfirm();
 
 // Groups the database records into a compact array to work with
 const combine = () => {
@@ -163,9 +166,50 @@ let attestationForm = useForm({
     attestations: [],
 })
 
+const confirm1 = (attestation) => {
+    confirm.require({
+        message: `Do you want to delete '${attestation.subject_name}'?`,
+        header: 'Delete Confirmation',
+        icon: 'pi pi-info-circle',
+        acceptClass: 'p-button-danger',
+
+        accept: () => {
+            axios.delete('/attestations',{
+                data : {
+                    attestation_id: attestation.id
+                }
+            })
+                .then(response => {
+                    console.log(page.props.errors.attestation_id);
+                    for (let i = 0; i < combinedData.value.length; i++) {
+                        if (response.data.attestation_id === combinedData.value[i].id) {
+                            successMessage.value = `Attestation ${combinedData.value[i].subject_name} with ID ${combinedData.value[i].id} was successfully deleted`;
+                            successShow.value = true;
+                            combinedData.value.splice(i,1);
+                            break;
+                        }
+                    }
+                })
+                .catch(error => {
+                    errorMessage.value = error.response.data.message
+                    errorShow.value = true;
+                })
+        },
+        reject: () => {
+            //...
+        }
+    });
+};
+
 let showDialog = ref(false);
 let taskCount = ref(1);
 let combinedData = ref(null);
+
+let errorShow = ref(false);
+let errorMessage = ref(null);
+
+let successShow = ref(false);
+let successMessage = ref(null);
 
 </script>
 
@@ -213,7 +257,7 @@ let combinedData = ref(null);
                         </template>
                         <template #footer>
                             <Button icon="pi pi-file-edit" label="Edit" severity="success"/>
-                            <Button icon="pi pi-trash" label="Delete" severity="danger" style="margin-left: 0.5em" />
+                            <Button @click="confirm1(attestation)" icon="pi pi-trash" label="Delete" severity="danger" style="margin-left: 0.5em" />
                         </template>
                     </Card>
                 </div>
@@ -222,6 +266,25 @@ let combinedData = ref(null);
                 </div>
             </div>
         </div>
+
+        <span v-if="$page.props.auth.user.admin">
+        <ConfirmDialog  ref="confirmDialog"
+                       class="bg-white p-4 custom-confirm-dialog rounded-md gap-8"></ConfirmDialog>
+
+        <!-- Dialogs -->
+        <Dialog v-model:visible="errorShow" header="Error"
+                :style="{ width: '50vw' }" position="topleft" :modal="false" :draggable="false">
+            <p class="text-red-600 font-medium">
+                {{ errorMessage }}
+            </p>
+        </Dialog>
+
+        <Dialog v-model:visible="successShow" header="Confirmation"
+                :style="{ width: '50vw' }" position="topleft" :modal="false" :draggable="false">
+            <p class="text-green-600 font-medium">
+                {{ successMessage }}
+            </p>
+        </Dialog>
 
         <Dialog v-model:visible="showDialog" modal header="Create new Attestation" :style="{ width: '80vw' }">
             <form @submit.prevent="handleForm">
@@ -301,5 +364,6 @@ let combinedData = ref(null);
                 New Subject for attestation successfully created
             </div>
         </Dialog>
+        </span>
     </AuthenticatedLayout>
 </template>
