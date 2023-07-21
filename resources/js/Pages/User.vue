@@ -1,12 +1,12 @@
 <script setup>
-import {Head, Link, usePage, useForm} from '@inertiajs/vue3';
-
-import {onMounted, ref} from 'vue';
-import {useConfirm} from "primevue/useconfirm";
+import { Head, Link, usePage, useForm } from '@inertiajs/vue3';
+import { onMounted, ref } from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+
+import { useConfirm } from "primevue/useconfirm";
 import ProgressSpinner from 'primevue/progressspinner';
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
