@@ -271,14 +271,14 @@ let successMessage = ref(null);
 
         <!-- Dialogs -->
         <Dialog v-model:visible="errorShow" header="Error"
-                :style="{ width: '50vw' }" position="topleft" :modal="false" :draggable="false">
+                class="w-1/2 max-md:w-full" position="topleft" :modal="false" :draggable="false">
             <p class="text-red-600 font-medium">
                 {{ errorMessage }}
             </p>
         </Dialog>
 
         <Dialog v-model:visible="successShow" header="Confirmation"
-                :style="{ width: '50vw' }" position="topleft" :modal="false" :draggable="false">
+                class="w-1/2 max-md:w-full" position="topleft" :modal="false" :draggable="false">
             <p class="text-green-600 font-medium">
                 {{ successMessage }}
             </p>
