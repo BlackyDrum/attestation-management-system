@@ -60,7 +60,7 @@ const handleSearchRequest = () => {
             empty.value = page.props.users.data.length === 0;
         })
         .catch(error => {
-            errorMessage.value = error.message;
+            errorMessage.value = error.response.data.message;
             errorShow.value = true;
         })
 }
