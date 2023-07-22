@@ -119,7 +119,6 @@ class AttestationController extends Controller
             'attestations.*.task_id' => 'nullable',
         ]);
 
-
         $attestation = Attestation::query()->find($request->input('id'))->fill([
             'subject_number' => $request->input('subjectNumber'),
             'subject_name' => $request->input('subjectName'),
@@ -128,10 +127,8 @@ class AttestationController extends Controller
 
         $attestation->save();
 
-        $ids = [];
         $tasks = [];
         foreach ($request->input('attestations') as $task) {
-            $ids[] = $task['task_id'];
             $tasks[] = AttestationTasks::query()->findOrNew($task['task_id'])->fill([
                 'attestation_id' => $attestation['id'],
                 'title' => $task['title'],
@@ -139,8 +136,10 @@ class AttestationController extends Controller
             ]);
         }
 
+        $ids = [];
         foreach ($tasks as $item) {
             $item->save();
+            $ids[] = $item['id'];
         }
 
         AttestationTasks::query()->where('attestation_id','=',$attestation['id'])->whereNotIn('id',$ids)->delete();
@@ -166,7 +165,6 @@ class AttestationController extends Controller
             ->where('attestation_tasks.attestation_id','=',$attestation['id'])->whereNotIn('user_id',$uids)->delete();
 
         return to_route('attestations');
-
     }
 
     public function delete(Request $request)

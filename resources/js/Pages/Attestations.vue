@@ -142,7 +142,7 @@ const handleForm = () => {
             })
         return;
     }
-
+    console.log(attestationForm.data());
     attestationForm
         .transform((data) => ({
             ...data,
@@ -180,12 +180,14 @@ const addTask = () => {
         description: null,
         task_id: null,
     })
+    console.log(attestationForm.data());
 }
 
 const removeTask = () => {
     attestationForm.attestations.pop();
     taskCount.value--;
     delete page.props.errors['attestations.' + (taskCount.value - 1) + '.title'];
+    console.log(attestationForm.data());
 }
 
 
@@ -262,7 +264,7 @@ const handleEdit = (attestation) => {
         })
         attestationForm.id = attestation.id;
     }
-
+    console.log(attestationForm.data());
 }
 
 let showDialog = ref(false);
