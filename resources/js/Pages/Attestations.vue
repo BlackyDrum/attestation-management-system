@@ -327,11 +327,20 @@ let successMessage = ref(null);
                         </template>
                     </Card>
                 </div>
-                <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div v-if="!$page.props.auth.user.admin" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
 
                 </div>
             </div>
         </div>
+
+        <template v-if="attestations.length === 0">
+            <div class="text-gray-700 text-center">
+                <div style="font-size: 10rem" class="pi pi-book"></div>
+            </div>
+            <div class="text-gray-500 text-center mt-4">
+                No Attestations assigned to you
+            </div>
+        </template>
 
         <span v-if="$page.props.auth.user.admin">
         <ConfirmDialog  ref="confirmDialog"
