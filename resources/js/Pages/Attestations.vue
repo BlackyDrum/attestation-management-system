@@ -110,13 +110,13 @@ const combine = () => {
 };
 
 const handleDialogOpen = () => {
-    attestationForm.reset();
+    reset();
     showDialog.value = true;
     isEdit.value = false;
 }
 
 const handleDialogClose = () => {
-    attestationForm.reset();
+    reset();
     showDialog.value = false;
     isEdit.value = false;
 }
@@ -131,6 +131,7 @@ const handleForm = () => {
             .post('/attestations', {
                 onSuccess: () => {
                     reset();
+                    successForm.value = true;
                     combinedData.value = combine();
                 },
                 onError: (error) => {
@@ -165,6 +166,7 @@ const handleForm = () => {
 const reset = () => {
     attestationForm.reset();
     taskCount.value = 1;
+    successForm.value = false;
 
     for (let e in page.props.errors) {
         delete page.props.errors[e];
@@ -231,7 +233,7 @@ const confirm1 = (attestation) => {
 };
 
 const handleEdit = (attestation) => {
-    attestationForm.reset();
+    reset();
     isEdit.value = true;
     showDialog.value = true;
     attestationForm.subjectName = attestation.subject_name;
@@ -267,6 +269,7 @@ let showDialog = ref(false);
 let isEdit = ref(false);
 let taskCount = ref(1);
 let combinedData = ref(null);
+let successForm = ref(false);
 
 let errorShow = ref(false);
 let errorMessage = ref(null);
@@ -423,13 +426,8 @@ let successMessage = ref(null);
                     </div>
                 </div>
             </form>
-            <div v-if="attestationForm.wasSuccessful" class="text-green-600 font-bold">
-                <template v-if="isEdit">
-                    New Subject for attestation successfully created
-                </template>
-                <template v-else>
-                    Subject successfully updated
-                </template>
+            <div v-if="successForm" class="text-green-600 font-bold">
+                New Subject for attestation successfully created
             </div>
         </Dialog>
         </span>
