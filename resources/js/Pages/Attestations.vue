@@ -427,7 +427,7 @@ let successMessage = ref(null);
                                          animationDuration=".5s" aria-label="Custom ProgressSpinner" />
                     </div>
                     <div class="flex justify-end" style="height: 3rem">
-                        <primary-button class="mr-5" :disabled="attestationForm.processing">Save Changes</primary-button>
+                        <primary-button class="mr-5" :disabled="attestationForm.processing">{{isEdit ? "Save Changes" : "Create new subject"}}</primary-button>
                         <secondary-button @click="handleDialogClose">Cancel</secondary-button>
                         <span class="ml-10 max-md:hidden">
                             <Button severity="danger" aria-label="Cancel" @click="reset">Reset</Button>
