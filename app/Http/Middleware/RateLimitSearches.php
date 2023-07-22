@@ -22,13 +22,13 @@ class RateLimitSearches
         // Define the rate limit rules
         $rules = [
             'max_attempts' => 10,     // Maximum number of attempts allowed
-            'decay_seconds' => 2,    // Time period in minutes
+            'decay_seconds' => 3,    // Time period in minutes
         ];
 
         // Check if the request is within the rate limits
         if ($this->limiter->tooManyAttempts($key, $rules['max_attempts'])) {
             // If the user has exceeded the rate limit, return a response
-            abort(429,"Too many Requests");
+            abort(429,"Too many Requests. Try again in " . $this->limiter->availableIn($key) . " seconds");
         }
 
         // Increment the attempts for the IP address
