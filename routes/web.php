@@ -34,6 +34,8 @@ Route::middleware('auth')->group(function () {
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
     Route::delete('/attestations', [\App\Http\Controllers\AttestationController::class, 'delete'])
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
+    Route::put('/attestations', [\App\Http\Controllers\AttestationController::class, 'edit'])
+        ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
 
     Route::get('/user', [\App\Http\Controllers\UserController::class, 'show'])->name('user')
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);

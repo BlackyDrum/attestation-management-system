@@ -35,7 +35,6 @@ defineProps({
 
 onMounted(() => {
     combinedData.value = combine();
-    console.log(combinedData.value)
 })
 
 const page = usePage();
@@ -110,19 +109,49 @@ const combine = () => {
     return combinedData;
 };
 
+const handleDialogOpen = () => {
+    attestationForm.reset();
+    showDialog.value = true;
+    isEdit.value = false;
+}
+
 const handleDialogClose = () => {
+    attestationForm.reset();
     showDialog.value = false;
+    isEdit.value = false;
 }
 
 const handleForm = () => {
+    if (!isEdit.value) {
+        attestationForm
+            .transform((data) => ({
+                ...data,
+                semester: data.semester ? data.semester.semester : null,
+            }))
+            .post('/attestations', {
+                onSuccess: () => {
+                    reset();
+                    combinedData.value = combine();
+                },
+                onError: (error) => {
+                    for (let e in error) {
+                        attestationForm.reset(e)
+                    }
+                }
+            })
+        return;
+    }
+
     attestationForm
         .transform((data) => ({
             ...data,
             semester: data.semester ? data.semester.semester : null,
         }))
-        .post('/attestations', {
+        .put('/attestations', {
             onSuccess: () => {
                 reset();
+                showDialog.value = false;
+                isEdit.value = false;
                 combinedData.value = combine();
             },
             onError: (error) => {
@@ -144,9 +173,10 @@ const reset = () => {
 
 const addTask = () => {
     attestationForm.attestations.push({
-        id: taskCount.value++,
+        id: isEdit ? attestationForm.attestations.length + 1 : taskCount.value++,
         title: null,
         description: null,
+        task_id: null,
     })
 }
 
@@ -158,6 +188,7 @@ const removeTask = () => {
 
 
 let attestationForm = useForm({
+    id: null,
     users: null,
     subjectNumber: null,
     subjectName: null,
@@ -199,7 +230,41 @@ const confirm1 = (attestation) => {
     });
 };
 
+const handleEdit = (attestation) => {
+    attestationForm.reset();
+    isEdit.value = true;
+    showDialog.value = true;
+    attestationForm.subjectName = attestation.subject_name;
+    attestationForm.subjectNumber = attestation.subject_number;
+    for (let i = 0; i < page.props.semester.length; i++) {
+        if (page.props.semester[i].semester === attestation.semester)
+            attestationForm.semester = page.props.semester[i];
+
+    }
+    attestationForm.users = attestation.tasks.length === 0 ? null: [];
+    for (let i = 0; i < attestation.tasks.length; i++) {
+        for (let j = 0; j < page.props.users.length; j++) {
+            if (attestation.tasks[i][0].user_id === page.props.users[j].id) {
+                attestationForm.users.push(page.props.users[j]);
+                break;
+            }
+        }
+    }
+    let count = 1
+    for (const task of attestation.tasks[0]) {
+        attestationForm.attestations.push({
+            id: count++,
+            task_id: task.task_id,
+            title: task.title,
+            description: task.description,
+        })
+        attestationForm.id = attestation.id;
+    }
+
+}
+
 let showDialog = ref(false);
+let isEdit = ref(false);
 let taskCount = ref(1);
 let combinedData = ref(null);
 
@@ -224,7 +289,7 @@ let successMessage = ref(null);
                     </h2>
                 </div>
                 <div class="ml-auto" v-if="$page.props.auth.user.admin">
-                    <primary-button @click="showDialog = true">Create new Attestation</primary-button>
+                    <primary-button @click="handleDialogOpen">Create new Attestation</primary-button>
                 </div>
             </div>
         </template>
@@ -254,7 +319,7 @@ let successMessage = ref(null);
                             </div>
                         </template>
                         <template #footer>
-                            <Button icon="pi pi-file-edit" label="Edit" severity="success"/>
+                            <Button @click="handleEdit(attestation)" icon="pi pi-file-edit" label="Edit" severity="success"/>
                             <Button @click="confirm1(attestation)" icon="pi pi-trash" label="Delete" severity="danger" style="margin-left: 0.5em" />
                         </template>
                     </Card>
@@ -284,7 +349,7 @@ let successMessage = ref(null);
             </p>
         </Dialog>
 
-        <Dialog v-model:visible="showDialog" modal header="Create new Attestation" :style="{ width: '80vw' }">
+        <Dialog v-model:visible="showDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'" :style="{ width: '80vw' }">
             <form @submit.prevent="handleForm">
                 <MultiSelect :loading="!$props.users" v-model="attestationForm.users" :options="users" filter optionLabel="name" placeholder="Select Users"
                              :maxSelectedLabels="3" :virtualScrollerOptions="{ itemSize: 44 }" class="w-full md:w-20rem" />
@@ -340,7 +405,7 @@ let successMessage = ref(null);
                     </div>
                 </div>
                 <Button @click="addTask" icon="pi pi-plus" aria-label="Filter" />
-                <span v-if="attestationForm.attestations.length > 0" class="ml-3"><Button @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
+                <span v-if="attestationForm.attestations.length > 0 && (isEdit && attestationForm.attestations.length > 1)" class="ml-3"><Button @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
                 <div v-if="errors.attestations" class="text-red-600 mt-2">
                     {{errors.attestations}}
                 </div>
@@ -359,7 +424,12 @@ let successMessage = ref(null);
                 </div>
             </form>
             <div v-if="attestationForm.wasSuccessful" class="text-green-600 font-bold">
-                New Subject for attestation successfully created
+                <template v-if="isEdit">
+                    New Subject for attestation successfully created
+                </template>
+                <template v-else>
+                    Subject successfully updated
+                </template>
             </div>
         </Dialog>
         </span>
