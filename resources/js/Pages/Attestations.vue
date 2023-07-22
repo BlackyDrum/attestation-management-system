@@ -142,7 +142,6 @@ const handleForm = () => {
             })
         return;
     }
-    console.log(attestationForm.data());
     attestationForm
         .transform((data) => ({
             ...data,
@@ -180,14 +179,12 @@ const addTask = () => {
         description: null,
         task_id: null,
     })
-    console.log(attestationForm.data());
 }
 
 const removeTask = () => {
     attestationForm.attestations.pop();
     taskCount.value--;
     delete page.props.errors['attestations.' + (taskCount.value - 1) + '.title'];
-    console.log(attestationForm.data());
 }
 
 
@@ -264,7 +261,6 @@ const handleEdit = (attestation) => {
         })
         attestationForm.id = attestation.id;
     }
-    console.log(attestationForm.data());
 }
 
 let showDialog = ref(false);
@@ -335,7 +331,7 @@ let successMessage = ref(null);
             </div>
         </div>
 
-        <template v-if="attestations.length === 0">
+        <template v-if="attestations.length === 0 || ($page.props.auth.user.admin && Array.isArray(combinedData) && combinedData.length === 0)">
             <div class="text-gray-700 text-center">
                 <div style="font-size: 10rem" class="pi pi-book"></div>
             </div>
