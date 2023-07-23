@@ -205,7 +205,7 @@ class AttestationController extends Controller
             ->orderBy('attestation_tasks.id')
             ->get();
 
-        return Inertia::render('AttestationMake', [
+        return Inertia::render('AttestationsMake', [
             'attestations' => $attestations,
         ]);
     }
