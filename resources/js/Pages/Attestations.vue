@@ -323,8 +323,15 @@ let successMessage = ref(null);
                             </div>
                         </template>
                         <template #footer>
-                            <Button @click="handleEdit(attestation)" icon="pi pi-file-edit" label="Edit" severity="success"/>
-                            <Button @click="confirm1(attestation)" icon="pi pi-trash" label="Delete" severity="danger" style="margin-left: 0.5em" />
+                            <div class="grid grid-cols-2 max-md:grid-cols-1">
+                                <div>
+                                    <Button @click="handleEdit(attestation)" icon="pi pi-file-edit" label="Edit" severity="success"/>
+                                    <Button @click="confirm1(attestation)" icon="pi pi-trash" label="Delete" severity="danger" style="margin-left: 0.5em" />
+                                </div>
+                                <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
+                                    <Button icon="pi pi-arrow-right" label="Make attestations" severity="secondary"/>
+                                </div>
+                            </div>
                         </template>
                     </Card>
                 </div>
