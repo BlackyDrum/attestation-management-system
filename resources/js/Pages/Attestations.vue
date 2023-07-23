@@ -237,7 +237,7 @@ let successMessage = ref(null);
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 p-4 rounded-lg">
+                <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" :key="attestation.id" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 p-4 rounded-lg">
                     <Card class="rounded-lg">
                         <template #title> {{attestation.subject_name}} ({{attestation.semester}}) </template>
                         <template #subtitle>Subject Number: {{attestation.subject_number}} </template>
