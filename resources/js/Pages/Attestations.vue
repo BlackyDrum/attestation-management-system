@@ -149,6 +149,9 @@ const handleForm = () => {
         }))
         .put('/attestations', {
             onSuccess: () => {
+                successShow.value = true;
+                successMessage.value = `Subject '${attestationForm.subjectName}' was successfully updated`;
+
                 reset();
                 showDialog.value = false;
                 isEdit.value = false;
