@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage, router } from '@inertiajs/vue3';
 import { onMounted, ref } from "vue";
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -18,6 +18,8 @@ import Textarea from 'primevue/textarea';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
 
+import combine from "@/CombinedData.js";
+
 defineProps({
     users: {
         type: Object
@@ -34,80 +36,15 @@ defineProps({
 })
 
 onMounted(() => {
-    combinedData.value = combine();
+    combinedData.value = combine(page.props.attestations);
+    console.log(combinedData.value);
 })
 
 const page = usePage();
 const confirm = useConfirm();
 
 // Groups the database records into a compact array to work with
-const combine = () => {
-    const attestations = page.props.attestations;
-    const combinedData = attestations.reduce((acc, item) => {
-        const foundItem = acc.find(entry => (
-            entry.id === item.id &&
-            entry.subject_name === item.subject_name &&
-            entry.subject_number === item.subject_number &&
-            entry.creator_id === item.creator_id &&
-            entry.semester === item.semester
-        ));
 
-        const task = {
-            task_id: item.task_id,
-            title: item.title,
-            description: item.description,
-            user_id: item.user_id,
-            name: item.name,
-            checked: item.checked,
-        };
-
-        if (foundItem) {
-            const existingTaskIndex = foundItem.tasks.findIndex(f => (
-                f.title === task.title &&
-                f.description === task.description &&
-                f.user_id === task.user_id &&
-                f.name === task.name && f.checked === task.checked
-            ));
-
-            if (existingTaskIndex === -1) {
-                foundItem.tasks.push(task);
-            }
-        } else {
-            acc.push({
-                id: item.id,
-                subject_name: item.subject_name,
-                subject_number: item.subject_number,
-                creator_id: item.creator_id,
-                semester: item.semester,
-                tasks: [task],
-            });
-        }
-
-        return acc;
-    }, []);
-
-    // Group the 'tasks' array by 'user_id' within each item of 'combinedData'
-    combinedData.forEach(item => {
-        const tasksGroupedByUserId = item.tasks.reduce((groups, task) => {
-            if (!groups[task.user_id]) {
-                groups[task.user_id] = [];
-            }
-            groups[task.user_id].push(task);
-            return groups;
-        }, {});
-        item.tasks = Object.values(tasksGroupedByUserId);
-    });
-
-    // Sort the 'combinedData' array by 'subject_name'
-    combinedData.sort((a, b) => {
-        const subjectNameA = a.subject_name.toLowerCase();
-        const subjectNameB = b.subject_name.toLowerCase();
-
-        return subjectNameA < subjectNameB ? -1 : 1;
-    });
-
-    return combinedData;
-};
 
 const handleDialogOpen = () => {
     reset();
@@ -132,7 +69,7 @@ const handleForm = () => {
                 onSuccess: () => {
                     reset();
                     successForm.value = true;
-                    combinedData.value = combine();
+                    combinedData.value = combine(page.props.attestations);
                 },
                 onError: (error) => {
                     for (let e in error) {
@@ -155,7 +92,7 @@ const handleForm = () => {
                 reset();
                 showDialog.value = false;
                 isEdit.value = false;
-                combinedData.value = combine();
+                combinedData.value = combine(page.props.attestations);
             },
             onError: (error) => {
                 for (let e in error) {
@@ -329,7 +266,7 @@ let successMessage = ref(null);
                                     <Button @click="confirm1(attestation)" icon="pi pi-trash" label="Delete" severity="danger" style="margin-left: 0.5em" />
                                 </div>
                                 <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
-                                    <Button icon="pi pi-arrow-right" label="Make attestations" severity="secondary"/>
+                                    <Button @click="router.get(`/attestations/${attestation.id}`)" icon="pi pi-arrow-right" label="Make attestations" severity="secondary"/>
                                 </div>
                             </div>
                         </template>
