@@ -42,7 +42,7 @@ class UserController extends Controller
     {
         $request->validate([
            'id' => 'required|integer|exists:users,id',
-           'name' => 'required|string|max:255',
+           'name' => 'required|string|max:50',
            'email' => ['required','max:255','email',Rule::unique('users')->ignore($request->input('id'))],
            'password' => 'max:255|min:6|nullable'
         ]);
