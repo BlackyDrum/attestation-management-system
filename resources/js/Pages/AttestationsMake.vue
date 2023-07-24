@@ -7,6 +7,8 @@ import Button from "primevue/button";
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Checkbox from "primevue/checkbox";
+import InputText from "primevue/inputtext";
+import { FilterMatchMode, FilterService } from 'primevue/api';
 
 import combine from "@/CombinedData.js";
 
@@ -21,18 +23,22 @@ onMounted(() => {
     subject_name.value = combinedData.value[0].subject_name;
     tasks.value = combinedData.value[0].tasks;
 
+
     const uniqueTitles = Array.from(new Set(tasks.value.flat().map((item) => item.title)));
+
 
     const usersData = {};
 
+
     tasks.value.flat().forEach((item) => {
         if (!usersData[item.name]) {
-            usersData[item.name] = { Name: item.name };
+            usersData[item.name] = { Name: item.name, user_id: item.user_id };
             uniqueTitles.forEach((title) => {
                 usersData[item.name][title] = false;
             });
         }
     });
+
 
     tasks.value.forEach((tasksArray, index) => {
         tasksArray.forEach((task) => {
@@ -42,13 +48,13 @@ onMounted(() => {
 
     userData.value = Object.values(usersData);
     userData.value = userData.value.slice().sort((a,b) => {
-        const surnameA = a.Name.split(' ').slice(-1)[0]; // Get last word as surname
-        const surnameB = b.Name.split(' ').slice(-1)[0]; // Get last word as surname
+        const surnameA = a.Name.split(' ').slice(-1)[0];
+        const surnameB = b.Name.split(' ').slice(-1)[0];
         return surnameA.localeCompare(surnameB);
     })
 
-    headers.value = Object.keys(userData.value[0]).filter((key) => key !== "Name");
-    console.log(userData.value);
+    headers.value = Object.keys(userData.value[0]).filter((key) => key !== "Name" && key !== "user_id");
+    console.log(headers.value);
 })
 
 const page = usePage();
@@ -58,6 +64,25 @@ let subject_name = ref("");
 let tasks = ref([]);
 let userData = ref(null);
 let headers = ref(null);
+
+const YOUR_FILTER = ref('YOUR FILTER');
+const filters = ref({
+    'Name': {value: null, matchMode: 'contains'},
+});
+
+FilterService.register(YOUR_FILTER.value, (value, filter) => {
+
+    if (filter === undefined || filter === null || filter.trim() === '') {
+        return true;
+    }
+
+    if (value === undefined || value === null) {
+        return false;
+    }
+
+    return value.toString() === filter.toString();
+});
+
 
 </script>
 
@@ -75,15 +100,20 @@ let headers = ref(null);
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div>
-                        <DataTable filterMatchMode="Name" :value="userData" :paginator="true" :rows="10">
-                            <Column field="Name" header="Name"></Column>
+                        <DataTable v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true" :rows="10">
+
+                            <Column field="Name" header="Name">
+                                <template #filter="{ filterModel, filterCallback }">
+                                    <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Search by name" />
+                                </template>
+                            </Column>
                             <Column v-for="header in headers" :field="header" :key="header">
                                 <template #header>
                                     <div class="mx-auto">
                                         <div>{{ header }}</div>
                                     </div>
                                 </template>
-                                <template #body="{ index, field }">
+                                <template #body="{ index, field,data }">
                                     <div class="flex justify-center items-center h-full">
                                         <Checkbox v-model="userData[index][field]" :binary="true"/>
                                     </div>
