@@ -17,15 +17,7 @@ class AttestationController extends Controller
 {
     public function show(Request $request)
     {
-        if (!Auth::user()->admin) {
-            return Inertia::render('Attestations', [
-                'users' => [],
-                'semester' => [],
-                'attestations' => []
-            ]);
-        }
-
-        $attestations = Attestation::query()
+        $attestationQuery = Attestation::query()
             ->join('semester', 'attestation.current_semester', '=', 'semester.id')
             ->join('attestation_tasks', 'attestation.id', '=', 'attestation_tasks.attestation_id')
             ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
@@ -49,13 +41,17 @@ class AttestationController extends Controller
                 'attestation_tasks.id AS task_id',
                 'user_has_checked_task.id AS checked_id',
             ])
-            ->orderBy('attestation_tasks.id')
-            ->get();
+            ->orderBy('attestation_tasks.id');
 
+        if (!Auth::user()->admin) {
+            $attestationQuery->where('users.id', '=', Auth::id());
+        }
+
+        $attestations = $attestationQuery->get();
 
         return Inertia::render('Attestations', [
-            'users' => User::all(),
-            'semester' => Semester::all(),
+            'users' => Auth::user()->admin ? User::all() : [],
+            'semester' => Auth::user()->admin ? Semester::all() : [],
             'attestations' => $attestations,
         ]);
     }

@@ -10,6 +10,7 @@ import Checkbox from "primevue/checkbox";
 import InputText from "primevue/inputtext";
 import Dialog from "primevue/dialog";
 import { FilterMatchMode, FilterService } from 'primevue/api';
+import { useToast } from 'primevue/usetoast';
 
 import combine from "@/CombinedData.js";
 
@@ -57,6 +58,7 @@ onMounted(() => {
 });
 
 const page = usePage();
+const toast = useToast();
 
 const extractData = (data, index) => {
     const keys = (Object.keys(data).filter(key => key.startsWith('task_id'))).map(key => key.replace('task_id_',''));
@@ -77,12 +79,20 @@ const handleFormSend = () => {
         tasks: formData.value
     })
         .then(response => {
-            successShow.value = true;
-            successMessage.value = "Successfully updated attestations"
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: "Successfully updated attestation",
+                life: 3000,
+            })
         })
         .catch(error => {
-            errorShow.value = true;
-            errorMessage.value = error.response.data.message;
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 3000,
+            })
         })
 }
 
@@ -90,28 +100,28 @@ const exportCSV = () => {
     dt.value.exportCSV();
 };
 
-let combinedData = ref(null);
-let subject_name = ref("");
-let tasks = ref([]);
-let userData = ref(null);
-let headers = ref(null);
+const combinedData = ref(null);
+const subject_name = ref("");
+const tasks = ref([]);
+const userData = ref(null);
+const headers = ref(null);
 
-let errorShow = ref(false);
-let errorMessage = ref(null);
+const errorShow = ref(false);
+const errorMessage = ref(null);
 
-let successShow = ref(false);
-let successMessage = ref(null);
+const successShow = ref(false);
+const successMessage = ref(null);
 
-let formData = ref([]);
+const formData = ref([]);
 
 const dt = ref();
 
-const YOUR_FILTER = ref('YOUR FILTER');
+const FILTER = ref('FILTER');
 const filters = ref({
     'Name': {value: null, matchMode: 'contains'},
 });
 
-FilterService.register(YOUR_FILTER.value, (value, filter) => {
+FilterService.register(FILTER.value, (value, filter) => {
 
     if (filter === undefined || filter === null || filter.trim() === '') {
         return true;
@@ -139,7 +149,7 @@ FilterService.register(YOUR_FILTER.value, (value, filter) => {
         </div>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-4">
                     <div>
                         <DataTable showGridlines stripedRows ref="dt" :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ','_')" v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true" :rows="10">
                             <template #header>
@@ -148,7 +158,7 @@ FilterService.register(YOUR_FILTER.value, (value, filter) => {
                                         <Button icon="pi pi-external-link" label="Export CSV" @click="exportCSV($event)" />
                                     </div>
                                     <div class="ml-auto mr-4">
-                                        <Button @click="handleFormSend" icon="pi pi-save" severity="success" label="Save changes" />
+                                        <Button @click="handleFormSend" :disabled="formData.length === 0" icon="pi pi-save" severity="success" label="Save changes" />
                                     </div>
                                 </div>
                             </template>

@@ -7,12 +7,13 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 import { useConfirm } from "primevue/useconfirm";
+import {useToast} from "primevue/usetoast";
 import ProgressSpinner from 'primevue/progressspinner';
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
 import InputText from 'primevue/inputtext';
-import Checkbox from 'primevue/checkbox';
 import Button from "primevue/button";
+
 
 defineProps({
     users: {
@@ -31,7 +32,7 @@ onMounted(() => {
     empty.value = page.props.users.data.length === 0;
 })
 
-let userForm = useForm({
+const userForm = useForm({
     id: null,
     name: null,
     email: null,
@@ -40,18 +41,13 @@ let userForm = useForm({
 
 const page = usePage();
 const confirm = useConfirm();
+const toast = useToast();
 
-let search = ref("");
-let empty = ref(false);
+const search = ref("");
+const empty = ref(false);
 
-let errorShow = ref(false);
-let errorMessage = ref(null);
-
-let successShow = ref(false);
-let successMessage = ref(null);
-
-let editShow = ref(false);
-let selectedUser = ref(null);
+const editShow = ref(false);
+const selectedUser = ref(null);
 
 const handleSearchRequest = () => {
     axios.get(`/user/?search=${search.value}&response=true`)
@@ -60,8 +56,12 @@ const handleSearchRequest = () => {
             empty.value = page.props.users.data.length === 0;
         })
         .catch(error => {
-            errorMessage.value = error.response.data.message;
-            errorShow.value = true;
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 3000,
+            })
         })
 }
 
@@ -111,8 +111,12 @@ const confirm2 = (userid, username) => {
                 .then(response => {
                     for (let i = 0; i < page.props.users.data.length; i++) {
                         if (page.props.users.data[i].id === response.data.user_id) {
-                            successMessage.value = `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} was successfully deleted`;
-                            successShow.value = true;
+                            toast.add({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} was successfully deleted`,
+                                life: 3000,
+                            })
                             page.props.users.data.splice(i, 1);
                             empty.value = page.props.users.data.length === 0;
                             break;
@@ -120,8 +124,12 @@ const confirm2 = (userid, username) => {
                     }
                 })
                 .catch(error => {
-                    errorShow.value = true;
-                    errorMessage.value = error.response.data.message;
+                    toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.response.data.message,
+                        life: 3000,
+                    })
                 })
         },
         reject: () => {
@@ -192,21 +200,6 @@ const confirm2 = (userid, username) => {
             </div>
         </div>
     </AuthenticatedLayout>
-
-    <!-- Dialogs -->
-    <Dialog v-model:visible="errorShow" header="Error"
-            class="w-1/2 max-md:w-full" position="topleft" :modal="false" :draggable="false">
-        <p class="text-red-600 font-medium">
-            {{ errorMessage }}
-        </p>
-    </Dialog>
-
-    <Dialog v-model:visible="successShow" header="Confirmation"
-            class="w-1/2 max-md:w-full" position="topleft" :modal="false" :draggable="false">
-        <p class="text-green-600 font-medium">
-            {{ successMessage }}
-        </p>
-    </Dialog>
 
     <Dialog v-model:visible="editShow" :closable="false" v-if="selectedUser" :header="selectedUser.name" class="bg-gray-200 rounded-lg p-2 font-bold"
             :style="{ width: '80vw' }" :modal="true" :draggable="false">
