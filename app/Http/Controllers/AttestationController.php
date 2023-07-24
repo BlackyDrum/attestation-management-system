@@ -207,6 +207,7 @@ class AttestationController extends Controller
 
         return Inertia::render('AttestationsMake', [
             'attestations' => $attestations,
+            'id' => $id,
         ]);
     }
 

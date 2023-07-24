@@ -15,6 +15,9 @@ import combine from "@/CombinedData.js";
 defineProps({
     attestations: {
         type: Object
+    },
+    id: {
+        type: Number
     }
 })
 
@@ -26,9 +29,7 @@ onMounted(() => {
 
     const uniqueTitles = Array.from(new Set(tasks.value.flat().map((item) => item.title)));
 
-
     const usersData = {};
-
 
     tasks.value.flat().forEach((item) => {
         if (!usersData[item.name]) {
@@ -39,10 +40,10 @@ onMounted(() => {
         }
     });
 
-
     tasks.value.forEach((tasksArray, index) => {
         tasksArray.forEach((task) => {
             usersData[task.name][task.title] = task.checked;
+            usersData[task.name][`task_id_${task.title}`] = task.task_id;
         });
     });
 
@@ -53,8 +54,8 @@ onMounted(() => {
         return surnameA.localeCompare(surnameB);
     })
 
-    headers.value = Object.keys(userData.value[0]).filter((key) => key !== "Name" && key !== "user_id");
-    console.log(headers.value);
+    headers.value = Object.keys(userData.value[0]).filter((key) => key !== "Name" && key !== "user_id" && !key.startsWith('task_id'));
+    console.log(userData.value);
 })
 
 const page = usePage();
@@ -114,6 +115,7 @@ FilterService.register(YOUR_FILTER.value, (value, filter) => {
                                     </div>
                                 </template>
                                 <template #body="{ index, field,data }">
+                                    {{data}}
                                     <div class="flex justify-center items-center h-full">
                                         <Checkbox v-model="userData[index][field]" :binary="true"/>
                                     </div>
