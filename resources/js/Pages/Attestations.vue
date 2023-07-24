@@ -264,8 +264,6 @@ let tasks = ref([]);
 let userData = ref([]);
 let headers = ref(null);
 
-let attestationDialogHeader = ref(null);
-
 </script>
 
 <template>
