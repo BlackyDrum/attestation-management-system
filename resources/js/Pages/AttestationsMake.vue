@@ -139,7 +139,7 @@ FilterService.register(YOUR_FILTER.value, (value, filter) => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div>
-                        <DataTable v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true" :rows="10">
+                        <DataTable showGridlines  v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true" :rows="10">
                             <template #header>
                                 <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                                     <div class="ml-auto mr-4">
