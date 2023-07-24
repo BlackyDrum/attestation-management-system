@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage, router } from '@inertiajs/vue3';
 import { onMounted, ref } from "vue";
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -18,6 +18,8 @@ import Textarea from 'primevue/textarea';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
 
+import combine from "@/CombinedData.js";
+
 defineProps({
     users: {
         type: Object
@@ -34,80 +36,15 @@ defineProps({
 })
 
 onMounted(() => {
-    combinedData.value = combine();
+    combinedData.value = combine(page.props.attestations);
+    console.log(combinedData.value);
 })
 
 const page = usePage();
 const confirm = useConfirm();
 
 // Groups the database records into a compact array to work with
-const combine = () => {
-    const attestations = page.props.attestations;
-    const combinedData = attestations.reduce((acc, item) => {
-        const foundItem = acc.find(entry => (
-            entry.id === item.id &&
-            entry.subject_name === item.subject_name &&
-            entry.subject_number === item.subject_number &&
-            entry.creator_id === item.creator_id &&
-            entry.semester === item.semester
-        ));
 
-        const task = {
-            task_id: item.task_id,
-            title: item.title,
-            description: item.description,
-            user_id: item.user_id,
-            name: item.name,
-            checked: item.checked,
-        };
-
-        if (foundItem) {
-            const existingTaskIndex = foundItem.tasks.findIndex(f => (
-                f.title === task.title &&
-                f.description === task.description &&
-                f.user_id === task.user_id &&
-                f.name === task.name && f.checked === task.checked
-            ));
-
-            if (existingTaskIndex === -1) {
-                foundItem.tasks.push(task);
-            }
-        } else {
-            acc.push({
-                id: item.id,
-                subject_name: item.subject_name,
-                subject_number: item.subject_number,
-                creator_id: item.creator_id,
-                semester: item.semester,
-                tasks: [task],
-            });
-        }
-
-        return acc;
-    }, []);
-
-    // Group the 'tasks' array by 'user_id' within each item of 'combinedData'
-    combinedData.forEach(item => {
-        const tasksGroupedByUserId = item.tasks.reduce((groups, task) => {
-            if (!groups[task.user_id]) {
-                groups[task.user_id] = [];
-            }
-            groups[task.user_id].push(task);
-            return groups;
-        }, {});
-        item.tasks = Object.values(tasksGroupedByUserId);
-    });
-
-    // Sort the 'combinedData' array by 'subject_name'
-    combinedData.sort((a, b) => {
-        const subjectNameA = a.subject_name.toLowerCase();
-        const subjectNameB = b.subject_name.toLowerCase();
-
-        return subjectNameA < subjectNameB ? -1 : 1;
-    });
-
-    return combinedData;
-};
 
 const handleDialogOpen = () => {
     reset();
@@ -132,7 +69,7 @@ const handleForm = () => {
                 onSuccess: () => {
                     reset();
                     successForm.value = true;
-                    combinedData.value = combine();
+                    combinedData.value = combine(page.props.attestations);
                 },
                 onError: (error) => {
                     for (let e in error) {
@@ -155,7 +92,7 @@ const handleForm = () => {
                 reset();
                 showDialog.value = false;
                 isEdit.value = false;
-                combinedData.value = combine();
+                combinedData.value = combine(page.props.attestations);
             },
             onError: (error) => {
                 for (let e in error) {
@@ -300,7 +237,7 @@ let successMessage = ref(null);
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 p-4 rounded-lg">
+                <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" :key="attestation.id" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 p-4 rounded-lg">
                     <Card class="rounded-lg">
                         <template #title> {{attestation.subject_name}} ({{attestation.semester}}) </template>
                         <template #subtitle>Subject Number: {{attestation.subject_number}} </template>
@@ -323,8 +260,15 @@ let successMessage = ref(null);
                             </div>
                         </template>
                         <template #footer>
-                            <Button @click="handleEdit(attestation)" icon="pi pi-file-edit" label="Edit" severity="success"/>
-                            <Button @click="confirm1(attestation)" icon="pi pi-trash" label="Delete" severity="danger" style="margin-left: 0.5em" />
+                            <div class="grid grid-cols-2 max-md:grid-cols-1">
+                                <div>
+                                    <Button @click="handleEdit(attestation)" icon="pi pi-file-edit" label="Edit" severity="success"/>
+                                    <Button @click="confirm1(attestation)" icon="pi pi-trash" label="Delete" severity="danger" style="margin-left: 0.5em" />
+                                </div>
+                                <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
+                                    <Button @click="router.get(`/attestations/${attestation.id}`)" icon="pi pi-arrow-right" label="Make attestations" severity="secondary"/>
+                                </div>
+                            </div>
                         </template>
                     </Card>
                 </div>
@@ -430,7 +374,7 @@ let successMessage = ref(null);
                     <div class="flex justify-end" style="height: 3rem">
                         <primary-button class="mr-5" :disabled="attestationForm.processing">{{isEdit ? "Save Changes" : "Create new subject"}}</primary-button>
                         <secondary-button @click="handleDialogClose">Cancel</secondary-button>
-                        <span class="ml-10 max-md:hidden">
+                        <span v-if="!isEdit" class="ml-10 max-md:hidden">
                             <Button severity="danger" aria-label="Cancel" @click="reset">Reset</Button>
                         </span>
                     </div>

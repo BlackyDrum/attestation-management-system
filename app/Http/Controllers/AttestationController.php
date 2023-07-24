@@ -8,6 +8,7 @@ use App\Models\Semester;
 use App\Models\User;
 use App\Models\UserHasAttestation;
 use App\Models\UserHasCheckedTask;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
