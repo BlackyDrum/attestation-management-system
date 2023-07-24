@@ -18,6 +18,9 @@ import Button from 'primevue/button';
 import Textarea from 'primevue/textarea';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Checkbox from "primevue/checkbox";
 
 import combine from "@/CombinedData.js";
 
@@ -38,15 +41,11 @@ defineProps({
 
 onMounted(() => {
     combinedData.value = combine(page.props.attestations);
-    console.log(combinedData.value);
 })
 
 const page = usePage();
 const confirm = useConfirm();
 const toast = useToast();
-
-// Groups the database records into a compact array to work with
-
 
 const handleDialogOpen = () => {
     reset();
@@ -216,11 +215,56 @@ const handleEdit = (attestation) => {
     }
 }
 
+const handleAttestationInfo = (attestation, index) => {
+    showAttestation.value = true;
+    subject_name.value = combinedData.value[index].subject_name;
+    tasks.value = combinedData.value[index].tasks;
+
+    const uniqueTitles = Array.from(new Set(tasks.value.flat().map((item) => item.title)));
+
+    const usersData = {};
+
+    tasks.value.flat().forEach((item) => {
+        const { name, title, task_id, checked, user_id } = item;
+        const key = `${name}-${user_id}`;
+
+        if (!usersData[key]) {
+            usersData[key] = { Name: name, user_id };
+            uniqueTitles.forEach((t) => {
+                usersData[key][t] = false;
+            });
+        }
+
+        usersData[key][title] = checked;
+        usersData[key][`task_id_${title}`] = task_id;
+    });
+
+    userData.value = Object.values(usersData);
+    userData.value = userData.value.slice().sort((a, b) => {
+        const surnameA = a.Name.split(' ').slice(-1)[0];
+        const surnameB = b.Name.split(' ').slice(-1)[0];
+        return surnameA.localeCompare(surnameB);
+    });
+
+    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && !key.startsWith('task_id'));
+
+    console.log(combinedData.value)
+    console.log(headers.value)
+}
+
 let showDialog = ref(false);
+let showAttestation = ref(false);
 let isEdit = ref(false);
 let taskCount = ref(1);
 let combinedData = ref(null);
 let successForm = ref(false);
+
+let subject_name = ref("");
+let tasks = ref([]);
+let userData = ref([]);
+let headers = ref(null);
+
+let attestationDialogHeader = ref(null);
 
 </script>
 
@@ -279,8 +323,45 @@ let successForm = ref(false);
                         </template>
                     </Card>
                 </div>
-                <div v-if="!$page.props.auth.user.admin" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-
+                <div v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="attestation.id" class="mb-10 p-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <Dialog v-model:visible="showAttestation" modal :header="subject_name" :style="{ width: '80vw' }">
+                        <DataTable showGridlines stripedRows :value="userData">
+                            <Column field="Name" header="Name"></Column>
+                            <Column v-for="header in headers" :field="header" :key="header">
+                                <template #header>
+                                    <div class="mx-auto">
+                                        <div>{{ header }}</div>
+                                    </div>
+                                </template>
+                                <template #body="{index, field,data }">
+                                    <div class="flex justify-center items-center h-full">
+                                        <Checkbox disabled v-model="data[field]" :binary="true"/>
+                                    </div>
+                                </template>
+                            </Column>
+                        </DataTable>
+                    </Dialog>
+                    <Card class="rounded-lg">
+                        <template #title> {{attestation.subject_name}} ({{attestation.semester}}) </template>
+                        <template #subtitle>Subject Number: {{attestation.subject_number}} </template>
+                        <template #content>
+                            <div class="flex flex-wrap justify-evenly gap-2">
+                                <div class="w-1/2 max-md:w-full">
+                                    <span class="p-input-icon-left w-full">
+                                        <i class="pi pi-file" />
+                                        <InputText class="w-full" disabled :value="`Tasks: ${attestation.tasks[0].length}`" placeholder="Search"></InputText>
+                                    </span>
+                                </div>
+                            </div>
+                        </template>
+                        <template #footer>
+                            <div class="grid grid-cols-2 max-md:grid-cols-1">
+                                <div>
+                                    <Button @click="handleAttestationInfo(attestation, index)" icon="pi pi-info-circle" label="Info" severity="success"/>
+                                </div>
+                            </div>
+                        </template>
+                    </Card>
                 </div>
             </div>
         </div>
