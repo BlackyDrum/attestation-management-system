@@ -100,19 +100,19 @@ const exportCSV = () => {
     dt.value.exportCSV();
 };
 
-let combinedData = ref(null);
-let subject_name = ref("");
-let tasks = ref([]);
-let userData = ref(null);
-let headers = ref(null);
+const combinedData = ref(null);
+const subject_name = ref("");
+const tasks = ref([]);
+const userData = ref(null);
+const headers = ref(null);
 
-let errorShow = ref(false);
-let errorMessage = ref(null);
+const errorShow = ref(false);
+const errorMessage = ref(null);
 
-let successShow = ref(false);
-let successMessage = ref(null);
+const successShow = ref(false);
+const successMessage = ref(null);
 
-let formData = ref([]);
+const formData = ref([]);
 
 const dt = ref();
 

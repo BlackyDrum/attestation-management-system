@@ -73,7 +73,7 @@ const handleForm = () => {
                     combinedData.value = combine(page.props.attestations);
                 },
                 onError: (error) => {
-                    for (let e in error) {
+                    for (const e in error) {
                         attestationForm.reset(e)
                     }
                 }
@@ -99,7 +99,7 @@ const handleForm = () => {
                 combinedData.value = combine(page.props.attestations);
             },
             onError: (error) => {
-                for (let e in error) {
+                for (const e in error) {
                     attestationForm.reset(e)
                 }
             }
@@ -111,7 +111,7 @@ const reset = () => {
     taskCount.value = 1;
     successForm.value = false;
 
-    for (let e in page.props.errors) {
+    for (const e in page.props.errors) {
         delete page.props.errors[e];
     }
 }
@@ -132,7 +132,7 @@ const removeTask = () => {
 }
 
 
-let attestationForm = useForm({
+const attestationForm = useForm({
     id: null,
     users: null,
     subjectNumber: null,
@@ -252,17 +252,17 @@ const handleAttestationInfo = (attestation, index) => {
     console.log(headers.value)
 }
 
-let showDialog = ref(false);
-let showAttestation = ref(false);
-let isEdit = ref(false);
-let taskCount = ref(1);
-let combinedData = ref(null);
-let successForm = ref(false);
+const showDialog = ref(false);
+const showAttestation = ref(false);
+const isEdit = ref(false);
+const taskCount = ref(1);
+const combinedData = ref(null);
+const successForm = ref(false);
 
-let subject_name = ref("");
-let tasks = ref([]);
-let userData = ref([]);
-let headers = ref(null);
+const subject_name = ref("");
+const tasks = ref([]);
+const userData = ref([]);
+const headers = ref(null);
 
 </script>
 

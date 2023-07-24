@@ -32,7 +32,7 @@ onMounted(() => {
     empty.value = page.props.users.data.length === 0;
 })
 
-let userForm = useForm({
+const userForm = useForm({
     id: null,
     name: null,
     email: null,
@@ -43,11 +43,11 @@ const page = usePage();
 const confirm = useConfirm();
 const toast = useToast();
 
-let search = ref("");
-let empty = ref(false);
+const search = ref("");
+const empty = ref(false);
 
-let editShow = ref(false);
-let selectedUser = ref(null);
+const editShow = ref(false);
+const selectedUser = ref(null);
 
 const handleSearchRequest = () => {
     axios.get(`/user/?search=${search.value}&response=true`)
