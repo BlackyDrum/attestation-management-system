@@ -54,7 +54,6 @@ onMounted(() => {
     });
 
     headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && !key.startsWith('task_id'));
-    console.log(userData.value);
 });
 
 const page = usePage();
@@ -74,7 +73,6 @@ const extractData = (data, index) => {
 }
 
 const handleFormSend = () => {
-    console.log(formData.value)
     axios.patch('/attestations',{
         tasks: formData.value
     })
@@ -87,6 +85,10 @@ const handleFormSend = () => {
             errorMessage.value = error.response.data.message;
         })
 }
+
+const exportCSV = () => {
+    dt.value.exportCSV();
+};
 
 let combinedData = ref(null);
 let subject_name = ref("");
@@ -101,6 +103,8 @@ let successShow = ref(false);
 let successMessage = ref(null);
 
 let formData = ref([]);
+
+const dt = ref();
 
 const YOUR_FILTER = ref('YOUR FILTER');
 const filters = ref({
@@ -137,11 +141,14 @@ FilterService.register(YOUR_FILTER.value, (value, filter) => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div>
-                        <DataTable showGridlines stripedRows v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true" :rows="10">
+                        <DataTable showGridlines stripedRows ref="dt" :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ','_')" v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true" :rows="10">
                             <template #header>
                                 <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                                    <div>
+                                        <Button icon="pi pi-external-link" label="Export CSV" @click="exportCSV($event)" />
+                                    </div>
                                     <div class="ml-auto mr-4">
-                                        <Button @click="handleFormSend" icon="pi pi-save" label="Save changes" />
+                                        <Button @click="handleFormSend" icon="pi pi-save" severity="success" label="Save changes" />
                                     </div>
                                 </div>
                             </template>
