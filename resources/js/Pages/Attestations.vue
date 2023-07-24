@@ -7,6 +7,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 import {useConfirm} from "primevue/useconfirm";
+import { useToast } from 'primevue/usetoast';
 import Dialog from "primevue/dialog";
 import MultiSelect from 'primevue/multiselect';
 import InputText from "primevue/inputtext";
@@ -42,6 +43,7 @@ onMounted(() => {
 
 const page = usePage();
 const confirm = useConfirm();
+const toast = useToast();
 
 // Groups the database records into a compact array to work with
 
@@ -86,9 +88,12 @@ const handleForm = () => {
         }))
         .put('/attestations', {
             onSuccess: () => {
-                successShow.value = true;
-                successMessage.value = `Subject '${attestationForm.subjectName}' was successfully updated`;
-
+                toast.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: `Subject '${attestationForm.subjectName}' was successfully updated`,
+                    life: 3000,
+                })
                 reset();
                 showDialog.value = false;
                 isEdit.value = false;
@@ -153,16 +158,24 @@ const confirm1 = (attestation) => {
                 .then(response => {
                     for (let i = 0; i < combinedData.value.length; i++) {
                         if (response.data.attestation_id === combinedData.value[i].id) {
-                            successMessage.value = `Attestation ${combinedData.value[i].subject_name} with ID ${combinedData.value[i].id} was successfully deleted`;
-                            successShow.value = true;
+                            toast.add({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: `Attestation '${combinedData.value[i].subject_name}' with ID ${combinedData.value[i].id} was successfully deleted`,
+                                life: 3000,
+                            })
                             combinedData.value.splice(i,1);
                             break;
                         }
                     }
                 })
                 .catch(error => {
-                    errorMessage.value = error.response.data.message
-                    errorShow.value = true;
+                    toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.response.data.message,
+                        life: 3000,
+                    })
                 })
         },
         reject: () => {
@@ -208,12 +221,6 @@ let isEdit = ref(false);
 let taskCount = ref(1);
 let combinedData = ref(null);
 let successForm = ref(false);
-
-let errorShow = ref(false);
-let errorMessage = ref(null);
-
-let successShow = ref(false);
-let successMessage = ref(null);
 
 </script>
 
@@ -290,21 +297,6 @@ let successMessage = ref(null);
         <span v-if="$page.props.auth.user.admin">
         <ConfirmDialog  ref="confirmDialog"
                        class="bg-white p-4 custom-confirm-dialog rounded-md gap-8"></ConfirmDialog>
-
-        <!-- Dialogs -->
-        <Dialog v-model:visible="errorShow" header="Error"
-                class="w-1/2 max-md:w-full" position="topleft" :modal="false" :draggable="false">
-            <p class="text-red-600 font-medium">
-                {{ errorMessage }}
-            </p>
-        </Dialog>
-
-        <Dialog v-model:visible="successShow" header="Confirmation"
-                class="w-1/2 max-md:w-full" position="topleft" :modal="false" :draggable="false">
-            <p class="text-green-600 font-medium">
-                {{ successMessage }}
-            </p>
-        </Dialog>
 
         <Dialog v-model:visible="showDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'" :style="{ width: '80vw' }">
             <form @submit.prevent="handleForm">

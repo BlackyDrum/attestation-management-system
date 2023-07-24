@@ -10,6 +10,7 @@ import Checkbox from "primevue/checkbox";
 import InputText from "primevue/inputtext";
 import Dialog from "primevue/dialog";
 import { FilterMatchMode, FilterService } from 'primevue/api';
+import { useToast } from 'primevue/usetoast';
 
 import combine from "@/CombinedData.js";
 
@@ -57,6 +58,7 @@ onMounted(() => {
 });
 
 const page = usePage();
+const toast = useToast();
 
 const extractData = (data, index) => {
     const keys = (Object.keys(data).filter(key => key.startsWith('task_id'))).map(key => key.replace('task_id_',''));
@@ -77,12 +79,20 @@ const handleFormSend = () => {
         tasks: formData.value
     })
         .then(response => {
-            successShow.value = true;
-            successMessage.value = "Successfully updated attestations"
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: "Successfully updated attestation",
+                life: 3000,
+            })
         })
         .catch(error => {
-            errorShow.value = true;
-            errorMessage.value = error.response.data.message;
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 3000,
+            })
         })
 }
 
