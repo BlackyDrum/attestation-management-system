@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attestation;
+use App\Models\UserHasCheckedTask;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -50,5 +51,22 @@ class AttestationsMakeController extends Controller
             'attestations' => $attestations,
             'id' => $id,
         ]);
+    }
+
+    public function edit(Request $request)
+    {
+        $request->validate([
+            'tasks' => 'required|array|min:1',
+            'tasks.*.user_id' => 'required|integer|exists:users,id',
+            'tasks.*.checked' => 'required|boolean',
+            'tasks.*.task_id' => 'required|integer|exists:attestation_tasks,id'
+        ]);
+
+        foreach ($request->input('tasks') as $task) {
+            UserHasCheckedTask::query()->where('user_id','=',$task['user_id'])
+                ->where('task_id','=',$task['task_id'])->update([
+                    'checked' => $task['checked'],
+                ]);
+        }
     }
 }

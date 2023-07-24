@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, usePage } from '@inertiajs/vue3';
+import {Head, router, useForm, usePage} from '@inertiajs/vue3';
 import {onMounted, ref} from "vue";
 
 import Button from "primevue/button";
@@ -8,6 +8,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Checkbox from "primevue/checkbox";
 import InputText from "primevue/inputtext";
+import Dialog from "primevue/dialog";
 import { FilterMatchMode, FilterService } from 'primevue/api';
 
 import combine from "@/CombinedData.js";
@@ -60,11 +61,48 @@ onMounted(() => {
 
 const page = usePage();
 
+const extractData = (data, index) => {
+    const keys = (Object.keys(data).filter(key => key.startsWith('task_id'))).map(key => key.replace('task_id_',''));
+
+    formData.value = formData.value.filter(obj => obj.user_id !== data.user_id);
+
+    for (const key of keys) {
+        formData.value.push({
+            user_id: data.user_id,
+            checked: Boolean(data[key]),
+            task_id: data[`task_id_${key}`],
+        })
+    }
+}
+
+const handleFormSend = () => {
+    console.log(formData.value)
+    axios.patch('/attestations',{
+        tasks: formData.value
+    })
+        .then(response => {
+            successShow.value = true;
+            successMessage.value = "Successfully updated attestations"
+        })
+        .catch(error => {
+            errorShow.value = true;
+            errorMessage.value = error.response.data.message;
+        })
+}
+
 let combinedData = ref(null);
 let subject_name = ref("");
 let tasks = ref([]);
 let userData = ref(null);
 let headers = ref(null);
+
+let errorShow = ref(false);
+let errorMessage = ref(null);
+
+let successShow = ref(false);
+let successMessage = ref(null);
+
+let formData = ref([]);
 
 const YOUR_FILTER = ref('YOUR FILTER');
 const filters = ref({
@@ -102,7 +140,13 @@ FilterService.register(YOUR_FILTER.value, (value, filter) => {
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div>
                         <DataTable v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true" :rows="10">
-
+                            <template #header>
+                                <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                                    <div class="ml-auto mr-4">
+                                        <Button @click="handleFormSend" icon="pi pi-save" label="Save changes" />
+                                    </div>
+                                </div>
+                            </template>
                             <Column field="Name" header="Name">
                                 <template #filter="{ filterModel, filterCallback }">
                                     <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Search by name" />
@@ -114,10 +158,9 @@ FilterService.register(YOUR_FILTER.value, (value, filter) => {
                                         <div>{{ header }}</div>
                                     </div>
                                 </template>
-                                <template #body="{ index, field,data }">
-                                    {{data}}
+                                <template #body="{index, field,data }">
                                     <div class="flex justify-center items-center h-full">
-                                        <Checkbox v-model="userData[index][field]" :binary="true"/>
+                                        <Checkbox v-model="data[field]" @change="extractData(data, index)" :binary="true"/>
                                     </div>
                                 </template>
                             </Column>
@@ -126,5 +169,20 @@ FilterService.register(YOUR_FILTER.value, (value, filter) => {
                 </div>
             </div>
         </div>
+
+        <!-- Dialogs -->
+        <Dialog v-model:visible="errorShow" header="Error"
+                class="w-1/2 max-md:w-full" position="topleft" :modal="false" :draggable="false">
+            <p class="text-red-600 font-medium">
+                {{ errorMessage }}
+            </p>
+        </Dialog>
+
+        <Dialog v-model:visible="successShow" header="Confirmation"
+                class="w-1/2 max-md:w-full" position="topleft" :modal="false" :draggable="false">
+            <p class="text-green-600 font-medium">
+                {{ successMessage }}
+            </p>
+        </Dialog>
     </AuthenticatedLayout>
 </template>
