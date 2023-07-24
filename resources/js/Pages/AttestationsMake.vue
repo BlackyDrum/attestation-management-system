@@ -27,37 +27,35 @@ onMounted(() => {
     subject_name.value = combinedData.value[0].subject_name;
     tasks.value = combinedData.value[0].tasks;
 
-
     const uniqueTitles = Array.from(new Set(tasks.value.flat().map((item) => item.title)));
 
     const usersData = {};
 
     tasks.value.flat().forEach((item) => {
-        if (!usersData[item.name]) {
-            usersData[item.name] = { Name: item.name, user_id: item.user_id };
-            uniqueTitles.forEach((title) => {
-                usersData[item.name][title] = false;
+        const { name, title, task_id, checked, user_id } = item;
+        const key = `${name}-${user_id}`;
+
+        if (!usersData[key]) {
+            usersData[key] = { Name: name, user_id };
+            uniqueTitles.forEach((t) => {
+                usersData[key][t] = false;
             });
         }
-    });
 
-    tasks.value.forEach((tasksArray, index) => {
-        tasksArray.forEach((task) => {
-            usersData[task.name][task.title] = task.checked;
-            usersData[task.name][`task_id_${task.title}`] = task.task_id;
-        });
+        usersData[key][title] = checked;
+        usersData[key][`task_id_${title}`] = task_id;
     });
 
     userData.value = Object.values(usersData);
-    userData.value = userData.value.slice().sort((a,b) => {
+    userData.value = userData.value.slice().sort((a, b) => {
         const surnameA = a.Name.split(' ').slice(-1)[0];
         const surnameB = b.Name.split(' ').slice(-1)[0];
         return surnameA.localeCompare(surnameB);
-    })
+    });
 
-    headers.value = Object.keys(userData.value[0]).filter((key) => key !== "Name" && key !== "user_id" && !key.startsWith('task_id'));
+    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && !key.startsWith('task_id'));
     console.log(userData.value);
-})
+});
 
 const page = usePage();
 
@@ -147,7 +145,7 @@ FilterService.register(YOUR_FILTER.value, (value, filter) => {
                                     </div>
                                 </div>
                             </template>
-                            <Column field="Name" header="Name">
+                            <Column field="Name"  header="Name">
                                 <template #filter="{ filterModel, filterCallback }">
                                     <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Search by name" />
                                 </template>
