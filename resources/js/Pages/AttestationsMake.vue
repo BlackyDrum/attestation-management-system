@@ -116,12 +116,12 @@ let formData = ref([]);
 
 const dt = ref();
 
-const YOUR_FILTER = ref('YOUR FILTER');
+const FILTER = ref('FILTER');
 const filters = ref({
     'Name': {value: null, matchMode: 'contains'},
 });
 
-FilterService.register(YOUR_FILTER.value, (value, filter) => {
+FilterService.register(FILTER.value, (value, filter) => {
 
     if (filter === undefined || filter === null || filter.trim() === '') {
         return true;
