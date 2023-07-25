@@ -21,6 +21,8 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Checkbox from "primevue/checkbox";
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
 
 import combine from "@/CombinedData.js";
 
@@ -219,6 +221,7 @@ const handleAttestationInfo = (attestation, index) => {
     showAttestation.value = true;
     subject_name.value = combinedData.value[index].subject_name;
     tasks.value = combinedData.value[index].tasks;
+    descriptions.value = [];
 
     const uniqueTitles = Array.from(new Set(tasks.value.flat().map((item) => item.title)));
 
@@ -248,8 +251,9 @@ const handleAttestationInfo = (attestation, index) => {
 
     headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && !key.startsWith('task_id'));
 
-    console.log(combinedData.value)
-    console.log(headers.value)
+    for (let i = 0; i < headers.value.length; i++) {
+        descriptions.value.push(combinedData.value[index].tasks[0][i].description)
+    }
 }
 
 const showDialog = ref(false);
@@ -263,6 +267,7 @@ const subject_name = ref("");
 const tasks = ref([]);
 const userData = ref([]);
 const headers = ref(null);
+const descriptions = ref([]);
 
 </script>
 
@@ -323,21 +328,31 @@ const headers = ref(null);
                 </div>
                 <div v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="attestation.id" class="mb-10 p-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <Dialog v-model:visible="showAttestation" modal :header="subject_name" :style="{ width: '80vw' }">
-                        <DataTable showGridlines stripedRows :value="userData">
-                            <Column field="Name" header="Name"></Column>
-                            <Column v-for="header in headers" :field="header" :key="header">
-                                <template #header>
-                                    <div class="mx-auto">
-                                        <div>{{ header }}</div>
-                                    </div>
-                                </template>
-                                <template #body="{index, field,data }">
-                                    <div class="flex justify-center items-center h-full">
-                                        <Checkbox disabled v-model="data[field]" :binary="true"/>
-                                    </div>
-                                </template>
-                            </Column>
-                        </DataTable>
+                        <TabView :scrollable="true">
+                            <TabPanel header="My Attestations">
+                                <DataTable showGridlines stripedRows :value="userData">
+                                    <Column field="Name" header="Name"></Column>
+                                    <Column v-for="header in headers" :field="header" :key="header">
+                                        <template #header="{index}">
+                                            <div class="mx-auto">
+                                                <div>{{ header }}</div>
+                                            </div>
+                                        </template>
+                                        <template #body="{index, field,data }">
+                                            <div class="flex justify-center items-center h-full">
+                                                <Checkbox disabled v-model="data[field]" :binary="true"/>
+                                            </div>
+                                        </template>
+                                    </Column>
+                                </DataTable>
+                            </TabPanel>
+                            <TabPanel v-for="(header, index1) in headers" :key="index" :header="header">
+                                <span v-if="descriptions[index1]" v-html="descriptions[index1]"></span>
+                                <span v-else>
+                                    <em>No Description available.</em>
+                                </span>
+                            </TabPanel>
+                        </TabView>
                     </Dialog>
                     <Card class="rounded-lg">
                         <template #title> {{attestation.subject_name}} ({{attestation.semester}}) </template>
