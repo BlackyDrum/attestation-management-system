@@ -23,6 +23,8 @@ import Column from 'primevue/column';
 import Checkbox from "primevue/checkbox";
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
+import Editor from 'primevue/editor';
+
 
 import combine from "@/CombinedData.js";
 
@@ -269,6 +271,19 @@ const userData = ref([]);
 const headers = ref(null);
 const descriptions = ref([]);
 
+const colors = ref([
+    {rgb: "rgb(0, 0, 0)", label: "Black"},
+    {rgb: "rgb(255, 255, 255)", label: "White"},
+    {rgb: "rgb(255, 0, 0)", label: "Red"},
+    {rgb: "rgb(0, 255, 0)", label: "Green"},
+    {rgb: "rgb(0, 0, 255)", label: "Blue"},
+    {rgb: "rgb(255, 165, 0)", label: "Orange"},
+    {rgb: "rgb(128, 0, 128)", label: "Purple"},
+    {rgb: "rgb(255, 255, 0)", label: "Yellow"},
+    {rgb: "rgb(0, 128, 128)", label: "Teal"},
+    {rgb: "rgb(128, 128, 0)", label: "Olive"},
+    {rgb: "rgb(128, 0, 0)", label: "Maroon"},
+]);
 </script>
 
 <template>
@@ -288,7 +303,6 @@ const descriptions = ref([]);
                 </div>
             </div>
         </template>
-
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" :key="attestation.id" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 p-4 rounded-lg">
@@ -355,7 +369,7 @@ const descriptions = ref([]);
                                     <i class="pi pi-file-edit mr-2"></i>
                                     <span class="font-medium">{{header}}</span>
                                 </template>
-                                <span v-if="descriptions[index1]" v-html="descriptions[index1]"></span>
+                                <span v-if="descriptions[index1]" class="h-full w-full" v-html="descriptions[index1]"></span>
                                 <span v-else>
                                     <em>No Description available.</em>
                                 </span>
@@ -456,7 +470,42 @@ const descriptions = ref([]);
                             </div>
                         </div>
                         <div class="mt-2">
-                            <Textarea v-model="attestationForm.attestations[task.id - 1].description" placeholder="Description" autoResize rows="5" class="w-full"/>
+                            <Editor v-model="attestationForm.attestations[task.id - 1].description" placeholder="Description or further instructions" editorStyle="height:10rem" class="w-full">
+                                <template v-slot:toolbar>
+                                    <span class="ql-formats">
+                                        <select class="ql-header">
+                                            <option value="1"></option>
+                                            <option value="2"></option>
+                                            <option value="3"></option>
+                                        </select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                        <button class="ql-underline"></button>
+                                        <button class="ql-list"></button>
+                                        <span class="ql-formats">
+                                           <select class="ql-color">
+                                               <template v-for="color in colors">
+                                                   <option :value="color.rgb" :label="color.label"></option>
+                                               </template>
+                                           </select>
+                                           <select class="ql-background">
+                                               <template v-for="color in colors">
+                                                   <option :value="color.rgb" :label="color.label"></option>
+                                               </template>
+                                           </select>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <button class="ql-list" value="ordered"></button>
+                                            <button class="ql-list" value="bullet"></button>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <button class="ql-link" value="bullet"></button>
+                                        </span>
+                                    </span>
+                                </template>
+                            </Editor>
                             <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.description'))" class="text-red-600">
                                 {{errors['attestations.' + (task.id - 1) + '.description']}}
                             </div>
