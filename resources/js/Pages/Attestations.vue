@@ -379,36 +379,44 @@ const headers = ref(null);
 
         <Dialog v-model:visible="showDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'" :style="{ width: '80vw' }">
             <form @submit.prevent="handleForm">
-                <MultiSelect :loading="!$props.users" v-model="attestationForm.users" :options="users" filter optionLabel="name" placeholder="Select Users"
-                             :maxSelectedLabels="3" :virtualScrollerOptions="{ itemSize: 44 }" class="w-full md:w-20rem" />
+                <span class="p-float-label mt-5">
+                    <MultiSelect :loading="!$props.users" v-model="attestationForm.users" :options="users" filter optionLabel="name"
+                                 :maxSelectedLabels="3" :virtualScrollerOptions="{ itemSize: 44 }" class="w-full md:w-20rem" />
+                    <label for="users">Users</label>
+                </span>
                 <div v-if="errors.users" class="text-red-600">
                     {{errors.users}}
                 </div>
                 <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))" class="text-red-600">
                     The selected User is invalid
                 </div>
-                <div class="grid xl:grid-cols-2 xl:gap-4">
+                <div class="grid xl:grid-cols-2 xl:gap-4 mt-4">
                     <div class="my-4">
-                    <span class="p-input-icon-right w-full">
+                    <span class="p-input-icon-right w-full p-float-label">
                         <i class="pi pi-hashtag" />
-                        <input-number v-model="attestationForm.subjectNumber" :useGrouping="false" class="w-full" placeholder="Subject Number"></input-number>
+                        <input-number v-model="attestationForm.subjectNumber" :useGrouping="false" class="w-full"></input-number>
+                        <label for="subject_number">Subject Number</label>
                     </span>
                         <div v-if="errors.subjectNumber" class="text-red-600">
                             {{errors.subjectNumber}}
                         </div>
                     </div>
                     <div class="my-4">
-                    <span class="p-input-icon-right w-full">
+                    <span class="p-input-icon-right w-full p-float-label">
                         <i class="pi pi-book" />
-                        <input-text v-model="attestationForm.subjectName" class="w-full" placeholder="Subject Name"></input-text>
+                        <input-text v-model="attestationForm.subjectName" class="w-full"></input-text>
+                        <label for="subject_name">Subject Name</label>
                     </span>
                         <div v-if="errors.subjectName" class="text-red-600">
                             {{errors.subjectName}}
                         </div>
                     </div>
                 </div>
-                <div>
-                    <Dropdown v-model="attestationForm.semester" :options="semester" optionLabel="semester" placeholder="Select a semester" class="md:w-14rem" />
+                <div class="mt-4">
+                    <span class="p-float-label">
+                        <Dropdown v-model="attestationForm.semester" :options="semester" optionLabel="semester" class="max-md:w-[16rem] w-80" />
+                        <label for="semester">Semester</label>
+                    </span>
                     <div v-if="errors.semester" class="text-red-600">
                         {{errors.semester}}
                     </div>
@@ -433,7 +441,8 @@ const headers = ref(null);
                     </div>
                 </div>
                 <Button @click="addTask" icon="pi pi-plus" aria-label="Filter" />
-                <span v-if="attestationForm.attestations.length > 0 && (isEdit && attestationForm.attestations.length > 1)" class="ml-3"><Button @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
+                <span v-if="!isEdit && attestationForm.attestations.length > 0" class="ml-3"><Button @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
+                <span v-else-if="isEdit && attestationForm.attestations.length > 1" class="ml-3"><Button @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
                 <div v-if="errors.attestations" class="text-red-600 mt-2">
                     {{errors.attestations}}
                 </div>
