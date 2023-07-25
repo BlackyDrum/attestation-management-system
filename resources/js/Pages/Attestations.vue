@@ -329,7 +329,11 @@ const descriptions = ref([]);
                 <div v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="attestation.id" class="mb-10 p-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <Dialog v-model:visible="showAttestation" modal :header="subject_name" :style="{ width: '80vw' }">
                         <TabView :scrollable="true">
-                            <TabPanel header="My Attestations">
+                            <TabPanel>
+                                <template #header>
+                                    <i class="pi pi-calendar mr-2"></i>
+                                    <span>My Attestation</span>
+                                </template>
                                 <DataTable showGridlines stripedRows :value="userData">
                                     <Column field="Name" header="Name"></Column>
                                     <Column v-for="header in headers" :field="header" :key="header">
@@ -346,7 +350,11 @@ const descriptions = ref([]);
                                     </Column>
                                 </DataTable>
                             </TabPanel>
-                            <TabPanel v-for="(header, index1) in headers" :key="index" :header="header">
+                            <TabPanel v-for="(header, index1) in headers" :key="index">
+                                <template #header>
+                                    <i class="pi pi-file-edit mr-2"></i>
+                                    <span class="font-medium">{{header}}</span>
+                                </template>
                                 <span v-if="descriptions[index1]" v-html="descriptions[index1]"></span>
                                 <span v-else>
                                     <em>No Description available.</em>
