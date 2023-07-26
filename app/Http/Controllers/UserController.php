@@ -69,4 +69,21 @@ class UserController extends Controller
 
         return to_route('user');
     }
+
+    public function create(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:50,',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|min:6|max:255',
+        ]);
+
+        User::query()->create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+        ]);
+
+        return to_route('user');
+    }
 }

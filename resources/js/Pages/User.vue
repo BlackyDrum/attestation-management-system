@@ -1,19 +1,20 @@
 <script setup>
-import { Head, Link, usePage, useForm } from '@inertiajs/vue3';
-import { onMounted, ref } from 'vue';
+import {Head, Link, usePage, useForm} from '@inertiajs/vue3';
+import {onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 
-import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
+import {useConfirm} from "primevue/useconfirm";
+import {useToast} from "primevue/usetoast";
 import ProgressSpinner from 'primevue/progressspinner';
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
 import InputText from 'primevue/inputtext';
 import Button from "primevue/button";
-
+import TabView from "primevue/tabview";
+import TabPanel from "primevue/tabpanel";
 
 defineProps({
     users: {
@@ -39,6 +40,12 @@ const userForm = useForm({
     password: null,
 })
 
+const userFormEdit = useForm({
+    name: null,
+    email: null,
+    password: null,
+})
+
 const page = usePage();
 const confirm = useConfirm();
 const toast = useToast();
@@ -48,6 +55,8 @@ const empty = ref(false);
 
 const editShow = ref(false);
 const selectedUser = ref(null);
+
+const createShow = ref(false);
 
 const handleSearchRequest = () => {
     axios.get(`/user/?search=${search.value}&response=true`)
@@ -68,6 +77,7 @@ const handleSearchRequest = () => {
 const handleUserEdit = (user) => {
     editShow.value = true;
     selectedUser.value = user;
+    userForm.reset('password');
 
     userForm.id = user.id;
     userForm.name = user.name;
@@ -137,44 +147,70 @@ const confirm2 = (userid, username) => {
         }
     });
 };
+
+const handleCreateUserOpen = () => {
+    userFormEdit.reset();
+    createShow.value = true;
+}
+
+const handleCreateUserClose = () => {
+    createShow.value = false;
+    userFormEdit.wasSuccessful = false;
+    page.props.errors = {};
+}
+
+const sendCreateForm = () => {
+    userFormEdit.post('/user', {
+        preserveScroll: true,
+        onStart: () => userFormEdit.reset('password'),
+        onSuccess: () => {
+            userFormEdit.reset();
+        }
+    });
+}
 </script>
 
 <template>
-    <Head title="User" />
+    <Head title="User"/>
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">User</h2>
+            <div class="grid grid-cols-2">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">User</h2>
+                <div class="ml-auto">
+                    <primary-button @click="handleCreateUserOpen">Create new User</primary-button>
+                </div>
+            </div>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="w-full text-right">
                     <span class="p-input-icon-left">
-                        <i class="pi pi-search" />
+                        <i class="pi pi-search"/>
                         <input-text type="text" class="rounded-xl text-black" placeholder="Search user"
-                            @input="handleSearchRequest" v-model="search"></input-text>
+                                    @input="handleSearchRequest" v-model="search"></input-text>
                     </span>
                 </div>
                 <div v-for="user in users.data" :key="user.id"
-                    class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3">
+                     class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3">
                     <div>
                         <div class="font-bold flex items-center text-white p-2">
                             <span>{{ user.name }} <span v-if="user.admin" class="pi pi-android"></span></span>
                             <span class="ml-auto mr-5 flex flex-wrap  justify-content-center">
                                 <div class="mr-4 md:hidden">
                                     <Button v-if="!user.admin" @click="confirm2(user.id, user.name)" icon="pi pi-trash"
-                                        severity="danger" />
+                                            severity="danger"/>
                                 </div>
                                 <div class="mr-4 max-md:hidden">
                                     <Button v-if="!user.admin" @click="confirm2(user.id, user.name)" label="Delete"
-                                        icon="pi pi-trash" severity="danger" />
+                                            icon="pi pi-trash" severity="danger"/>
                                 </div>
                                 <div class="max-md:hidden">
                                     <Button @click="handleUserEdit(user)" label="Edit" icon="pi pi-user-edit"
-                                        severity="success" />
+                                            severity="success"/>
                                 </div>
                                 <div class="md:hidden">
-                                    <Button @click="handleUserEdit(user)" icon="pi pi-user-edit" severity="success" />
+                                    <Button @click="handleUserEdit(user)" icon="pi pi-user-edit" severity="success"/>
                                 </div>
                             </span>
                         </div>
@@ -194,9 +230,9 @@ const confirm2 = (userid, username) => {
             <div class="mx-auto">
                 <template v-for="links in users.links">
                     <Link v-if="links.url" :href="links.url + '&search=' + search"
-                        class="lg:p-3 sm:p-1 md:p-2 max-sm:p-0.5">
+                          class="lg:p-3 sm:p-1 md:p-2 max-sm:p-0.5">
                     <span v-html="links.label"
-                        :class="{ 'bg-gray-600 p-2 rounded-xl': users.current_page === Number.parseInt(links.label) }"></span>
+                          :class="{ 'bg-gray-600 p-2 rounded-xl': users.current_page === Number.parseInt(links.label) }"></span>
                     </Link>
                     <span v-else v-html="links.label"></span>
                 </template>
@@ -204,23 +240,80 @@ const confirm2 = (userid, username) => {
         </div>
     </AuthenticatedLayout>
 
+    <Dialog v-model:visible="createShow" :closable="false" header="Create new User"
+            class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '80vw' }" :modal="true" :draggable="false">
+        <TabView>
+            <TabPanel>
+                <template #header>
+                    <i class="pi pi-user mr-2 max-md:mr-1"></i>
+                    <span class="max-md:text-xs">User</span>
+                </template>
+                <form @submit.prevent>
+                    <div class="p-inputgroup mt-2">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-user mr-2"></i>
+                        </span>
+                        <InputText type="text" required v-model="userFormEdit.name" placeholder="Name"
+                                   class="border border-black rounded-md p-1"/>
+                    </div>
+                    <div class="ml-6 text-red-600" v-if="errors.name">{{ errors.name }}</div>
+                    <div class="p-inputgroup mt-2">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-at mr-2"></i>
+                        </span>
+                        <InputText type="email" required v-model="userFormEdit.email" placeholder="E-Mail"
+                                   class="border border-black rounded-md p-1"/>
+                    </div>
+                    <div class="ml-6 text-red-600" v-if="errors.email">{{ errors.email }}</div>
+                    <div class="p-inputgroup mt-2">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-lock mr-2"></i>
+                        </span>
+                        <InputText type="password" v-model="userFormEdit.password" placeholder="Password"
+                                   class="border border-black rounded-md p-1"/>
+                    </div>
+                    <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>
+                    <div class="mt-4 flex justify-end">
+                        <primary-button class="mr-5"
+                                        :disabled="userFormEdit.processing"
+                                        @click="sendCreateForm">Create User
+                        </primary-button>
+                        <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
+                    </div>
+                    <ProgressSpinner v-if="userFormEdit.processing" style="width: 50px; height: 50px" strokeWidth="8"
+                                     fill="var(--surface-ground)" animationDuration=".5s"
+                                     aria-label="Custom ProgressSpinner"/>
+                    <div v-if="userFormEdit.wasSuccessful" class="text-green-600 font-bold">
+                        New User successfully created
+                    </div>
+                </form>
+            </TabPanel>
+            <TabPanel>
+                <template #header>
+                    <i class="pi pi-upload mr-2 max-md:mr-1"></i>
+                    <span class="max-md:text-xs">Upload</span>
+                </template>
+            </TabPanel>
+        </TabView>
+    </Dialog>
+
     <Dialog v-model:visible="editShow" :closable="false" v-if="selectedUser" :header="selectedUser.name"
-        class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '80vw' }" :modal="true" :draggable="false">
+            class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '80vw' }" :modal="true" :draggable="false">
         <form @submit.prevent>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-user mr-2"></i>
                 </span>
                 <InputText type="text" required v-model="userForm.name" placeholder="Name"
-                    class="border border-black rounded-md p-1" />
+                           class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.name">{{ errors.name }}</div>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-at mr-2"></i>
                 </span>
-                <InputText type="email" required v-model="userForm.email" placeholder="E-Mail-Adress"
-                    class="border border-black rounded-md p-1" />
+                <InputText type="email" required v-model="userForm.email" placeholder="E-Mail"
+                           class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.email">{{ errors.email }}</div>
             <div class="p-inputgroup mt-2">
@@ -228,18 +321,18 @@ const confirm2 = (userid, username) => {
                     <i class="pi pi-lock mr-2"></i>
                 </span>
                 <InputText type="password" v-model="userForm.password" placeholder="New Password"
-                    class="border border-black rounded-md p-1" />
+                           class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>
             <div class="mt-4 flex justify-end">
                 <primary-button class="mr-5"
-                    :disabled="userForm.processing || (selectedUser.name === userForm.name && selectedUser.email === userForm.email && !userForm.password)"
-                    @click="sendEditForm">Save Changes</primary-button>
+                                :disabled="userForm.processing || (selectedUser.name === userForm.name && selectedUser.email === userForm.email && !userForm.password)"
+                                @click="sendEditForm">Save Changes
+                </primary-button>
                 <secondary-button @click="handleUserEditClose">Cancel</secondary-button>
             </div>
-            <div v-if="userForm.progress">{{ userForm.progress.percentage }}</div>
             <ProgressSpinner v-if="userForm.processing" style="width: 50px; height: 50px" strokeWidth="8"
-                fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+                             fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner"/>
             <div v-if="userForm.wasSuccessful" class="text-green-600 font-bold">
                 User credentials successfully updated
             </div>

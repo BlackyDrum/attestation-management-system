@@ -47,6 +47,8 @@ Route::middleware('auth')->group(function () {
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
     Route::put('/user', [\App\Http\Controllers\UserController::class, 'edit'])
         ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
+    Route::post('/user', [\App\Http\Controllers\UserController::class, 'create'])
+        ->middleware(\App\Http\Middleware\EnsureIsAdmin::class);
 });
 
 require __DIR__ . '/auth.php';
