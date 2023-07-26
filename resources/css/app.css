@@ -8,3 +8,9 @@
         font-weight: revert;
     }
 }
+
+@media (max-width: 767px) {
+    .p-toast-message {
+        width: 90vw;
+    }
+}

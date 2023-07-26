@@ -351,7 +351,7 @@ const colors = ref([
                             <TabPanel>
                                 <template #header>
                                     <i class="pi pi-calendar mr-2"></i>
-                                    <span>My Attestation</span>
+                                    <span>Attestation</span>
                                 </template>
                                 <DataTable showGridlines stripedRows :value="userData">
                                     <Column field="Name" header="Name"></Column>

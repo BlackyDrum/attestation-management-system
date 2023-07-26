@@ -151,7 +151,7 @@ FilterService.register(FILTER.value, (value, filter) => {
                                     <div>
                                         <Button icon="pi pi-external-link" label="Export CSV" @click="exportCSV($event)" />
                                     </div>
-                                    <div class="ml-auto mr-4">
+                                    <div class="md:ml-auto md:mr-4">
                                         <Button @click="handleFormSend" :disabled="formData.length === 0" icon="pi pi-save"
                                             severity="success" label="Save changes" />
                                     </div>
