@@ -117,13 +117,9 @@ const filters = ref({
 
 FilterService.register(FILTER.value, (value, filter) => {
 
-    if (filter === undefined || filter === null || filter.trim() === '') {
-        return true;
-    }
+    if (filter === undefined || filter === null || filter.trim() === '') return true;
 
-    if (value === undefined || value === null) {
-        return false;
-    }
+    if (value === undefined || value === null) return false;
 
     return value.toString() === filter.toString();
 });
