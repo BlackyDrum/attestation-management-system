@@ -369,7 +369,11 @@ const colors = ref([
                                     <i class="pi pi-file-edit mr-2"></i>
                                     <span class="font-medium">{{header}}</span>
                                 </template>
-                                <span v-if="descriptions[index1]" class="h-full w-full" v-html="descriptions[index1]"></span>
+                                <Editor v-if="descriptions[index1]" class="h-full w-full" readonly v-model="descriptions[index1]">
+                                    <template #toolbar>
+                                        <span></span>
+                                    </template>
+                                </Editor>
                                 <span v-else>
                                     <em>No Description available.</em>
                                 </span>
@@ -470,13 +474,20 @@ const colors = ref([
                             </div>
                         </div>
                         <div class="mt-2">
-                            <Editor v-model="attestationForm.attestations[task.id - 1].description" placeholder="Description or further instructions" editorStyle="height:10rem" class="w-full">
+                            <Editor v-model="attestationForm.attestations[task.id - 1].description" placeholder="Description or further instructions" editorStyle="height:20rem" class="w-full">
                                 <template v-slot:toolbar>
                                     <span class="ql-formats">
                                         <select class="ql-header">
-                                            <option value="1"></option>
-                                            <option value="2"></option>
-                                            <option value="3"></option>
+                                            <option value="1">Heading</option>
+                                            <option value="2">Subheading</option>
+                                            <option value="3">Normal</option>
+                                        </select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <select class="ql-font">
+                                            <option value="sans-serif">Sans Serif</option>
+                                            <option value="serif">Serif</option>
+                                            <option value="monospace">Monospace</option>
                                         </select>
                                     </span>
                                     <span class="ql-formats">
@@ -499,9 +510,16 @@ const colors = ref([
                                         <span class="ql-formats">
                                             <button class="ql-list" value="ordered"></button>
                                             <button class="ql-list" value="bullet"></button>
+                                                <select class="ql-align">
+                                                  <option value=""></option>
+                                                  <option value="center"></option>
+                                                  <option value="right"></option>
+                                                  <option value="justify"></option>
+                                                </select>
                                         </span>
                                         <span class="ql-formats">
                                             <button class="ql-link" value="bullet"></button>
+                                            <button class="ql-code-block"></button>
                                         </span>
                                     </span>
                                 </template>
