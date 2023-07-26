@@ -17,6 +17,10 @@ class AttestationController extends Controller
 {
     public function show(Request $request)
     {
+        $order = config('database.default') === 'pgsql' ?
+            "SPLIT_PART(users.name,' ', -1)" :
+            "SUBSTRING_INDEX(users.name, ' ', -1)";
+
         $attestationQuery = Attestation::query()
             ->join('semester', 'attestation.current_semester', '=', 'semester.id')
             ->join('attestation_tasks', 'attestation.id', '=', 'attestation_tasks.attestation_id')
@@ -26,7 +30,7 @@ class AttestationController extends Controller
                     ->on('user_has_attestation.attestation_id', '=', 'attestation.id');
             })
             ->join('users', 'users.id', '=', 'user_has_attestation.user_id')
-            ->orderByRaw("SPLIT_PART(users.name,' ', -1)")
+            ->orderByRaw($order)
             ->select([
                 'attestation.id',
                 'attestation.subject_name',
