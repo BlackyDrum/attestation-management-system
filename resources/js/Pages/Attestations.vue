@@ -6,7 +6,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 
-import {useConfirm} from "primevue/useconfirm";
+import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
 import Dialog from "primevue/dialog";
 import MultiSelect from 'primevue/multiselect';
@@ -15,7 +15,6 @@ import InputNumber from 'primevue/inputnumber';
 import Dropdown from 'primevue/dropdown';
 import ProgressSpinner from "primevue/progressspinner";
 import Button from 'primevue/button';
-import Textarea from 'primevue/textarea';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
 import DataTable from 'primevue/datatable';
@@ -36,7 +35,7 @@ defineProps({
         type: Object
     },
     attestations: {
-      type: Array
+        type: Array
     },
     errors: {
         type: Object
@@ -153,8 +152,8 @@ const confirm1 = (attestation) => {
         acceptClass: 'p-button-danger',
 
         accept: () => {
-            axios.delete('/attestations',{
-                data : {
+            axios.delete('/attestations', {
+                data: {
                     attestation_id: attestation.id
                 }
             })
@@ -167,7 +166,7 @@ const confirm1 = (attestation) => {
                                 detail: `Attestation '${combinedData.value[i].subject_name}' with ID ${combinedData.value[i].id} was successfully deleted`,
                                 life: 3000,
                             })
-                            combinedData.value.splice(i,1);
+                            combinedData.value.splice(i, 1);
                             break;
                         }
                     }
@@ -198,7 +197,7 @@ const handleEdit = (attestation) => {
             attestationForm.semester = page.props.semester[i];
 
     }
-    attestationForm.users = attestation.tasks.length === 0 ? null: [];
+    attestationForm.users = attestation.tasks.length === 0 ? null : [];
     for (let i = 0; i < attestation.tasks.length; i++) {
         for (let j = 0; j < page.props.users.length; j++) {
             if (attestation.tasks[i][0].user_id === page.props.users[j].id) {
@@ -272,22 +271,22 @@ const headers = ref(null);
 const descriptions = ref([]);
 
 const colors = ref([
-    {rgb: "rgb(0, 0, 0)", label: "Black"},
-    {rgb: "rgb(255, 255, 255)", label: "White"},
-    {rgb: "rgb(255, 0, 0)", label: "Red"},
-    {rgb: "rgb(0, 255, 0)", label: "Green"},
-    {rgb: "rgb(0, 0, 255)", label: "Blue"},
-    {rgb: "rgb(255, 165, 0)", label: "Orange"},
-    {rgb: "rgb(128, 0, 128)", label: "Purple"},
-    {rgb: "rgb(255, 255, 0)", label: "Yellow"},
-    {rgb: "rgb(0, 128, 128)", label: "Teal"},
-    {rgb: "rgb(128, 128, 0)", label: "Olive"},
-    {rgb: "rgb(128, 0, 0)", label: "Maroon"},
+    { rgb: "rgb(0, 0, 0)", label: "Black" },
+    { rgb: "rgb(255, 255, 255)", label: "White" },
+    { rgb: "rgb(255, 0, 0)", label: "Red" },
+    { rgb: "rgb(0, 255, 0)", label: "Green" },
+    { rgb: "rgb(0, 0, 255)", label: "Blue" },
+    { rgb: "rgb(255, 165, 0)", label: "Orange" },
+    { rgb: "rgb(128, 0, 128)", label: "Purple" },
+    { rgb: "rgb(255, 255, 0)", label: "Yellow" },
+    { rgb: "rgb(0, 128, 128)", label: "Teal" },
+    { rgb: "rgb(128, 128, 0)", label: "Olive" },
+    { rgb: "rgb(128, 0, 0)", label: "Maroon" },
 ]);
 </script>
 
 <template>
-    <Head title="Attestations"/>
+    <Head title="Attestations" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -305,42 +304,48 @@ const colors = ref([
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" :key="attestation.id" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 p-4 rounded-lg">
+                <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" :key="attestation.id"
+                    class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 p-4 rounded-lg">
                     <Card class="rounded-lg">
-                        <template #title> {{attestation.subject_name}} ({{attestation.semester}}) </template>
-                        <template #subtitle>Subject Number: {{attestation.subject_number}} </template>
+                        <template #title> {{ attestation.subject_name }} ({{ attestation.semester }}) </template>
+                        <template #subtitle>Subject Number: {{ attestation.subject_number }} </template>
                         <template #content>
                             <div class="flex flex-wrap justify-evenly gap-2">
                                 <div class="w-1/2 max-md:w-full">
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-user" />
-                                        <InputText class="w-full" disabled :value="`Current Users: ${attestation.tasks.length}`" placeholder="Search"></InputText>
+                                        <InputText class="w-full" disabled
+                                            :value="`Current Users: ${attestation.tasks.length}`" placeholder="Search">
+                                        </InputText>
                                     </span>
-
                                 </div>
                                 <div class="w-1/2 max-md:w-full">
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-file" />
-                                        <InputText class="w-full" disabled :value="`Tasks: ${attestation.tasks[0].length}`" placeholder="Search"></InputText>
+                                        <InputText class="w-full" disabled :value="`Tasks: ${attestation.tasks[0].length}`"
+                                            placeholder="Search"></InputText>
                                     </span>
-
                                 </div>
                             </div>
                         </template>
                         <template #footer>
                             <div class="grid grid-cols-2 max-md:grid-cols-1">
                                 <div>
-                                    <Button @click="handleEdit(attestation)" icon="pi pi-file-edit" label="Edit" severity="success"/>
-                                    <Button @click="confirm1(attestation)" icon="pi pi-trash" label="Delete" severity="danger" style="margin-left: 0.5em" />
+                                    <Button @click="handleEdit(attestation)" icon="pi pi-file-edit" label="Edit"
+                                        severity="success" />
+                                    <Button @click="confirm1(attestation)" icon="pi pi-trash" label="Delete"
+                                        severity="danger" style="margin-left: 0.5em" />
                                 </div>
                                 <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
-                                    <Button @click="router.get(`/attestations/${attestation.id}`)" icon="pi pi-arrow-right" label="Make attestations" severity="secondary"/>
+                                    <Button @click="router.get(`/attestations/${attestation.id}`)" icon="pi pi-arrow-right"
+                                        label="Make attestations" severity="secondary" />
                                 </div>
                             </div>
                         </template>
                     </Card>
                 </div>
-                <div v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="attestation.id" class="mb-10 p-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="attestation.id"
+                    class="mb-10 p-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <Dialog v-model:visible="showAttestation" modal :header="subject_name" :style="{ width: '80vw' }">
                         <TabView :scrollable="true">
                             <TabPanel>
@@ -351,14 +356,14 @@ const colors = ref([
                                 <DataTable showGridlines stripedRows :value="userData">
                                     <Column field="Name" header="Name"></Column>
                                     <Column v-for="header in headers" :field="header" :key="header">
-                                        <template #header="{index}">
+                                        <template #header="{ index }">
                                             <div class="mx-auto">
                                                 <div>{{ header }}</div>
                                             </div>
                                         </template>
-                                        <template #body="{index, field,data }">
+                                        <template #body="{ index, field, data }">
                                             <div class="flex justify-center items-center h-full">
-                                                <Checkbox disabled v-model="data[field]" :binary="true"/>
+                                                <Checkbox disabled v-model="data[field]" :binary="true" />
                                             </div>
                                         </template>
                                     </Column>
@@ -367,9 +372,10 @@ const colors = ref([
                             <TabPanel v-for="(header, index1) in headers" :key="index">
                                 <template #header>
                                     <i class="pi pi-file-edit mr-2"></i>
-                                    <span class="font-medium">{{header}}</span>
+                                    <span class="font-medium">{{ header }}</span>
                                 </template>
-                                <Editor v-if="descriptions[index1]" class="h-full w-full" readonly v-model="descriptions[index1]">
+                                <Editor v-if="descriptions[index1]" class="h-full w-full" readonly
+                                    v-model="descriptions[index1]">
                                     <template #toolbar>
                                         <span></span>
                                     </template>
@@ -381,14 +387,15 @@ const colors = ref([
                         </TabView>
                     </Dialog>
                     <Card class="rounded-lg">
-                        <template #title> {{attestation.subject_name}} ({{attestation.semester}}) </template>
-                        <template #subtitle>Subject Number: {{attestation.subject_number}} </template>
+                        <template #title> {{ attestation.subject_name }} ({{ attestation.semester }}) </template>
+                        <template #subtitle>Subject Number: {{ attestation.subject_number }} </template>
                         <template #content>
                             <div class="flex flex-wrap justify-evenly gap-2">
                                 <div class="w-1/2 max-md:w-full">
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-file" />
-                                        <InputText class="w-full" disabled :value="`Tasks: ${attestation.tasks[0].length}`" placeholder="Search"></InputText>
+                                        <InputText class="w-full" disabled :value="`Tasks: ${attestation.tasks[0].length}`"
+                                            placeholder="Search"></InputText>
                                     </span>
                                 </div>
                             </div>
@@ -396,7 +403,8 @@ const colors = ref([
                         <template #footer>
                             <div class="grid grid-cols-2 max-md:grid-cols-1">
                                 <div>
-                                    <Button @click="handleAttestationInfo(attestation, index)" icon="pi pi-info-circle" label="Info" severity="success"/>
+                                    <Button @click="handleAttestationInfo(attestation, index)" icon="pi pi-info-circle"
+                                        label="Info" severity="success" />
                                 </div>
                             </div>
                         </template>
@@ -405,7 +413,8 @@ const colors = ref([
             </div>
         </div>
 
-        <template v-if="attestations.length === 0 || ($page.props.auth.user.admin && Array.isArray(combinedData) && combinedData.length === 0)">
+        <template
+            v-if="attestations.length === 0 || ($page.props.auth.user.admin && Array.isArray(combinedData) && combinedData.length === 0)">
             <div class="text-gray-700 text-center">
                 <div style="font-size: 10rem" class="pi pi-book"></div>
             </div>
@@ -415,145 +424,157 @@ const colors = ref([
         </template>
 
         <span v-if="$page.props.auth.user.admin">
-        <ConfirmDialog  ref="confirmDialog"
-                       class="bg-white p-4 custom-confirm-dialog rounded-md gap-8"></ConfirmDialog>
+            <ConfirmDialog ref="confirmDialog" class="bg-white p-4 custom-confirm-dialog rounded-md gap-8"></ConfirmDialog>
 
-        <Dialog v-model:visible="showDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'" :style="{ width: '80vw' }">
-            <form @submit.prevent="handleForm">
-                <span class="p-float-label mt-5">
-                    <MultiSelect :loading="!$props.users" v-model="attestationForm.users" :options="users" filter optionLabel="name"
-                                 :maxSelectedLabels="3" :virtualScrollerOptions="{ itemSize: 44 }" class="w-full md:w-20rem" />
-                    <label for="users">Users</label>
-                </span>
-                <div v-if="errors.users" class="text-red-600">
-                    {{errors.users}}
-                </div>
-                <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))" class="text-red-600">
-                    The selected User is invalid
-                </div>
-                <div class="grid xl:grid-cols-2 xl:gap-4 mt-4">
-                    <div class="my-4">
-                    <span class="p-input-icon-right w-full p-float-label">
-                        <i class="pi pi-hashtag" />
-                        <input-number v-model="attestationForm.subjectNumber" :useGrouping="false" class="w-full"></input-number>
-                        <label for="subject_number">Subject Number</label>
+            <Dialog v-model:visible="showDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'"
+                :style="{ width: '80vw' }">
+                <form @submit.prevent="handleForm">
+                    <span class="p-float-label mt-5">
+                        <MultiSelect :loading="!$props.users" v-model="attestationForm.users" :options="users" filter
+                            optionLabel="name" :maxSelectedLabels="3" :virtualScrollerOptions="{ itemSize: 44 }"
+                            class="w-full md:w-20rem" />
+                        <label for="users">Users</label>
                     </span>
-                        <div v-if="errors.subjectNumber" class="text-red-600">
-                            {{errors.subjectNumber}}
-                        </div>
+                    <div v-if="errors.users" class="text-red-600">
+                        {{ errors.users }}
                     </div>
-                    <div class="my-4">
-                    <span class="p-input-icon-right w-full p-float-label">
-                        <i class="pi pi-book" />
-                        <input-text v-model="attestationForm.subjectName" class="w-full"></input-text>
-                        <label for="subject_name">Subject Name</label>
-                    </span>
-                        <div v-if="errors.subjectName" class="text-red-600">
-                            {{errors.subjectName}}
-                        </div>
+                    <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))" class="text-red-600">
+                        The selected User is invalid
                     </div>
-                </div>
-                <div class="mt-4">
-                    <span class="p-float-label">
-                        <Dropdown v-model="attestationForm.semester" :options="semester" optionLabel="semester" class="max-md:w-[16rem] w-80" />
-                        <label for="semester">Semester</label>
-                    </span>
-                    <div v-if="errors.semester" class="text-red-600">
-                        {{errors.semester}}
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <div v-for="task in attestationForm.attestations" :key="task.id" class="my-4 w-full">
-                        <div class="mb-1 font-bold">
-                            {{task.id}}. Attestation
-                        </div>
-                        <div>
-                            <input-text v-model="attestationForm.attestations[task.id - 1].title" class="w-full" placeholder="Title"></input-text>
-                            <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.title'))" class="text-red-600">
-                                {{errors['attestations.' + (task.id - 1) + '.title']}}
+                    <div class="grid xl:grid-cols-2 xl:gap-4 mt-4">
+                        <div class="my-4">
+                            <span class="p-input-icon-right w-full p-float-label">
+                                <i class="pi pi-hashtag" />
+                                <input-number v-model="attestationForm.subjectNumber" :useGrouping="false"
+                                    class="w-full"></input-number>
+                                <label for="subject_number">Subject Number</label>
+                            </span>
+                            <div v-if="errors.subjectNumber" class="text-red-600">
+                                {{ errors.subjectNumber }}
                             </div>
                         </div>
-                        <div class="mt-2">
-                            <Editor v-model="attestationForm.attestations[task.id - 1].description" placeholder="Description or further instructions" editorStyle="height:20rem" class="w-full">
-                                <template v-slot:toolbar>
-                                    <span class="ql-formats">
-                                        <select class="ql-header">
-                                            <option value="1">Heading</option>
-                                            <option value="2">Subheading</option>
-                                            <option value="3">Normal</option>
-                                        </select>
-                                    </span>
-                                    <span class="ql-formats">
-                                        <select class="ql-font">
-                                            <option value="sans-serif">Sans Serif</option>
-                                            <option value="serif">Serif</option>
-                                            <option value="monospace">Monospace</option>
-                                        </select>
-                                    </span>
-                                    <span class="ql-formats">
-                                        <button class="ql-bold"></button>
-                                        <button class="ql-italic"></button>
-                                        <button class="ql-underline"></button>
-                                        <button class="ql-list"></button>
-                                        <span class="ql-formats">
-                                           <select class="ql-color">
-                                               <template v-for="color in colors">
-                                                   <option :value="color.rgb" :label="color.label"></option>
-                                               </template>
-                                           </select>
-                                           <select class="ql-background">
-                                               <template v-for="color in colors">
-                                                   <option :value="color.rgb" :label="color.label"></option>
-                                               </template>
-                                           </select>
-                                        </span>
-                                        <span class="ql-formats">
-                                            <button class="ql-list" value="ordered"></button>
-                                            <button class="ql-list" value="bullet"></button>
-                                                <select class="ql-align">
-                                                  <option value=""></option>
-                                                  <option value="center"></option>
-                                                  <option value="right"></option>
-                                                  <option value="justify"></option>
-                                                </select>
-                                        </span>
-                                        <span class="ql-formats">
-                                            <button class="ql-link" value="bullet"></button>
-                                            <button class="ql-code-block"></button>
-                                        </span>
-                                    </span>
-                                </template>
-                            </Editor>
-                            <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.description'))" class="text-red-600">
-                                {{errors['attestations.' + (task.id - 1) + '.description']}}
+                        <div class="my-4">
+                            <span class="p-input-icon-right w-full p-float-label">
+                                <i class="pi pi-book" />
+                                <input-text v-model="attestationForm.subjectName" class="w-full"></input-text>
+                                <label for="subject_name">Subject Name</label>
+                            </span>
+                            <div v-if="errors.subjectName" class="text-red-600">
+                                {{ errors.subjectName }}
                             </div>
                         </div>
                     </div>
-                </div>
-                <Button @click="addTask" icon="pi pi-plus" aria-label="Filter" />
-                <span v-if="!isEdit && attestationForm.attestations.length > 0" class="ml-3"><Button @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
-                <span v-else-if="isEdit && attestationForm.attestations.length > 1" class="ml-3"><Button @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
-                <div v-if="errors.attestations" class="text-red-600 mt-2">
-                    {{errors.attestations}}
-                </div>
-                <div class="my-4 grid grid-cols-2">
-                    <div class="justify-center">
-                        <ProgressSpinner v-if="attestationForm.processing" style="width: 50px; height: 3rem" strokeWidth="8" fill="var(--surface-ground)"
-                                         animationDuration=".5s" aria-label="Custom ProgressSpinner" />
-                    </div>
-                    <div class="flex justify-end" style="height: 3rem">
-                        <primary-button class="mr-5" :disabled="attestationForm.processing">{{isEdit ? "Save Changes" : "Create new subject"}}</primary-button>
-                        <secondary-button @click="handleDialogClose">Cancel</secondary-button>
-                        <span v-if="!isEdit" class="ml-10 max-md:hidden">
-                            <Button severity="danger" aria-label="Cancel" @click="reset">Reset</Button>
+                    <div class="mt-4">
+                        <span class="p-float-label">
+                            <Dropdown v-model="attestationForm.semester" :options="semester" optionLabel="semester"
+                                class="max-md:w-[16rem] w-80" />
+                            <label for="semester">Semester</label>
                         </span>
+                        <div v-if="errors.semester" class="text-red-600">
+                            {{ errors.semester }}
+                        </div>
                     </div>
+                    <div class="mt-4">
+                        <div v-for="task in attestationForm.attestations" :key="task.id" class="my-4 w-full">
+                            <div class="mb-1 font-bold">
+                                {{ task.id }}. Attestation
+                            </div>
+                            <div>
+                                <input-text v-model="attestationForm.attestations[task.id - 1].title" class="w-full"
+                                    placeholder="Title"></input-text>
+                                <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.title'))"
+                                    class="text-red-600">
+                                    {{ errors['attestations.' + (task.id - 1) + '.title'] }}
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <Editor v-model="attestationForm.attestations[task.id - 1].description"
+                                    placeholder="Description or further instructions" editorStyle="height:20rem"
+                                    class="w-full">
+                                    <template v-slot:toolbar>
+                                        <span class="ql-formats">
+                                            <select class="ql-header">
+                                                <option value="1">Heading</option>
+                                                <option value="2">Subheading</option>
+                                                <option value="3">Normal</option>
+                                            </select>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <select class="ql-font">
+                                                <option value="sans-serif">Sans Serif</option>
+                                                <option value="serif">Serif</option>
+                                                <option value="monospace">Monospace</option>
+                                            </select>
+                                        </span>
+                                        <span class="ql-formats">
+                                            <button class="ql-bold"></button>
+                                            <button class="ql-italic"></button>
+                                            <button class="ql-underline"></button>
+                                            <button class="ql-list"></button>
+                                            <span class="ql-formats">
+                                                <select class="ql-color">
+                                                    <template v-for="color in colors">
+                                                        <option :value="color.rgb" :label="color.label"></option>
+                                                    </template>
+                                                </select>
+                                                <select class="ql-background">
+                                                    <template v-for="color in colors">
+                                                        <option :value="color.rgb" :label="color.label"></option>
+                                                    </template>
+                                                </select>
+                                            </span>
+                                            <span class="ql-formats">
+                                                <button class="ql-list" value="ordered"></button>
+                                                <button class="ql-list" value="bullet"></button>
+                                                <select class="ql-align">
+                                                    <option value=""></option>
+                                                    <option value="center"></option>
+                                                    <option value="right"></option>
+                                                    <option value="justify"></option>
+                                                </select>
+                                            </span>
+                                            <span class="ql-formats">
+                                                <button class="ql-link" value="bullet"></button>
+                                                <button class="ql-code-block"></button>
+                                            </span>
+                                        </span>
+                                    </template>
+                                </Editor>
+                                <div v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.description'))"
+                                    class="text-red-600">
+                                    {{ errors['attestations.' + (task.id - 1) + '.description'] }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <Button @click="addTask" icon="pi pi-plus" aria-label="Filter" />
+                    <span v-if="!isEdit && attestationForm.attestations.length > 0" class="ml-3"><Button @click="removeTask"
+                            icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
+                    <span v-else-if="isEdit && attestationForm.attestations.length > 1" class="ml-3"><Button
+                            @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter" /></span>
+                    <div v-if="errors.attestations" class="text-red-600 mt-2">
+                        {{ errors.attestations }}
+                    </div>
+                    <div class="my-4 grid grid-cols-2">
+                        <div class="justify-center">
+                            <ProgressSpinner v-if="attestationForm.processing" style="width: 50px; height: 3rem"
+                                strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s"
+                                aria-label="Custom ProgressSpinner" />
+                        </div>
+                        <div class="flex justify-end" style="height: 3rem">
+                            <primary-button class="mr-5" :disabled="attestationForm.processing">{{ isEdit ? "Save Changes" :
+                                "Create new subject" }}</primary-button>
+                            <secondary-button @click="handleDialogClose">Cancel</secondary-button>
+                            <span v-if="!isEdit" class="ml-10 max-md:hidden">
+                                <Button severity="danger" aria-label="Cancel" @click="reset">Reset</Button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+                <div v-if="successForm" class="text-green-600 font-bold">
+                    New Subject for attestation successfully created
                 </div>
-            </form>
-            <div v-if="successForm" class="text-green-600 font-bold">
-                New Subject for attestation successfully created
-            </div>
-        </Dialog>
+            </Dialog>
         </span>
     </AuthenticatedLayout>
 </template>

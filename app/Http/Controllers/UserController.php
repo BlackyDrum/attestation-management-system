@@ -15,7 +15,11 @@ class UserController extends Controller
     {
         $search = $request->input('search') ?? "";
 
-        $user = User::query()->where('name', 'ILIKE', '%' . $search . '%')->orderByRaw("SPLIT_PART(name,' ', -1)")->paginate(20);
+        $order = config('database.default') === 'pgsql' ?
+            "SPLIT_PART(users.name,' ', -1)" :
+            "SUBSTRING_INDEX(users.name, ' ', -1)";
+
+        $user = User::query()->where('name', 'ILIKE', '%' . $search . '%')->orderByRaw($order)->paginate(20);
 
         if (!empty($request->input('response')) && $request->input('response')) {
             return response()->json($user);
