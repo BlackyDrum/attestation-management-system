@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Illuminate\Validation\Rules;
 
 class UserController extends Controller
 {
@@ -48,7 +49,7 @@ class UserController extends Controller
            'id' => 'required|integer|exists:users,id',
            'name' => 'required|string|max:50',
            'email' => ['required','max:255','email',Rule::unique('users')->ignore($request->input('id'))],
-           'password' => 'max:255|min:6|nullable'
+           'password' => ['nullable', Rules\Password::defaults()],
         ]);
 
         $id = $request->input('id');
@@ -74,8 +75,8 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:50,',
-            'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|min:6|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => ['required', Rules\Password::defaults()],
         ]);
 
         User::query()->create([
