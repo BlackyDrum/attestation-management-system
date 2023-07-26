@@ -106,12 +106,6 @@ const tasks = ref([]);
 const userData = ref(null);
 const headers = ref(null);
 
-const errorShow = ref(false);
-const errorMessage = ref(null);
-
-const successShow = ref(false);
-const successMessage = ref(null);
-
 const formData = ref([]);
 
 const dt = ref();
@@ -190,20 +184,5 @@ FilterService.register(FILTER.value, (value, filter) => {
                 </div>
             </div>
         </div>
-
-        <!-- Dialogs -->
-        <Dialog v-model:visible="errorShow" header="Error" class="w-1/2 max-md:w-full" position="topleft" :modal="false"
-            :draggable="false">
-            <p class="text-red-600 font-medium">
-                {{ errorMessage }}
-            </p>
-        </Dialog>
-
-        <Dialog v-model:visible="successShow" header="Confirmation" class="w-1/2 max-md:w-full" position="topleft"
-            :modal="false" :draggable="false">
-            <p class="text-green-600 font-medium">
-                {{ successMessage }}
-            </p>
-        </Dialog>
     </AuthenticatedLayout>
 </template>
