@@ -318,7 +318,6 @@ const colors = ref([
                                             :value="`Current Users: ${attestation.tasks.length}`" placeholder="Search">
                                         </InputText>
                                     </span>
-
                                 </div>
                                 <div class="w-1/2 max-md:w-full">
                                     <span class="p-input-icon-left w-full">
@@ -326,7 +325,6 @@ const colors = ref([
                                         <InputText class="w-full" disabled :value="`Tasks: ${attestation.tasks[0].length}`"
                                             placeholder="Search"></InputText>
                                     </span>
-
                                 </div>
                             </div>
                         </template>
