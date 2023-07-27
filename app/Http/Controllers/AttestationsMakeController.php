@@ -14,8 +14,7 @@ class AttestationsMakeController extends Controller
     {
         try {
             Attestation::query()->findOrFail($id);
-        }
-        catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException $exception) {
             abort(404);
         }
 
@@ -24,7 +23,7 @@ class AttestationsMakeController extends Controller
             "SUBSTRING_INDEX(users.name, ' ', -1)";
 
         $attestations = Attestation::query()
-            ->where('attestation.id','=',$id)
+            ->where('attestation.id', '=', $id)
             ->join('semester', 'attestation.current_semester', '=', 'semester.id')
             ->join('attestation_tasks', 'attestation.id', '=', 'attestation_tasks.attestation_id')
             ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
@@ -67,8 +66,8 @@ class AttestationsMakeController extends Controller
         ]);
 
         foreach ($request->input('tasks') as $task) {
-            UserHasCheckedTask::query()->where('user_id','=',$task['user_id'])
-                ->where('task_id','=',$task['task_id'])->update([
+            UserHasCheckedTask::query()->where('user_id', '=', $task['user_id'])
+                ->where('task_id', '=', $task['task_id'])->update([
                     'checked' => $task['checked'],
                 ]);
         }

@@ -63,7 +63,7 @@ class AttestationController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-           'users' => 'required|array|min:1',
+            'users' => 'required|array|min:1',
             'users.*.id' => 'required|exists:users,id',
             'subjectNumber' => 'required|integer|min:1',
             'subjectName' => 'required|string|max:255',
@@ -74,10 +74,10 @@ class AttestationController extends Controller
         ]);
 
         $attestation = Attestation::query()->create([
-           'subject_number' => $request->input('subjectNumber'),
-           'subject_name' => $request->input('subjectName'),
-           'current_semester' => (Semester::query()->where('semester','=',$request->input('semester'))->first())->id,
-           'creator_id' => Auth::id(),
+            'subject_number' => $request->input('subjectNumber'),
+            'subject_name' => $request->input('subjectName'),
+            'current_semester' => (Semester::query()->where('semester', '=', $request->input('semester'))->first())->id,
+            'creator_id' => Auth::id(),
         ]);
 
         foreach ($request->input('attestations') as $task) {
@@ -123,7 +123,7 @@ class AttestationController extends Controller
         $attestation = Attestation::query()->find($request->input('id'))->fill([
             'subject_number' => $request->input('subjectNumber'),
             'subject_name' => $request->input('subjectName'),
-            'current_semester' => (Semester::query()->where('semester','=',$request->input('semester'))->first())->id,
+            'current_semester' => (Semester::query()->where('semester', '=', $request->input('semester'))->first())->id,
         ]);
 
         $attestation->save();
@@ -143,7 +143,7 @@ class AttestationController extends Controller
             $ids[] = $item['id'];
         }
 
-        AttestationTasks::query()->where('attestation_id','=',$attestation['id'])->whereNotIn('id',$ids)->delete();
+        AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])->whereNotIn('id', $ids)->delete();
 
         $uids = [];
         foreach ($request->input('users') as $user) {
@@ -160,10 +160,10 @@ class AttestationController extends Controller
             }
         }
 
-        UserHasAttestation::query()->where('attestation_id','=',$attestation['id'])->whereNotIn('user_id',$uids)->delete();
+        UserHasAttestation::query()->where('attestation_id', '=', $attestation['id'])->whereNotIn('user_id', $uids)->delete();
 
-        UserHasCheckedTask::query()->join('attestation_tasks','attestation_tasks.id','=','user_has_checked_task.task_id')
-            ->where('attestation_tasks.attestation_id','=',$attestation['id'])->whereNotIn('user_id',$uids)->delete();
+        UserHasCheckedTask::query()->join('attestation_tasks', 'attestation_tasks.id', '=', 'user_has_checked_task.task_id')
+            ->where('attestation_tasks.attestation_id', '=', $attestation['id'])->whereNotIn('user_id', $uids)->delete();
 
         return to_route('attestations');
     }

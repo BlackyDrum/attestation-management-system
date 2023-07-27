@@ -48,10 +48,10 @@ class UserController extends Controller
     public function edit(Request $request)
     {
         $request->validate([
-           'id' => 'required|integer|exists:users,id',
-           'name' => 'required|string|max:50',
-           'email' => ['required','max:255','email',Rule::unique('users')->ignore($request->input('id'))],
-           'password' => ['nullable', Rules\Password::defaults()],
+            'id' => 'required|integer|exists:users,id',
+            'name' => 'required|string|max:50',
+            'email' => ['required', 'max:255', 'email', Rule::unique('users')->ignore($request->input('id'))],
+            'password' => ['nullable', Rules\Password::defaults()],
         ]);
 
         $id = $request->input('id');
@@ -107,7 +107,7 @@ class UserController extends Controller
                     continue;
                 }
 
-                $validator = Validator::make(['name' => $data[0], 'email' => $data[1], 'password' => $data[2]],[
+                $validator = Validator::make(['name' => $data[0], 'email' => $data[1], 'password' => $data[2]], [
                     'name' => 'required|string|max:50',
                     'email' => 'required|string|email|max:255|unique:users,email',
                     'password' => ['required', Rules\Password::defaults()],
@@ -130,6 +130,7 @@ class UserController extends Controller
             }
 
             DB::commit();
+
             fclose($handle);
         }
 

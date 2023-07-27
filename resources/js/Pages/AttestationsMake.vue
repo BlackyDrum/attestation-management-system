@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, usePage } from '@inertiajs/vue3';
-import { onMounted, ref } from "vue";
+import {Head, router, usePage} from '@inertiajs/vue3';
+import {onMounted, ref} from "vue";
 
 import Button from "primevue/button";
 import DataTable from 'primevue/datatable';
@@ -9,8 +9,8 @@ import Column from 'primevue/column';
 import Checkbox from "primevue/checkbox";
 import InputText from "primevue/inputtext";
 import Dialog from "primevue/dialog";
-import { FilterService } from 'primevue/api';
-import { useToast } from 'primevue/usetoast';
+import {FilterService} from 'primevue/api';
+import {useToast} from 'primevue/usetoast';
 
 import combine from "@/CombinedData.js";
 
@@ -33,11 +33,11 @@ onMounted(() => {
     const usersData = {};
 
     tasks.value.flat().forEach((item) => {
-        const { name, title, task_id, checked, user_id } = item;
+        const {name, title, task_id, checked, user_id} = item;
         const key = `${name}-${user_id}`;
 
         if (!usersData[key]) {
-            usersData[key] = { Name: name, user_id };
+            usersData[key] = {Name: name, user_id};
             uniqueTitles.forEach((t) => {
                 usersData[key][t] = false;
             });
@@ -112,7 +112,7 @@ const dt = ref();
 
 const FILTER = ref('FILTER');
 const filters = ref({
-    'Name': { value: null, matchMode: 'contains' },
+    'Name': {value: null, matchMode: 'contains'},
 });
 
 FilterService.register(FILTER.value, (value, filter) => {
@@ -128,7 +128,7 @@ FilterService.register(FILTER.value, (value, filter) => {
 </script>
 
 <template>
-    <Head title="Make Attestations" />
+    <Head title="Make Attestations"/>
 
     <AuthenticatedLayout>
         <template #header>
@@ -137,30 +137,33 @@ FilterService.register(FILTER.value, (value, filter) => {
         </template>
         <div class="mt-5 ml-5 text-gray-400 ">
             <Button @click="router.get('/attestations')" icon="pi pi-arrow-left" class="h-10" severity="secondary"
-                label="Back"></Button>
+                    label="Back"></Button>
         </div>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-4">
                     <div>
                         <DataTable showGridlines stripedRows ref="dt"
-                            :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ', '_')"
-                            v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true" :rows="10">
+                                   :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ', '_')"
+                                   v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true"
+                                   :rows="10">
                             <template #header>
                                 <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                                     <div>
-                                        <Button icon="pi pi-external-link" label="Export CSV" @click="exportCSV($event)" />
+                                        <Button icon="pi pi-external-link" label="Export CSV"
+                                                @click="exportCSV($event)"/>
                                     </div>
                                     <div class="md:ml-auto md:mr-4">
-                                        <Button @click="handleFormSend" :disabled="formData.length === 0" icon="pi pi-save"
-                                            severity="success" label="Save changes" />
+                                        <Button @click="handleFormSend" :disabled="formData.length === 0"
+                                                icon="pi pi-save"
+                                                severity="success" label="Save changes"/>
                                     </div>
                                 </div>
                             </template>
                             <Column field="Name" header="Name">
                                 <template #filter="{ filterModel, filterCallback }">
                                     <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-                                        class="p-column-filter" placeholder="Search by name" />
+                                               class="p-column-filter" placeholder="Search by name"/>
                                 </template>
                             </Column>
                             <Column v-for="header in headers" :field="header" :key="header">
@@ -171,7 +174,8 @@ FilterService.register(FILTER.value, (value, filter) => {
                                 </template>
                                 <template #body="{ index, field, data }">
                                     <div class="flex justify-center items-center h-full">
-                                        <Checkbox v-model="data[field]" @change="extractData(data, index)" :binary="true" />
+                                        <Checkbox v-model="data[field]" @change="extractData(data, index)"
+                                                  :binary="true"/>
                                     </div>
                                 </template>
                             </Column>

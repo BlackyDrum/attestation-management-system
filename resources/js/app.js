@@ -4,10 +4,10 @@ import "../css/app.css";
 import "primeicons/primeicons.css";
 import "primevue/resources/themes/lara-light-indigo/theme.css";
 
-import { createApp, h } from "vue";
-import { createInertiaApp } from "@inertiajs/vue3";
-import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
-import { ZiggyVue } from "../../vendor/tightenco/ziggy/dist/vue.m";
+import {createApp, h} from "vue";
+import {createInertiaApp} from "@inertiajs/vue3";
+import {resolvePageComponent} from "laravel-vite-plugin/inertia-helpers";
+import {ZiggyVue} from "../../vendor/tightenco/ziggy/dist/vue.m";
 
 import PrimeVue from "primevue/config";
 import ConfirmationService from "primevue/confirmationservice";
@@ -24,8 +24,8 @@ createInertiaApp({
             `./Pages/${name}.vue`,
             import.meta.glob("./Pages/**/*.vue")
         ),
-    setup({ el, App, props, plugin }) {
-        return createApp({ render: () => h(App, props) })
+    setup({el, App, props, plugin}) {
+        return createApp({render: () => h(App, props)})
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(PrimeVue)
