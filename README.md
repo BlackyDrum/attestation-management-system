@@ -59,7 +59,7 @@ $ npm run dev
 ```
 $ php artisan serve
 ```
-10. **(Optional) Seed the database with initial users**
+10. **(Optional) Seed the database with initial users:**
 ```
 $ php artisan db:seed
 ```
