@@ -179,7 +179,6 @@ const sendCreateForm = () => {
 }
 
 const handleUpload = (event) => {
-    console.log(userfileForm.userfile)
     userfileForm.post('/users/upload', {
         onStart: () => userfileForm.reset(),
         onSuccess: () => toast.add({ severity: 'success', summary: 'File Uploaded', detail: 'User registration successful', life: 3000 }),
