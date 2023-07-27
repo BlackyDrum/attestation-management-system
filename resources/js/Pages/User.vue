@@ -15,6 +15,7 @@ import InputText from 'primevue/inputtext';
 import Button from "primevue/button";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
+import FileUpload from 'primevue/fileupload';
 
 defineProps({
     users: {
@@ -44,6 +45,10 @@ const userFormEdit = useForm({
     name: null,
     email: null,
     password: null,
+})
+
+const userfileForm = useForm({
+    userfile: null
 })
 
 const page = usePage();
@@ -96,11 +101,14 @@ const sendEditForm = () => {
 
     userForm.put('/users', {
         preserveScroll: true,
-        onStart: () => userForm.reset('password'),
+        onStart: () => {
+            userForm.reset('password');
+        },
         onSuccess: () => {
             selectedUser.value.id = userForm.id;
             selectedUser.value.name = userForm.name;
             selectedUser.value.email = userForm.email;
+            toast.add({ severity: 'success', summary: 'Success', detail: 'User credentials successfully updated', life: 3000 })
         }
     });
 }
@@ -165,7 +173,17 @@ const sendCreateForm = () => {
         onStart: () => userFormEdit.reset('password'),
         onSuccess: () => {
             userFormEdit.reset();
+            toast.add({ severity: 'success', summary: 'Success', detail: 'New user successfully created', life: 3000 })
         }
+    });
+}
+
+const handleUpload = (event) => {
+    console.log(userfileForm.userfile)
+    userfileForm.post('/users/upload', {
+        onStart: () => userfileForm.reset(),
+        onSuccess: () => toast.add({ severity: 'success', summary: 'File Uploaded', detail: 'User registration successful', life: 3000 }),
+        onError: () => toast.add({ severity: 'error', summary: 'Error', detail: page.props.errors.userfile, life: 5000 })
     });
 }
 </script>
@@ -283,9 +301,6 @@ const sendCreateForm = () => {
                     <ProgressSpinner v-if="userFormEdit.processing" style="width: 50px; height: 50px" strokeWidth="8"
                                      fill="var(--surface-ground)" animationDuration=".5s"
                                      aria-label="Custom ProgressSpinner"/>
-                    <div v-if="userFormEdit.wasSuccessful" class="text-green-600 font-bold">
-                        New User successfully created
-                    </div>
                 </form>
             </TabPanel>
             <TabPanel>
@@ -293,6 +308,27 @@ const sendCreateForm = () => {
                     <i class="pi pi-upload mr-2 max-md:mr-1"></i>
                     <span class="max-md:text-xs">Upload</span>
                 </template>
+                <p class="font-bold">
+                    <em>To create multiple users simultaneously, you have the option of uploading a CSV file containing columns for Name, Email, and Password.</em>
+                </p>
+                <div class="mt-4">
+                    <FileUpload mode="basic" name="userfile[]" accept="text/csv" :maxFileSize="1000000" @uploader="handleUpload($event)" @input="userfileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false" customUpload chooseLabel="Browse">
+                        <template #empty>
+                            <p>Drag and drop files to upload.</p>
+                        </template>
+                        <template #advanced>
+                            <span>asd</span>
+                        </template>
+                    </FileUpload>
+                    <div v-if="errors.userfile" class="mt-2 text-red-600">
+                        {{errors.userfile}}
+                    </div>
+                </div>
+                <div class="mt-2 flex md:justify-end">
+                    <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
+                </div>
+                <ProgressSpinner v-if="userfileForm.processing" style="width: 50px; height: 50px" strokeWidth="8"
+                                 fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner"/>
             </TabPanel>
         </TabView>
     </Dialog>
@@ -333,9 +369,6 @@ const sendCreateForm = () => {
             </div>
             <ProgressSpinner v-if="userForm.processing" style="width: 50px; height: 50px" strokeWidth="8"
                              fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner"/>
-            <div v-if="userForm.wasSuccessful" class="text-green-600 font-bold">
-                User credentials successfully updated
-            </div>
         </form>
     </Dialog>
 </template>

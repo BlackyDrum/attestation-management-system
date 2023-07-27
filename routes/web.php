@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/users', [\App\Http\Controllers\UserController::class, 'delete']);
         Route::put('/users', [\App\Http\Controllers\UserController::class, 'edit']);
         Route::post('/users', [\App\Http\Controllers\UserController::class, 'create']);
+        Route::post('/users/upload', [\App\Http\Controllers\UserController::class, 'upload']);
     });
 });
 

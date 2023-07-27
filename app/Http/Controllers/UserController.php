@@ -87,4 +87,12 @@ class UserController extends Controller
 
         return to_route('user');
     }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'userfile' => 'mimes:csv|mimetypes:text/csv|max:1000000',
+        ]);
+
+    }
 }
