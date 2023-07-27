@@ -35,7 +35,7 @@ $ cd attestation-management-system
 ```
 $ composer install
 ```
-4. **Create a copy of the .env.example file and rename it to .env. Update the necessary configuration values such as the database credentials.**
+4. **Create a copy of the .env.example file and rename it to .env. Update the necessary configuration values such as the database credentials:**
 ```
 $ cp .env.example .env
 ```
@@ -59,7 +59,7 @@ $ npm run dev
 ```
 $ php artisan serve
 ```
-10. **(Optional) Seed the database with initial users**
+10. **(Optional) Seed the database with initial users:**
 ```
 $ php artisan db:seed
 ```
@@ -67,10 +67,10 @@ $ php artisan db:seed
 
 <br>
 
-**Note: Manual User Creation for Full Access**
-<p>In order to have full access to the Attestation Management System, you need to manually add a user and set the admin flag to true using the following SQL command:</p>
+## Manual User Creation for Full Access
+<p>In order to have full access to the Attestation Management System, you need to manually add a user and set the admin flag to true. You can use the following command:</p>
 
 ```sql
-INSERT INTO users(name, email, password, admin) VALUES ('Name','admin@example.com', '$2y$10$7yXSbuH7.wseW.r8ob9ULO1rM7ORxh9n0xp014DCwqOiRct2s1JTm',true);
+INSERT INTO users(name, email, password, admin) VALUES ('Admin','admin@example.com', '$2y$10$7yXSbuH7.wseW.r8ob9ULO1rM7ORxh9n0xp014DCwqOiRct2s1JTm',true);
 ```
 **Please note that the password used in this example is "default." It's crucial to change the password to something secure and unique once you gain access to the system.**
