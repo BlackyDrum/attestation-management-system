@@ -67,7 +67,7 @@ $ php artisan db:seed
 
 <br>
 
-**Note: Manual User Creation for Full Access**
+## Manual User Creation for Full Access
 <p>In order to have full access to the Attestation Management System, you need to manually add a user and set the admin flag to true. You can use the following command:</p>
 
 ```sql
