@@ -64,3 +64,13 @@ $ php artisan serve
 $ php artisan db:seed
 ```
 11. **Visit http://localhost:8000 in your web browser to access the application.**
+
+<br>
+
+**Note: Manual User Creation for Full Access**
+<p>In order to have full access to the Attestation Management System, you need to manually add a user and set the admin flag to true using the following SQL command:</p>
+
+```sql
+INSERT INTO users(name, email, password, admin) VALUES ('Name','admin@example.com', '$2y$10$7yXSbuH7.wseW.r8ob9ULO1rM7ORxh9n0xp014DCwqOiRct2s1JTm',true);
+```
+**Please note that the password used in this example is "default." It's crucial to change the password to something secure and unique once you gain access to the system.**
