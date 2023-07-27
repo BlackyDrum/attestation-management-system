@@ -183,7 +183,11 @@ const handleUpload = (event) => {
     userfileForm.post('/users/upload', {
         onStart: () => userfileForm.reset(),
         onSuccess: () => toast.add({ severity: 'success', summary: 'File Uploaded', detail: 'User registration successful', life: 3000 }),
-        onError: () => toast.add({ severity: 'error', summary: 'Error', detail: page.props.errors.userfile, life: 5000 })
+        onError: () =>  {
+            for (const error in page.props.errors) {
+                toast.add({ severity: 'error', summary: 'Error', detail: page.props.errors[error], life: 5000 })
+            }
+        }
     });
 }
 </script>

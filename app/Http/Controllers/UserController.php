@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Illuminate\Validation\Rules;
@@ -93,6 +95,45 @@ class UserController extends Controller
         $request->validate([
             'userfile' => 'mimes:csv|mimetypes:text/csv|max:1000000',
         ]);
+
+        if ($handle = fopen($request->file('userfile'), "r")) {
+            $firstRowSkipped = false;
+
+            DB::beginTransaction();
+
+            while ($data = fgetcsv($handle, 1000)) {
+                if (!$firstRowSkipped) {
+                    $firstRowSkipped = true;
+                    continue;
+                }
+
+                $validator = Validator::make(['name' => $data[0], 'email' => $data[1], 'password' => $data[2]],[
+                    'name' => 'required|string|max:50',
+                    'email' => 'required|string|email|max:255|unique:users,email',
+                    'password' => ['required', Rules\Password::defaults()],
+                ]);
+
+                if ($validator->fails()) {
+                    DB::rollBack();
+                    if (!empty($validator->failed()['email']['Unique'])) {
+                        $validator->errors()->forget('email');
+                        $validator->errors()->add('email', "The email '{$data[1]}' is already taken.");
+                    }
+                    return to_route('user')->withErrors($validator->errors()->all());
+                }
+
+                User::query()->create([
+                    'name' => $data[0],
+                    'email' => $data[1],
+                    'password' => Hash::make($data[2]),
+                ]);
+            }
+
+            DB::commit();
+            fclose($handle);
+        }
+
+        return to_route('user');
 
     }
 }
