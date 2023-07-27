@@ -44,7 +44,7 @@ let visiblePrivacy = ref(false);
                                 </NavLink>
                                 <NavLink v-if="$page.props.auth.user.admin" :href="route('user')"
                                          :active="route().current('user')">
-                                    User
+                                    Users
                                 </NavLink>
                             </div>
 

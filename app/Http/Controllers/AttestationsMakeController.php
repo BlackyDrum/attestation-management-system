@@ -57,7 +57,7 @@ class AttestationsMakeController extends Controller
         ]);
     }
 
-    public function edit(Request $request)
+    public function make(Request $request)
     {
         $request->validate([
             'tasks' => 'required|array|min:1',

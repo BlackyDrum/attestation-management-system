@@ -59,7 +59,7 @@ const selectedUser = ref(null);
 const createShow = ref(false);
 
 const handleSearchRequest = () => {
-    axios.get(`/user/?search=${search.value}&response=true`)
+    axios.get(`/users/?search=${search.value}&response=true`)
         .then(response => {
             page.props.users = response.data;
             empty.value = page.props.users.data.length === 0;
@@ -94,7 +94,7 @@ const handleUserEditClose = () => {
 const sendEditForm = () => {
     if ((selectedUser.value.name === userForm.name && selectedUser.value.email === userForm.email) && !userForm.password) return;
 
-    userForm.put('/user', {
+    userForm.put('/users', {
         preserveScroll: true,
         onStart: () => userForm.reset('password'),
         onSuccess: () => {
@@ -113,7 +113,7 @@ const confirm2 = (userid, username) => {
         acceptClass: 'p-button-danger',
 
         accept: () => {
-            axios.delete('/user', {
+            axios.delete('/users', {
                 data: {
                     user_id: userid,
                 }
@@ -160,7 +160,7 @@ const handleCreateUserClose = () => {
 }
 
 const sendCreateForm = () => {
-    userFormEdit.post('/user', {
+    userFormEdit.post('/users', {
         preserveScroll: true,
         onStart: () => userFormEdit.reset('password'),
         onSuccess: () => {
@@ -171,12 +171,12 @@ const sendCreateForm = () => {
 </script>
 
 <template>
-    <Head title="User"/>
+    <Head title="Users"/>
 
     <AuthenticatedLayout>
         <template #header>
             <div class="grid grid-cols-2">
-                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">User</h2>
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Users</h2>
                 <div class="ml-auto">
                     <primary-button @click="handleCreateUserOpen">Create new User</primary-button>
                 </div>
