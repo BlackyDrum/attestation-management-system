@@ -114,6 +114,16 @@ const sendEditForm = () => {
                 detail: 'User credentials updated',
                 life: 3000
             })
+        },
+        onError: () => {
+            if (page.props.errors.id) {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: page.props.errors.id,
+                    life: 3000
+                })
+            }
         }
     });
 }
