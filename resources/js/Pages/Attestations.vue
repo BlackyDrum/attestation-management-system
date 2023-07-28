@@ -1,6 +1,6 @@
 <script setup>
 import {Head, useForm, usePage, router} from '@inertiajs/vue3';
-import {onMounted, ref} from "vue";
+import {onBeforeUpdate, onMounted, ref} from "vue";
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -42,6 +42,10 @@ defineProps({
 })
 
 onMounted(() => {
+    combinedData.value = combine(page.props.attestations);
+})
+
+onBeforeUpdate(() => {
     combinedData.value = combine(page.props.attestations);
 })
 
