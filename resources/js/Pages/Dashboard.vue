@@ -18,5 +18,15 @@ import {Head} from '@inertiajs/vue3';
                 </div>
             </div>
         </div>
+
+
+        <div class="text-gray-700 text-center">
+            <div style="font-size: 10rem" class="pi pi-bell"></div>
+        </div>
+        <div class="text-gray-500 text-center mt-4">
+            You have no notifications
+        </div>
+
+
     </AuthenticatedLayout>
 </template>
