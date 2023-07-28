@@ -111,7 +111,7 @@ const sendEditForm = () => {
             toast.add({
                 severity: 'success',
                 summary: 'Success',
-                detail: 'User credentials successfully updated',
+                detail: 'User credentials updated',
                 life: 3000
             })
         }
@@ -137,7 +137,7 @@ const confirm2 = (userid, username) => {
                             toast.add({
                                 severity: 'success',
                                 summary: 'Success',
-                                detail: `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} was successfully deleted`,
+                                detail: `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} was deleted`,
                                 life: 3000,
                             })
                             page.props.users.data.splice(i, 1);
@@ -178,7 +178,7 @@ const sendCreateForm = () => {
         onStart: () => userFormEdit.reset('password'),
         onSuccess: () => {
             userFormEdit.reset();
-            toast.add({severity: 'success', summary: 'Success', detail: 'New user successfully created', life: 3000})
+            toast.add({severity: 'success', summary: 'Success', detail: 'New user created', life: 3000})
         }
     });
 }

@@ -82,7 +82,7 @@ const handleFormSend = () => {
             toast.add({
                 severity: 'success',
                 summary: 'Success',
-                detail: "Successfully updated attestation",
+                detail: "Attestation updated",
                 life: 3000,
             })
         })

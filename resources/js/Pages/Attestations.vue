@@ -99,7 +99,7 @@ const handleForm = () => {
                 toast.add({
                     severity: 'success',
                     summary: 'Success',
-                    detail: `Subject '${attestationForm.subjectName}' was successfully updated`,
+                    detail: `Subject '${attestationForm.subjectName}' updated`,
                     life: 3000,
                 })
                 reset();
@@ -169,7 +169,7 @@ const confirm1 = (attestation) => {
                             toast.add({
                                 severity: 'success',
                                 summary: 'Success',
-                                detail: `Attestation '${combinedData.value[i].subject_name}' with ID ${combinedData.value[i].id} was successfully deleted`,
+                                detail: `Attestation '${combinedData.value[i].subject_name}' with ID ${combinedData.value[i].id} was deleted`,
                                 life: 3000,
                             })
                             combinedData.value.splice(i, 1);
