@@ -5,6 +5,7 @@ import {onMounted, ref} from "vue";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from 'primevue/usetoast';
@@ -13,7 +14,6 @@ import MultiSelect from 'primevue/multiselect';
 import InputText from "primevue/inputtext";
 import InputNumber from 'primevue/inputnumber';
 import Dropdown from 'primevue/dropdown';
-import ProgressSpinner from "primevue/progressspinner";
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -567,9 +567,7 @@ const colors = ref([
                     </div>
                     <div class="my-4 grid grid-cols-2">
                         <div class="justify-center">
-                            <ProgressSpinner v-if="attestationForm.processing" style="width: 50px; height: 3rem"
-                                             strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s"
-                                             aria-label="Custom ProgressSpinner"/>
+                            <CustomProgressSpinner :processing="attestationForm.processing"></CustomProgressSpinner>
                         </div>
                         <div class="flex justify-end" style="height: 3rem">
                             <primary-button class="mr-5" :disabled="attestationForm.processing">{{

@@ -5,10 +5,10 @@ import {onMounted, ref} from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
-import ProgressSpinner from 'primevue/progressspinner';
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
 import InputText from 'primevue/inputtext';
@@ -311,9 +311,7 @@ const handleUpload = (event) => {
                         </primary-button>
                         <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
                     </div>
-                    <ProgressSpinner v-if="userFormEdit.processing" style="width: 50px; height: 50px" strokeWidth="8"
-                                     fill="var(--surface-ground)" animationDuration=".5s"
-                                     aria-label="Custom ProgressSpinner"/>
+                    <CustomProgressSpinner :processing="userFormEdit.processing"></CustomProgressSpinner>
                 </form>
             </TabPanel>
             <TabPanel>
@@ -344,9 +342,7 @@ const handleUpload = (event) => {
                 <div class="mt-2 flex md:justify-end">
                     <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
                 </div>
-                <ProgressSpinner v-if="userfileForm.processing" style="width: 50px; height: 50px" strokeWidth="8"
-                                 fill="var(--surface-ground)" animationDuration=".5s"
-                                 aria-label="Custom ProgressSpinner"/>
+                <CustomProgressSpinner :processing="userfileForm.processing"></CustomProgressSpinner>
             </TabPanel>
         </TabView>
     </Dialog>
@@ -385,8 +381,7 @@ const handleUpload = (event) => {
                 </primary-button>
                 <secondary-button @click="handleUserEditClose">Cancel</secondary-button>
             </div>
-            <ProgressSpinner v-if="userForm.processing" style="width: 50px; height: 50px" strokeWidth="8"
-                             fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner"/>
+            <CustomProgressSpinner :processing="userForm.processing"></CustomProgressSpinner>
         </form>
     </Dialog>
 </template>
