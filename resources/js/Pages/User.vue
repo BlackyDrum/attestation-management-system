@@ -225,9 +225,9 @@ const handleUpload = (event) => {
                 <div v-for="user in users.data" :key="user.id"
                      class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3">
                     <div>
-                        <div class="font-bold flex items-center text-white p-2">
-                            <span>{{ user.name }} <span v-if="user.admin" class="pi pi-android"></span></span>
-                            <span class="ml-auto mr-5 flex flex-wrap  justify-content-center">
+                        <div class="font-bold flex items-center text-white p-2 grid grid-cols-2">
+                            <div class="break-all">{{ user.name }} <span v-if="user.admin" class="pi pi-android"></span></div>
+                            <div class="ml-auto mr-5 flex flex-wrap  justify-content-center">
                                 <div class="mr-4 md:hidden">
                                     <Button v-if="!user.admin" @click="confirm2(user.id, user.name)" icon="pi pi-trash"
                                             severity="danger"/>
@@ -243,12 +243,12 @@ const handleUpload = (event) => {
                                 <div class="md:hidden">
                                     <Button @click="handleUserEdit(user)" icon="pi pi-user-edit" severity="success"/>
                                 </div>
-                            </span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <ConfirmDialog ref="confirmDialog" class="bg-white p-4 custom-confirm-dialog rounded-md gap-8">
+                <ConfirmDialog ref="confirmDialog" class="bg-white break-all p-4 custom-confirm-dialog rounded-md gap-8">
                 </ConfirmDialog>
             </div>
         </div>

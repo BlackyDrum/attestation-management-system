@@ -49,7 +49,7 @@ class UserController extends Controller
     {
         $request->validate([
             'id' => 'required|integer|exists:users,id',
-            'name' => 'required|string|max:25',
+            'name' => 'required|string|max:50',
             'email' => ['required', 'max:255', 'email', Rule::unique('users')->ignore($request->input('id'))],
             'password' => ['nullable', Rules\Password::defaults()],
         ]);
@@ -76,7 +76,7 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:25,',
+            'name' => 'required|string|max:50,',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => ['required', Rules\Password::defaults()],
         ]);
@@ -108,7 +108,7 @@ class UserController extends Controller
                 }
 
                 $validator = Validator::make(['name' => $data[0], 'email' => $data[1], 'password' => $data[2]], [
-                    'name' => 'required|string|max:25',
+                    'name' => 'required|string|max:50',
                     'email' => 'required|string|email|max:255|unique:users,email',
                     'password' => ['required', Rules\Password::defaults()],
                 ]);
