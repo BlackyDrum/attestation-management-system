@@ -70,7 +70,7 @@ class AttestationController extends Controller
             'semester' => 'required|exists:semester,semester',
             'attestations' => 'required|array|min:1',
             'attestations.*.title' => 'required|string|max:255',
-            'attestations.*.description' => 'nullable|string|max:2500',
+            'attestations.*.description' => 'nullable|string|max:5000',
         ]);
 
         $attestation = Attestation::query()->create([
@@ -116,7 +116,7 @@ class AttestationController extends Controller
             'semester' => 'required|exists:semester,semester',
             'attestations' => 'required|array|min:1',
             'attestations.*.title' => 'required|string|max:255',
-            'attestations.*.description' => 'nullable|string|max:2500',
+            'attestations.*.description' => 'nullable|string|max:5000',
             'attestations.*.task_id' => 'nullable',
         ]);
 
