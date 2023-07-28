@@ -7,7 +7,7 @@ import NavLink from '@/Components/NavLink.vue';
 import Imprint from '@/Components/Imprint.vue';
 import PrivacyStatement from '@/Components/PrivacyStatement.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import {Link, usePage, } from '@inertiajs/vue3';
+import {Link, usePage,router } from '@inertiajs/vue3';
 import {useToast} from 'primevue/usetoast';
 import Dialog from 'primevue/dialog';
 import Toast from "primevue/toast";
@@ -23,6 +23,7 @@ Echo.private(`notification.${page.props.auth.user.id}`)
             detail: 'You have a new notification',
             life: 8000,
         })
+        router.reload();
     })
 
 onBeforeUnmount(() => {
