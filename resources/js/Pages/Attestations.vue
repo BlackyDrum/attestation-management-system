@@ -350,7 +350,7 @@ const colors = ref([
                 <div v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData"
                      :key="attestation.id"
                      class="mb-10 p-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <Dialog v-model:visible="showAttestation" modal :header="subject_name" :style="{ width: '80vw' }">
+                    <Dialog v-model:visible="showAttestation" modal :header="subject_name" :style="{ width: '90vw' }">
                         <TabView :scrollable="true">
                             <TabPanel>
                                 <template #header>
@@ -433,7 +433,7 @@ const colors = ref([
                            class="bg-white p-4 custom-confirm-dialog rounded-md gap-8"></ConfirmDialog>
 
             <Dialog v-model:visible="showDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'"
-                    :style="{ width: '80vw' }">
+                    :style="{ width: '90vw' }">
                 <form @submit.prevent="handleForm">
                     <span class="p-float-label mt-5">
                         <MultiSelect :loading="!$props.users" v-model="attestationForm.users" :options="users" filter

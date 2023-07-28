@@ -272,7 +272,7 @@ const handleUpload = (event) => {
     </AuthenticatedLayout>
 
     <Dialog v-model:visible="createShow" :closable="false" header="Create new User"
-            class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '80vw' }" :modal="true" :draggable="false">
+            class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '90vw' }" :modal="true" :draggable="false">
         <TabView>
             <TabPanel>
                 <template #header>
@@ -304,14 +304,19 @@ const handleUpload = (event) => {
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>
-                    <div class="mt-4 flex justify-end">
-                        <primary-button class="mr-5"
-                                        :disabled="userFormEdit.processing"
-                                        @click="sendCreateForm">Create User
-                        </primary-button>
-                        <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
+
+                    <div class="mt-4 grid grid-cols-2">
+                        <div class="justify-center">
+                            <CustomProgressSpinner :processing="userFormEdit.processing"></CustomProgressSpinner>
+                        </div>
+                        <div class="flex justify-end" style="height: 3rem">
+                            <primary-button class="max-md:mr-2 mr-5"
+                                            :disabled="userFormEdit.processing"
+                                            @click="sendCreateForm">Create User
+                            </primary-button>
+                            <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
+                        </div>
                     </div>
-                    <CustomProgressSpinner :processing="userFormEdit.processing"></CustomProgressSpinner>
                 </form>
             </TabPanel>
             <TabPanel>
@@ -348,7 +353,7 @@ const handleUpload = (event) => {
     </Dialog>
 
     <Dialog v-model:visible="editShow" :closable="false" v-if="selectedUser" :header="selectedUser.name"
-            class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '80vw' }" :modal="true" :draggable="false">
+            class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '90vw' }" :modal="true" :draggable="false">
         <form @submit.prevent>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
@@ -374,14 +379,19 @@ const handleUpload = (event) => {
                            class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>
-            <div class="mt-4 flex justify-end">
-                <primary-button class="mr-5"
-                                :disabled="userForm.processing || (selectedUser.name === userForm.name && selectedUser.email === userForm.email && !userForm.password)"
-                                @click="sendEditForm">Save Changes
-                </primary-button>
-                <secondary-button @click="handleUserEditClose">Cancel</secondary-button>
+
+            <div class="mt-4 grid grid-cols-2">
+                <div class="justify-center">
+                    <CustomProgressSpinner :processing="userForm.processing"></CustomProgressSpinner>
+                </div>
+                <div class="flex justify-end" style="height: 3rem">
+                    <primary-button class="mr-5 "
+                                    :disabled="userForm.processing || (selectedUser.name === userForm.name && selectedUser.email === userForm.email && !userForm.password)"
+                                    @click="sendEditForm">Save Changes
+                    </primary-button>
+                    <secondary-button @click="handleUserEditClose">Cancel</secondary-button>
+                </div>
             </div>
-            <CustomProgressSpinner :processing="userForm.processing"></CustomProgressSpinner>
         </form>
     </Dialog>
 </template>
