@@ -132,7 +132,7 @@ FilterService.register(FILTER.value, (value, filter) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Make Attestation for
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight break-words">Make Attestation for
                 '{{ subject_name }}'</h2>
         </template>
         <div class="mt-5 ml-5 text-gray-400 ">
@@ -168,7 +168,7 @@ FilterService.register(FILTER.value, (value, filter) => {
                             </Column>
                             <Column v-for="header in headers" :field="header" :key="header">
                                 <template #header>
-                                    <div class="mx-auto">
+                                    <div class="mx-auto break-all">
                                         <div>{{ header }}</div>
                                     </div>
                                 </template>

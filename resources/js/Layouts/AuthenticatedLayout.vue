@@ -17,7 +17,7 @@ let visiblePrivacy = ref(false);
 </script>
 
 <template>
-    <Toast position="top-left" class="break-all" />
+    <Toast position="top-left" class="break-words" />
     <div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav class="bg-white dark:bg-gray-800 border-b  border-gray-100 dark:border-gray-700">

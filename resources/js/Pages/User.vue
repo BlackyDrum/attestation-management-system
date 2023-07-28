@@ -248,7 +248,7 @@ const handleUpload = (event) => {
                     </div>
                 </div>
 
-                <ConfirmDialog ref="confirmDialog" class="bg-white break-all p-4 custom-confirm-dialog rounded-md gap-8">
+                <ConfirmDialog ref="confirmDialog" class="bg-white break-words p-4 custom-confirm-dialog rounded-md gap-8">
                 </ConfirmDialog>
             </div>
         </div>
@@ -271,6 +271,7 @@ const handleUpload = (event) => {
         </div>
     </AuthenticatedLayout>
 
+    <!-- Create new User -->
     <Dialog v-model:visible="createShow" :closable="false" header="Create new User"
             class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '90vw' }" :modal="true" :draggable="false">
         <TabView>
@@ -352,8 +353,9 @@ const handleUpload = (event) => {
         </TabView>
     </Dialog>
 
+    <!-- Edit User -->
     <Dialog v-model:visible="editShow" :closable="false" v-if="selectedUser" :header="selectedUser.name"
-            class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '90vw' }" :modal="true" :draggable="false">
+            class="bg-gray-200 rounded-lg p-2 font-bold break-all" :style="{ width: '90vw' }" :modal="true" :draggable="false">
         <form @submit.prevent>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
@@ -380,7 +382,7 @@ const handleUpload = (event) => {
             </div>
             <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>
 
-            <div class="mt-4 grid grid-cols-2">
+            <div class="mt-4 grid grid-cols-2 break-keep">
                 <div class="justify-center">
                     <CustomProgressSpinner :processing="userForm.processing"></CustomProgressSpinner>
                 </div>

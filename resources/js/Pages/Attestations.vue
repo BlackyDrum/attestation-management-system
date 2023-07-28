@@ -74,6 +74,12 @@ const handleForm = () => {
                     reset();
                     successForm.value = true;
                     combinedData.value = combine(page.props.attestations);
+                    toast.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'New Subject for attestation created',
+                        life: 3000,
+                    })
                 },
                 onError: (error) => {
                     for (const e in error) {
@@ -306,7 +312,7 @@ const colors = ref([
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" :key="attestation.id"
                      class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 p-4 rounded-lg">
-                    <Card class="rounded-lg">
+                    <Card class="rounded-lg break-words">
                         <template #title> {{ attestation.subject_name }} ({{ attestation.semester }})</template>
                         <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
                         <template #content>
@@ -430,7 +436,7 @@ const colors = ref([
 
         <span v-if="$page.props.auth.user.admin">
             <ConfirmDialog ref="confirmDialog"
-                           class="bg-white p-4 custom-confirm-dialog rounded-md gap-8"></ConfirmDialog>
+                           class="bg-white p-4 custom-confirm-dialog rounded-md gap-8 break-all"></ConfirmDialog>
 
             <Dialog v-model:visible="showDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'"
                     :style="{ width: '90vw' }">
@@ -581,9 +587,6 @@ const colors = ref([
                         </div>
                     </div>
                 </form>
-                <div v-if="successForm" class="text-green-600 font-bold">
-                    New Subject for attestation successfully created
-                </div>
             </Dialog>
         </span>
     </AuthenticatedLayout>
