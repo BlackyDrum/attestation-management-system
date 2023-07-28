@@ -8,7 +8,6 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 
 import {useConfirm} from "primevue/useconfirm";
-import {useToast} from 'primevue/usetoast';
 import Dialog from "primevue/dialog";
 import MultiSelect from 'primevue/multiselect';
 import InputText from "primevue/inputtext";
@@ -48,7 +47,6 @@ onMounted(() => {
 
 const page = usePage();
 const confirm = useConfirm();
-const toast = useToast();
 
 const handleDialogOpen = () => {
     reset();
@@ -74,7 +72,7 @@ const handleForm = () => {
                     reset();
                     successForm.value = true;
                     combinedData.value = combine(page.props.attestations);
-                    toast.add({
+                    window.toast.add({
                         severity: 'success',
                         summary: 'Success',
                         detail: 'New Subject for attestation created',
@@ -96,7 +94,7 @@ const handleForm = () => {
         }))
         .put('/attestations', {
             onSuccess: () => {
-                toast.add({
+                window.toast.add({
                     severity: 'success',
                     summary: 'Success',
                     detail: `Subject '${attestationForm.subjectName}' updated`,
@@ -166,7 +164,7 @@ const confirm1 = (attestation) => {
                 .then(response => {
                     for (let i = 0; i < combinedData.value.length; i++) {
                         if (response.data.attestation_id === combinedData.value[i].id) {
-                            toast.add({
+                            window.toast.add({
                                 severity: 'success',
                                 summary: 'Success',
                                 detail: `Attestation '${combinedData.value[i].subject_name}' with ID ${combinedData.value[i].id} was deleted`,
@@ -178,7 +176,7 @@ const confirm1 = (attestation) => {
                     }
                 })
                 .catch(error => {
-                    toast.add({
+                    window.toast.add({
                         severity: 'error',
                         summary: 'Error',
                         detail: error.response.data.message,

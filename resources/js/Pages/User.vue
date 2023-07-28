@@ -8,7 +8,6 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 
 import {useConfirm} from "primevue/useconfirm";
-import {useToast} from "primevue/usetoast";
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
 import InputText from 'primevue/inputtext';
@@ -53,7 +52,6 @@ const userfileForm = useForm({
 
 const page = usePage();
 const confirm = useConfirm();
-const toast = useToast();
 
 const search = ref("");
 const empty = ref(false);
@@ -70,7 +68,7 @@ const handleSearchRequest = () => {
             empty.value = page.props.users.data.length === 0;
         })
         .catch(error => {
-            toast.add({
+            window.toast.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: error.response.data.message,
@@ -108,7 +106,7 @@ const sendEditForm = () => {
             selectedUser.value.id = userForm.id;
             selectedUser.value.name = userForm.name;
             selectedUser.value.email = userForm.email;
-            toast.add({
+            window.toast.add({
                 severity: 'success',
                 summary: 'Success',
                 detail: 'User credentials updated',
@@ -117,7 +115,7 @@ const sendEditForm = () => {
         },
         onError: () => {
             if (page.props.errors.id) {
-                toast.add({
+                window.toast.add({
                     severity: 'error',
                     summary: 'Error',
                     detail: page.props.errors.id,
@@ -144,7 +142,7 @@ const confirm2 = (userid, username) => {
                 .then(response => {
                     for (let i = 0; i < page.props.users.data.length; i++) {
                         if (page.props.users.data[i].id === response.data.user_id) {
-                            toast.add({
+                            window.toast.add({
                                 severity: 'success',
                                 summary: 'Success',
                                 detail: `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} was deleted`,
@@ -157,7 +155,7 @@ const confirm2 = (userid, username) => {
                     }
                 })
                 .catch(error => {
-                    toast.add({
+                    window.toast.add({
                         severity: 'error',
                         summary: 'Error',
                         detail: error.response.data.message,
@@ -188,7 +186,7 @@ const sendCreateForm = () => {
         onStart: () => userFormEdit.reset('password'),
         onSuccess: () => {
             userFormEdit.reset();
-            toast.add({severity: 'success', summary: 'Success', detail: 'New user created', life: 3000})
+            window.toast.add({severity: 'success', summary: 'Success', detail: 'New user created', life: 3000})
         }
     });
 }
@@ -196,7 +194,7 @@ const sendCreateForm = () => {
 const handleUpload = (event) => {
     userfileForm.post('/users/upload', {
         onStart: () => userfileForm.reset(),
-        onSuccess: () => toast.add({
+        onSuccess: () => window.toast.add({
             severity: 'success',
             summary: 'File Uploaded',
             detail: 'User registration successful',
@@ -204,7 +202,7 @@ const handleUpload = (event) => {
         }),
         onError: () => {
             for (const error in page.props.errors) {
-                toast.add({severity: 'error', summary: 'Error', detail: page.props.errors[error], life: 5000})
+                window.toast.add({severity: 'error', summary: 'Error', detail: page.props.errors[error], life: 5000})
             }
         }
     });

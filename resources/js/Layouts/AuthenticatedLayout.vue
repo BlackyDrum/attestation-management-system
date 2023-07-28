@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from 'vue';
+import {onBeforeUnmount, ref} from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -7,9 +7,28 @@ import NavLink from '@/Components/NavLink.vue';
 import Imprint from '@/Components/Imprint.vue';
 import PrivacyStatement from '@/Components/PrivacyStatement.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import {Link} from '@inertiajs/vue3';
+import {Link, usePage, } from '@inertiajs/vue3';
+import {useToast} from 'primevue/usetoast';
 import Dialog from 'primevue/dialog';
 import Toast from "primevue/toast";
+
+const page = usePage();
+window.toast = useToast();
+
+Echo.private(`notification.${page.props.auth.user.id}`)
+    .listen('NotificationEvent', event => {
+        window.toast.add({
+            severity: 'info',
+            summary: 'Info',
+            detail: 'You have a new notification',
+            life: 8000,
+        })
+    })
+
+onBeforeUnmount(() => {
+    Echo.leave(`notification.${page.props.auth.user.id}`);
+});
+
 const showingNavigationDropdown = ref(false);
 
 let visibleImprint = ref(false);

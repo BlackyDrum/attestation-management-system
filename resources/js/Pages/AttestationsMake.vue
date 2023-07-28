@@ -8,9 +8,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Checkbox from "primevue/checkbox";
 import InputText from "primevue/inputtext";
-import Dialog from "primevue/dialog";
 import {FilterService} from 'primevue/api';
-import {useToast} from 'primevue/usetoast';
 
 import combine from "@/CombinedData.js";
 
@@ -58,7 +56,6 @@ onMounted(() => {
 });
 
 const page = usePage();
-const toast = useToast();
 
 const extractData = (data, index) => {
     const keys = (Object.keys(data).filter(key => key.startsWith('task_id'))).map(key => key.replace('task_id_', ''));
@@ -79,7 +76,7 @@ const handleFormSend = () => {
         tasks: formData.value
     })
         .then(response => {
-            toast.add({
+            window.toast.add({
                 severity: 'success',
                 summary: 'Success',
                 detail: "Attestation updated",
@@ -87,7 +84,7 @@ const handleFormSend = () => {
             })
         })
         .catch(error => {
-            toast.add({
+            window.toast.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: error.response.data.message,
