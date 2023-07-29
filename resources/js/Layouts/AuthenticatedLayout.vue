@@ -1,5 +1,5 @@
 <script setup>
-import {onBeforeUnmount, ref} from 'vue';
+import {onBeforeMount, onBeforeUnmount, ref} from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -15,16 +15,19 @@ import Toast from "primevue/toast";
 const page = usePage();
 window.toast = useToast();
 
-Echo.private(`notification.${page.props.auth.user.id}`)
-    .listen('NotificationEvent', event => {
-        window.toast.add({
-            severity: 'info',
-            summary: 'Info',
-            detail: 'You have a new notification',
-            life: 8000,
+onBeforeMount(() => {
+    Echo.private(`notification.${page.props.auth.user.id}`)
+        .listen('NotificationEvent', event => {
+            window.toast.add({
+                severity: 'info',
+                summary: 'Info',
+                detail: 'You have a new notification',
+                life: 8000,
+            })
+            if (event.id !== page.props.auth.user.id)
+                router.reload();
         })
-        router.reload();
-    })
+})
 
 onBeforeUnmount(() => {
     Echo.leave(`notification.${page.props.auth.user.id}`);
