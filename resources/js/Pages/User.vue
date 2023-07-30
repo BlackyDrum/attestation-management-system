@@ -293,7 +293,7 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-user mr-2"></i>
                         </span>
-                        <InputText type="text" required v-model="userFormEdit.name" placeholder="Name"
+                        <InputText :disabled="userFormEdit.processing" type="text" required v-model="userFormEdit.name" placeholder="Name"
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <div class="ml-6 text-red-600" v-if="errors.name">{{ errors.name }}</div>
@@ -301,7 +301,7 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-at mr-2"></i>
                         </span>
-                        <InputText type="email" required v-model="userFormEdit.email" placeholder="E-Mail"
+                        <InputText :disabled="userFormEdit.processing" type="email" required v-model="userFormEdit.email" placeholder="E-Mail"
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <div class="ml-6 text-red-600" v-if="errors.email">{{ errors.email }}</div>
@@ -309,7 +309,7 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-lock mr-2"></i>
                         </span>
-                        <InputText type="password" v-model="userFormEdit.password" placeholder="Password"
+                        <InputText :disabled="userFormEdit.processing" type="password" v-model="userFormEdit.password" placeholder="Password"
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>
@@ -338,7 +338,7 @@ const handleUpload = (event) => {
                         columns for Name, Email, and Password.</em>
                 </p>
                 <div class="mt-4">
-                    <FileUpload mode="basic" name="userfile[]" accept="text/csv" :maxFileSize="1000000"
+                    <FileUpload :disabled="userfileForm.processing" mode="basic" name="userfile[]" accept="text/csv" :maxFileSize="1000000"
                                 @uploader="handleUpload($event)"
                                 @input="userfileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false"
                                 customUpload chooseLabel="Browse">
@@ -369,7 +369,7 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-user mr-2"></i>
                 </span>
-                <InputText type="text" required v-model="userForm.name" placeholder="Name"
+                <InputText :disabled="userForm.processing" type="text" required v-model="userForm.name" placeholder="Name"
                            class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.name">{{ errors.name }}</div>
@@ -377,7 +377,7 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-at mr-2"></i>
                 </span>
-                <InputText type="email" required v-model="userForm.email" placeholder="E-Mail"
+                <InputText :disabled="userForm.processing" type="email" required v-model="userForm.email" placeholder="E-Mail"
                            class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.email">{{ errors.email }}</div>
@@ -385,7 +385,7 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-lock mr-2"></i>
                 </span>
-                <InputText type="password" v-model="userForm.password" placeholder="New Password"
+                <InputText :disabled="userForm.processing" type="password" v-model="userForm.password" placeholder="New Password"
                            class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>

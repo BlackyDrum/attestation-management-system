@@ -444,7 +444,7 @@ const colors = ref([
                     :style="{ width: '90vw' }">
                 <form @submit.prevent="handleForm">
                     <span class="p-float-label mt-5">
-                        <MultiSelect :loading="!$props.users" v-model="attestationForm.users" :options="users" filter
+                        <MultiSelect :disabled="attestationForm.processing" :loading="!$props.users" v-model="attestationForm.users" :options="users" filter
                                      optionLabel="name" :maxSelectedLabels="3"
                                      :virtualScrollerOptions="{ itemSize: 44 }"
                                      class="w-full md:w-20rem"/>
@@ -460,7 +460,7 @@ const colors = ref([
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">
                                 <i class="pi pi-hashtag"/>
-                                <input-number v-model="attestationForm.subjectNumber" :useGrouping="false"
+                                <input-number :disabled="attestationForm.processing" v-model="attestationForm.subjectNumber" :useGrouping="false"
                                               class="w-full"></input-number>
                                 <label for="subject_number">Subject Number</label>
                             </span>
@@ -471,7 +471,7 @@ const colors = ref([
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">
                                 <i class="pi pi-book"/>
-                                <input-text v-model="attestationForm.subjectName" class="w-full"></input-text>
+                                <input-text :disabled="attestationForm.processing" v-model="attestationForm.subjectName" class="w-full"></input-text>
                                 <label for="subject_name">Subject Name</label>
                             </span>
                             <div v-if="errors.subjectName" class="text-red-600">
@@ -481,7 +481,7 @@ const colors = ref([
                     </div>
                     <div class="mt-4">
                         <span class="p-float-label">
-                            <Dropdown v-model="attestationForm.semester" :options="semester" optionLabel="semester"
+                            <Dropdown :disabled="attestationForm.processing" v-model="attestationForm.semester" :options="semester" optionLabel="semester"
                                       class="max-md:w-[16rem] w-80"/>
                             <label for="semester">Semester</label>
                         </span>
@@ -495,7 +495,7 @@ const colors = ref([
                                 {{ task.id }}. Attestation
                             </div>
                             <div>
-                                <input-text v-model="attestationForm.attestations[task.id - 1].title" class="w-full"
+                                <input-text :disabled="attestationForm.processing" v-model="attestationForm.attestations[task.id - 1].title" class="w-full"
                                             placeholder="Title"></input-text>
                                 <div
                                     v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.title'))"
