@@ -6,6 +6,7 @@ import {Head, router, usePage} from '@inertiajs/vue3';
 import {onBeforeUpdate, onMounted, ref} from "vue";
 
 import Card from 'primevue/card';
+import Message from "primevue/message";
 
 const page = usePage();
 
@@ -20,29 +21,20 @@ onBeforeUpdate(() => {
 const notifications = ref([]);
 
 const deleteNotification = (index, clear) => {
-    window.toast.add({
-        severity: 'info',
-        summary: 'Info',
-        detail: "Removing notification...",
-        life: 3000,
-    })
-
-    axios.delete('/dashboard', {
+    axios.delete('/notifications', {
         data: {
             index: index,
             clearAll: clear,
         }
     })
         .then(response => {
-            if (clear) notifications.value = [];
-            else notifications.value.splice(index, 1);
-            router.reload('notifications');
-            window.toast.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: response.data,
-                life: 3000,
-            })
+            if (clear) {
+                notifications.value = [];
+                router.reload('notifications');
+            }
+            else
+                notifications.value.splice(index, 1);
+
         })
         .catch(error => {
             window.toast.add({
@@ -75,27 +67,14 @@ const deleteNotification = (index, clear) => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div v-if="notifications.length !== 0" v-for="(notification, index) in notifications" :key="index" class="mb-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <Card>
-                        <template #title>
-                            <div class="grid grid-cols-[90%,10%]">
-                                <div>
-                                    Notification from {{notification.split('|')[2].trim()}}
-                                </div>
-                                <div class="ml-auto">
-                                    <button @click="deleteNotification(index, false)">
-                                        <i class="pi pi-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </template>
-                        <template #content>
-                            <p class="font-medium">
-                                {{notification.split('|')[1].trim()}}
-                            </p>
-                        </template>
-                    </Card>
-                </div>
+                <Message v-if="notifications.length !== 0" v-for="(notification, index) in notifications" :key="notification" @close="deleteNotification(index, false)" :severity="notification.split('|')[0].trim().toLowerCase()">
+                    <h2>
+                        Notification from {{notification.split('|')[2].trim()}}
+                    </h2>
+                    <p class="font-medium">
+                        {{notification.split('|')[1].trim()}}
+                    </p>
+                </Message>
             </div>
         </div>
 

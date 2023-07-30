@@ -7,12 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
-class DashboardController extends Controller
+class NotificationController extends Controller
 {
     public function show(Request $request)
     {
-        $id = Auth::id();
-
         return Inertia::render('Dashboard');
     }
 
@@ -31,7 +29,7 @@ class DashboardController extends Controller
         }
 
         $message = Redis::command('LINDEX', ["users:{$id}:notifications", $request->input('index')]);
-        Redis::command('LREM', ["users:{$id}:notifications", 0, $message]);
+        Redis::command('LREM', ["users:{$id}:notifications", 1, $message]);
 
         return response("Notification removed");
     }

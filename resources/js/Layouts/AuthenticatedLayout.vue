@@ -59,20 +59,23 @@ const togglePanel = (event) => {
     op.value.toggle(event);
 }
 
+
+
 const deleteNotification = (index, clear) => {
-    axios.delete('/dashboard', {
+    axios.delete('/notifications', {
         data: {
             index: index,
             clearAll: clear,
         }
     })
         .then(response => {
-            if (clear)
+            if (clear) {
                 notifications.value = [];
+                op.value.toggle();
+            }
             else
                 notifications.value.splice(index, 1);
 
-            op.value.toggle();
             router.reload('notifications');
         })
         .catch(error => {
@@ -145,7 +148,7 @@ const deleteNotification = (index, clear) => {
                                             <Button icon="pi pi-trash" severity="danger" @click="deleteNotification(-1,true)" label="Clear All"></Button>
                                         </div>
                                     </div>
-                                    <Message :severity="notification.split('|')[0].trim().toLowerCase()" @close="deleteNotification(index, false)" v-for="(notification, index) in notifications" :key="index">
+                                    <Message :severity="notification.split('|')[0].trim().toLowerCase()" @close="deleteNotification(index, false)" v-for="(notification, index) in notifications" :key="notification">
                                         {{notification.split('|')[1].trim()}}
                                     </Message>
                                 </OverlayPanel>
