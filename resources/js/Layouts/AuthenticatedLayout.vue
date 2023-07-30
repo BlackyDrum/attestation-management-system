@@ -86,8 +86,10 @@ let visiblePrivacy = ref(false);
                                     Imprint
                                 </div>
                             </NavLink>
-                            <button v-if="$page.props.auth.notifications.length > 0" v-badge="$page.props.auth.notifications.length" class="pi pi-bell p-overlay-badge text-white" style="font-size: 2rem" />
-                            <button v-else v-badge="0" class="pi pi-bell p-overlay-badge text-white" style="font-size: 2rem" />
+                            <div class="ml-4">
+                                <button v-if="$page.props.auth.notifications.length > 0" v-badge="$page.props.auth.notifications.length" class="pi pi-bell p-overlay-badge text-white" style="font-size: 2rem" />
+                                <button v-else v-badge="0" class="pi pi-bell p-overlay-badge text-white" style="font-size: 2rem" />
+                            </div>
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
