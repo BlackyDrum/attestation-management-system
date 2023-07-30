@@ -35,7 +35,7 @@ $ cd attestation-management-system
 ```
 $ composer install
 ```
-4. **Create a copy of the .env.example file and rename it to .env. Update the necessary configuration values such as the database and Pusher credentials:**
+4. **Create a copy of the .env.example file and rename it to .env. Update the necessary configuration values such as the Database credentials (PostgreSQL + Redis OR MySQL + Redis) and Pusher credentials:**
 ```
 $ cp .env.example .env
 ```
