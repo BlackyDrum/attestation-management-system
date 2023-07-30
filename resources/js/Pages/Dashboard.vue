@@ -6,7 +6,6 @@ import {Head, router, usePage} from '@inertiajs/vue3';
 import {onBeforeUpdate, onMounted, ref} from "vue";
 
 import Card from 'primevue/card';
-import axios from "axios";
 
 const page = usePage();
 
@@ -59,6 +58,7 @@ const deleteNotification = (index, clear) => {
 <template>
     <Head title="Dashboard"/>
 
+
     <AuthenticatedLayout>
         <template #header>
             <div class="grid grid-cols-2">
@@ -80,7 +80,7 @@ const deleteNotification = (index, clear) => {
                         <template #title>
                             <div class="grid grid-cols-[90%,10%]">
                                 <div>
-                                    Notification from {{notification.split('|')[1].trim()}}
+                                    Notification from {{notification.split('|')[2].trim()}}
                                 </div>
                                 <div class="ml-auto">
                                     <button @click="deleteNotification(index, false)">
@@ -91,13 +91,15 @@ const deleteNotification = (index, clear) => {
                         </template>
                         <template #content>
                             <p class="font-medium">
-                                {{notification.split('|')[0].trim()}}
+                                {{notification.split('|')[1].trim()}}
                             </p>
                         </template>
                     </Card>
                 </div>
             </div>
         </div>
+
+
 
         <div v-if="notifications.length === 0">
             <div class="text-gray-700 text-center">

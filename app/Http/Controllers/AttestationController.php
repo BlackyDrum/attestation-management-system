@@ -99,7 +99,7 @@ class AttestationController extends Controller
             event(new NotificationEvent($user['id']));
 
             $semester = Semester::query()->find($attestation->current_semester)->semester;
-            Redis::command('LPUSH', ["users:{$user['id']}:notifications", "You have been assigned to the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$semester}.|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
+            Redis::command('LPUSH', ["users:{$user['id']}:notifications", "INFO|You have been assigned to the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$semester}.|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
 
             foreach ($f as $item) {
                 UserHasCheckedTask::query()->create([

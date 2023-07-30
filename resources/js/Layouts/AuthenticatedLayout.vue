@@ -1,6 +1,7 @@
 <script setup>
 import {onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, ref} from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -12,6 +13,9 @@ import {useToast} from 'primevue/usetoast';
 import Dialog from 'primevue/dialog';
 import Toast from "primevue/toast";
 import Badge from 'primevue/badge';
+import OverlayPanel from 'primevue/overlaypanel';
+import Message from 'primevue/message';
+import Button from "primevue/button";
 
 const page = usePage();
 window.toast = useToast();
@@ -34,10 +38,54 @@ onBeforeUnmount(() => {
     Echo.leave(`notification.${page.props.auth.user.id}`);
 });
 
+onMounted(() => {
+    notifications.value = page.props.auth.notifications;
+})
+
+onBeforeUpdate(() => {
+    notifications.value = page.props.auth.notifications;
+})
+
+const notifications = ref([]);
+
 const showingNavigationDropdown = ref(false);
 
-let visibleImprint = ref(false);
-let visiblePrivacy = ref(false);
+const visibleImprint = ref(false);
+const visiblePrivacy = ref(false);
+const op = ref();
+
+
+const togglePanel = (event) => {
+    op.value.toggle(event);
+}
+
+const deleteNotification = (index, clear) => {
+    axios.delete('/dashboard', {
+        data: {
+            index: index,
+            clearAll: clear,
+        }
+    })
+        .then(response => {
+            if (clear)
+                notifications.value = [];
+            else
+                notifications.value.splice(index, 1);
+
+            op.value.toggle();
+            router.reload('notifications');
+        })
+        .catch(error => {
+            op.value.toggle();
+
+            window.toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 3000,
+            })
+        })
+}
 
 </script>
 
@@ -87,8 +135,20 @@ let visiblePrivacy = ref(false);
                                 </div>
                             </NavLink>
                             <div class="ml-4">
-                                <button v-if="$page.props.auth.notifications.length > 0" v-badge="$page.props.auth.notifications.length" class="pi pi-bell p-overlay-badge text-white" style="font-size: 1.5rem" />
-                                <button v-else v-badge="0" class="pi pi-bell p-overlay-badge text-white" style="font-size: 1.5rem" />
+                                <button @click="togglePanel" v-badge="notifications.length" v-if="notifications.length > 0" class="pi pi-bell p-overlay-badge text-white" style="font-size: 1.5rem" />
+                                <OverlayPanel class="w-[50%] max-lg:w-[60%]" ref="op">
+                                    <div class="flex">
+                                        <div>
+                                            <h2>Notifications</h2>
+                                        </div>
+                                        <div class="ml-auto">
+                                            <Button icon="pi pi-trash" severity="danger" @click="deleteNotification(-1,true)" label="Clear All"></Button>
+                                        </div>
+                                    </div>
+                                    <Message :severity="notification.split('|')[0].trim().toLowerCase()" @close="deleteNotification(index, false)" v-for="(notification, index) in notifications" :key="index">
+                                        {{notification.split('|')[1].trim()}}
+                                    </Message>
+                                </OverlayPanel>
                             </div>
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">

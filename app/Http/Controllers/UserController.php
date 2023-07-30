@@ -74,7 +74,7 @@ class UserController extends Controller
 
         event(new NotificationEvent($id));
 
-        Redis::command('LPUSH', ["users:{$id}:notifications", 'Your profile information have been updated. Please visit your profile page for more information.|' . date('Y-m-d') . ' ' . date('h:i:sa')]);
+        Redis::command('LPUSH', ["users:{$id}:notifications", 'INFO|Your profile information have been updated. Please visit your profile page for more information.|' . date('Y-m-d') . ' ' . date('h:i:sa')]);
 
         return to_route('user');
     }
