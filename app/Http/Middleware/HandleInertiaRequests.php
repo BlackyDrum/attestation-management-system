@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -34,7 +35,7 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
-                'notifications' => Redis::command('LRANGE', ["users:{$request->user()->id}:notifications", 0, -1])
+                'notifications' => Auth::check() ?  Redis::command('LRANGE', ["users:{$request->user()->id}:notifications", 0, -1]): [],
             ],
             'ziggy' => function () use ($request) {
                 return array_merge((new Ziggy)->toArray(), [
