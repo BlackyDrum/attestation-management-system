@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -72,6 +73,8 @@ class UserController extends Controller
         $user->save();
 
         event(new NotificationEvent($id));
+
+        Redis::command('LPUSH', ["users:{$id}:notifications", 'Your profile information have been updated. Please visit your profile page for more information.|' . date('Y-m-d') . ' ' . date('h:i:sa')]);
 
         return to_route('user');
     }

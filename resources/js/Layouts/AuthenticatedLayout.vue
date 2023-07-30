@@ -1,5 +1,5 @@
 <script setup>
-import {onBeforeMount, onBeforeUnmount, ref} from 'vue';
+import {onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, ref} from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -11,6 +11,7 @@ import {Link, usePage,router } from '@inertiajs/vue3';
 import {useToast} from 'primevue/usetoast';
 import Dialog from 'primevue/dialog';
 import Toast from "primevue/toast";
+import Badge from 'primevue/badge';
 
 const page = usePage();
 window.toast = useToast();
@@ -37,6 +38,7 @@ const showingNavigationDropdown = ref(false);
 
 let visibleImprint = ref(false);
 let visiblePrivacy = ref(false);
+
 </script>
 
 <template>
@@ -84,6 +86,8 @@ let visiblePrivacy = ref(false);
                                     Imprint
                                 </div>
                             </NavLink>
+                            <button v-if="$page.props.auth.notifications.length > 0" v-badge="$page.props.auth.notifications.length" class="pi pi-bell p-overlay-badge text-white" style="font-size: 2rem" />
+                            <button v-else v-badge="0" class="pi pi-bell p-overlay-badge text-white" style="font-size: 2rem" />
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>

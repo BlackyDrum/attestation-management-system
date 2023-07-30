@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Head, router, usePage} from '@inertiajs/vue3';
-import {onMounted, ref} from "vue";
+import {onBeforeUpdate, onMounted, ref} from "vue";
 
 import Button from "primevue/button";
 import DataTable from 'primevue/datatable';
@@ -21,7 +21,7 @@ defineProps({
     }
 })
 
-onMounted(() => {
+function updateData() {
     combinedData.value = combine(page.props.attestations);
     subject_name.value = combinedData.value[0].subject_name;
     tasks.value = combinedData.value[0].tasks;
@@ -53,7 +53,15 @@ onMounted(() => {
     });
 
     headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && !key.startsWith('task_id'));
+}
+
+onMounted(() => {
+    updateData();
 });
+
+onBeforeUpdate(() => {
+    updateData();
+})
 
 const page = usePage();
 

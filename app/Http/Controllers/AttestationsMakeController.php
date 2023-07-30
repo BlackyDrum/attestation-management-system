@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationEvent;
 use App\Models\Attestation;
 use App\Models\UserHasCheckedTask;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
 class AttestationsMakeController extends Controller
