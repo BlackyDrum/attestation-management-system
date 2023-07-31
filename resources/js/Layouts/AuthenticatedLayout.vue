@@ -1,6 +1,6 @@
 <script setup>
 import {onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, ref} from 'vue';
-import {Link, usePage,router } from '@inertiajs/vue3';
+import {Link, usePage, router} from '@inertiajs/vue3';
 
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -61,7 +61,6 @@ const togglePanel = (event) => {
 }
 
 
-
 const deleteNotification = (index, clear) => {
     axios.delete('/notifications', {
         data: {
@@ -95,7 +94,7 @@ const deleteNotification = (index, clear) => {
 </script>
 
 <template>
-    <Toast position="top-left" class="break-words" />
+    <Toast position="top-left" class="break-words"/>
     <div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav class="bg-white dark:bg-gray-800 border-b  border-gray-100 dark:border-gray-700">
@@ -140,18 +139,23 @@ const deleteNotification = (index, clear) => {
                                 </div>
                             </NavLink>
                             <div class="ml-4">
-                                <button @click="togglePanel" v-badge="notifications.length" v-if="notifications.length > 0" class="pi pi-bell p-overlay-badge text-white" style="font-size: 1.5rem" />
+                                <button @click="togglePanel" v-badge="notifications.length"
+                                        v-if="notifications.length > 0" class="pi pi-bell p-overlay-badge text-white"
+                                        style="font-size: 1.5rem"/>
                                 <OverlayPanel class="w-[50%] max-lg:w-[60%]" ref="op">
                                     <div class="flex">
                                         <div>
                                             <h2>Notifications</h2>
                                         </div>
                                         <div class="ml-auto">
-                                            <Button icon="pi pi-trash" severity="danger" @click="deleteNotification(-1,true)" label="Clear All"></Button>
+                                            <Button icon="pi pi-trash" severity="danger"
+                                                    @click="deleteNotification(-1,true)" label="Clear All"></Button>
                                         </div>
                                     </div>
-                                    <Message :severity="notification.split('|')[0].trim().toLowerCase()" @close="deleteNotification(index, false)" v-for="(notification, index) in notifications" :key="notification">
-                                        {{notification.split('|')[1].trim()}}
+                                    <Message :severity="notification.split('|')[0].trim().toLowerCase()"
+                                             @close="deleteNotification(index, false)"
+                                             v-for="(notification, index) in notifications" :key="notification">
+                                        {{ notification.split('|')[1].trim() }}
                                     </Message>
                                 </OverlayPanel>
                             </div>
@@ -163,7 +167,8 @@ const deleteNotification = (index, clear) => {
                                                 type="button"
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                {{ $page.props.auth.user.name }} <span v-if="$page.props.auth.user.admin" class=" ml-2 pi pi-android"></span>
+                                                {{ $page.props.auth.user.name }} <span
+                                                v-if="$page.props.auth.user.admin" class=" ml-2 pi pi-android"></span>
                                                 <svg
                                                     class="ml-2 -mr-0.5 h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -182,11 +187,13 @@ const deleteNotification = (index, clear) => {
 
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> Profile</DropdownLink>
-                                        <button @click="visiblePrivacy = true" class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
+                                        <button @click="visiblePrivacy = true"
+                                                class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
                                         >
                                             Privacy Statement
                                         </button>
-                                        <button @click="visibleImprint = true" class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
+                                        <button @click="visibleImprint = true"
+                                                class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
                                         >
                                             Imprint
                                         </button>

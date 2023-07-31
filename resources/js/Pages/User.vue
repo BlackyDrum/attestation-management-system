@@ -234,7 +234,8 @@ const handleUpload = (event) => {
                      class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3">
                     <div>
                         <div class="font-bold flex items-center text-white p-2 grid grid-cols-2">
-                            <div class="break-all">{{ user.name }} <span v-if="user.admin" class="pi pi-android"></span></div>
+                            <div class="break-all">{{ user.name }} <span v-if="user.admin" class="pi pi-android"></span>
+                            </div>
                             <div class="ml-auto mr-5 flex flex-wrap  justify-content-center">
                                 <div class="mr-4 md:hidden">
                                     <Button v-if="!user.admin" @click="confirm2(user.id, user.name)" icon="pi pi-trash"
@@ -256,7 +257,8 @@ const handleUpload = (event) => {
                     </div>
                 </div>
 
-                <ConfirmDialog ref="confirmDialog" class="bg-white break-words p-4 custom-confirm-dialog rounded-md gap-8">
+                <ConfirmDialog ref="confirmDialog"
+                               class="bg-white break-words p-4 custom-confirm-dialog rounded-md gap-8">
                 </ConfirmDialog>
             </div>
         </div>
@@ -293,7 +295,8 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-user mr-2"></i>
                         </span>
-                        <InputText :disabled="userFormEdit.processing" type="text" required v-model="userFormEdit.name" placeholder="Name"
+                        <InputText :disabled="userFormEdit.processing" type="text" required v-model="userFormEdit.name"
+                                   placeholder="Name"
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <div class="ml-6 text-red-600" v-if="errors.name">{{ errors.name }}</div>
@@ -301,7 +304,8 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-at mr-2"></i>
                         </span>
-                        <InputText :disabled="userFormEdit.processing" type="email" required v-model="userFormEdit.email" placeholder="E-Mail"
+                        <InputText :disabled="userFormEdit.processing" type="email" required
+                                   v-model="userFormEdit.email" placeholder="E-Mail"
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <div class="ml-6 text-red-600" v-if="errors.email">{{ errors.email }}</div>
@@ -309,7 +313,8 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-lock mr-2"></i>
                         </span>
-                        <InputText :disabled="userFormEdit.processing" type="password" v-model="userFormEdit.password" placeholder="Password"
+                        <InputText :disabled="userFormEdit.processing" type="password" v-model="userFormEdit.password"
+                                   placeholder="Password"
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>
@@ -338,7 +343,8 @@ const handleUpload = (event) => {
                         columns for Name, Email, and Password.</em>
                 </p>
                 <div class="mt-4">
-                    <FileUpload :disabled="userfileForm.processing" mode="basic" name="userfile[]" accept="text/csv" :maxFileSize="1000000"
+                    <FileUpload :disabled="userfileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
+                                :maxFileSize="1000000"
                                 @uploader="handleUpload($event)"
                                 @input="userfileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false"
                                 customUpload chooseLabel="Browse">
@@ -363,13 +369,15 @@ const handleUpload = (event) => {
 
     <!-- Edit User -->
     <Dialog v-model:visible="editShow" :closable="false" v-if="selectedUser" :header="selectedUser.name"
-            class="bg-gray-200 rounded-lg p-2 font-bold break-all" :style="{ width: '90vw' }" :modal="true" :draggable="false">
+            class="bg-gray-200 rounded-lg p-2 font-bold break-all" :style="{ width: '90vw' }" :modal="true"
+            :draggable="false">
         <form @submit.prevent>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-user mr-2"></i>
                 </span>
-                <InputText :disabled="userForm.processing" type="text" required v-model="userForm.name" placeholder="Name"
+                <InputText :disabled="userForm.processing" type="text" required v-model="userForm.name"
+                           placeholder="Name"
                            class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.name">{{ errors.name }}</div>
@@ -377,7 +385,8 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-at mr-2"></i>
                 </span>
-                <InputText :disabled="userForm.processing" type="email" required v-model="userForm.email" placeholder="E-Mail"
+                <InputText :disabled="userForm.processing" type="email" required v-model="userForm.email"
+                           placeholder="E-Mail"
                            class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.email">{{ errors.email }}</div>
@@ -385,7 +394,8 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-lock mr-2"></i>
                 </span>
-                <InputText :disabled="userForm.processing" type="password" v-model="userForm.password" placeholder="New Password"
+                <InputText :disabled="userForm.processing" type="password" v-model="userForm.password"
+                           placeholder="New Password"
                            class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>

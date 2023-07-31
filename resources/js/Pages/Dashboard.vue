@@ -30,8 +30,7 @@ const deleteNotification = (index, clear) => {
             if (clear) {
                 notifications.value = [];
                 router.reload('notifications');
-            }
-            else
+            } else
                 notifications.value.splice(index, 1);
 
         })
@@ -49,7 +48,6 @@ const deleteNotification = (index, clear) => {
 <template>
     <Head title="Dashboard"/>
 
-
     <AuthenticatedLayout>
         <template #header>
             <div class="grid grid-cols-2">
@@ -59,25 +57,26 @@ const deleteNotification = (index, clear) => {
                     </h2>
                 </div>
                 <div class="ml-auto">
-                    <primary-button v-if="notifications.length !== 0" @click="deleteNotification(-1,true)">Clear all</primary-button>
+                    <primary-button v-if="notifications.length !== 0" @click="deleteNotification(-1,true)">Clear all
+                    </primary-button>
                 </div>
             </div>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <Message v-if="notifications.length !== 0" v-for="(notification, index) in notifications" :key="notification" @close="deleteNotification(index, false)" :severity="notification.split('|')[0].trim().toLowerCase()">
+                <Message v-if="notifications.length !== 0" v-for="(notification, index) in notifications"
+                         :key="notification" @close="deleteNotification(index, false)"
+                         :severity="notification.split('|')[0].trim().toLowerCase()">
                     <h2>
-                        Notification from {{notification.split('|')[2].trim()}}
+                        Notification from {{ notification.split('|')[2].trim() }}
                     </h2>
                     <p class="font-medium">
-                        {{notification.split('|')[1].trim()}}
+                        {{ notification.split('|')[1].trim() }}
                     </p>
                 </Message>
             </div>
         </div>
-
-
 
         <div v-if="notifications.length === 0">
             <div class="text-gray-700 text-center">
@@ -87,7 +86,5 @@ const deleteNotification = (index, clear) => {
                 You have no notifications
             </div>
         </div>
-
-
     </AuthenticatedLayout>
 </template>

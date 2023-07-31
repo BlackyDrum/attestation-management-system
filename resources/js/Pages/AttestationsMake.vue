@@ -140,7 +140,8 @@ FilterService.register(FILTER.value, (value, filter) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight break-words">Make Attestation for
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight break-words">Make
+                Attestation for
                 '{{ subject_name }}'</h2>
         </template>
         <div class="mt-5 ml-5 text-gray-400 ">
