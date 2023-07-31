@@ -14,7 +14,7 @@ class Attestation extends Model
     protected $fillable = [
       'subject_number',
       'subject_name',
-      'current_semester',
+      'semester_id',
       'creator_id'
     ];
 }

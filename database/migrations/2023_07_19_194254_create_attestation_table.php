@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('subject_number');
             $table->string('subject_name',255);
-            $table->unsignedBigInteger('current_semester');
+            $table->unsignedBigInteger('semester_id');
             $table->unsignedBigInteger('creator_id');
             $table->timestamps();
 
-            $table->foreign('current_semester')->references('id')->on('semester');
+            $table->foreign('semester_id')->references('id')->on('semester');
             $table->foreign('creator_id')->references('id')->on('users')->onUpdate('cascade');
         });
     }

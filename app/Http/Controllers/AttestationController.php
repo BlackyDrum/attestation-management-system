@@ -24,7 +24,7 @@ class AttestationController extends Controller
             "SUBSTRING_INDEX(users.name, ' ', -1)";
 
         $attestationQuery = Attestation::query()
-            ->join('semester', 'attestation.current_semester', '=', 'semester.id')
+            ->join('semester', 'attestation.semester_id', '=', 'semester.id')
             ->join('attestation_tasks', 'attestation.id', '=', 'attestation_tasks.attestation_id')
             ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
             ->join('user_has_attestation', function ($join) {
@@ -78,7 +78,7 @@ class AttestationController extends Controller
         $attestation = Attestation::query()->create([
             'subject_number' => $request->input('subjectNumber'),
             'subject_name' => $request->input('subjectName'),
-            'current_semester' => (Semester::query()->where('semester', '=', $request->input('semester'))->first())->id,
+            'semester_id' => (Semester::query()->where('semester', '=', $request->input('semester'))->first())->id,
             'creator_id' => Auth::id(),
         ]);
 
@@ -98,7 +98,7 @@ class AttestationController extends Controller
 
             event(new NotificationEvent($user['id']));
 
-            $semester = Semester::query()->find($attestation->current_semester)->semester;
+            $semester = Semester::query()->find($attestation->semester_id)->semester;
             Redis::command('LPUSH', ["users:{$user['id']}:notifications", "INFO|You have been assigned to the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$semester}.|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
 
             foreach ($f as $item) {
@@ -130,7 +130,7 @@ class AttestationController extends Controller
         $attestation = Attestation::query()->find($request->input('id'))->fill([
             'subject_number' => $request->input('subjectNumber'),
             'subject_name' => $request->input('subjectName'),
-            'current_semester' => (Semester::query()->where('semester', '=', $request->input('semester'))->first())->id,
+            'semester_id' => (Semester::query()->where('semester', '=', $request->input('semester'))->first())->id,
         ]);
 
         $attestation->save();

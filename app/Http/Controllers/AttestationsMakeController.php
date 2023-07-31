@@ -27,7 +27,7 @@ class AttestationsMakeController extends Controller
 
         $attestations = Attestation::query()
             ->where('attestation.id', '=', $id)
-            ->join('semester', 'attestation.current_semester', '=', 'semester.id')
+            ->join('semester', 'attestation.semester_id', '=', 'semester.id')
             ->join('attestation_tasks', 'attestation.id', '=', 'attestation_tasks.attestation_id')
             ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
             ->join('user_has_attestation', function ($join) {
@@ -80,7 +80,7 @@ class AttestationsMakeController extends Controller
 
             $attestation = AttestationTasks::query()->where('attestation_tasks.id','=',$task['task_id'])
                 ->join('attestation', 'attestation.id', '=', 'attestation_tasks.attestation_id')
-                ->join('semester', 'semester.id', '=', 'attestation.current_semester')
+                ->join('semester', 'semester.id', '=', 'attestation.semester_id')
                 ->select([
                     'attestation_tasks.title',
                     'attestation.subject_name',
