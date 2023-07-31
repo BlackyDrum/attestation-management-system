@@ -69,10 +69,18 @@ class AttestationsMakeController extends Controller
         ]);
 
         foreach ($request->input('tasks') as $task) {
+            $continue = false;
+            if (UserHasCheckedTask::query()->where('user_id', '=', $task['user_id'])
+                ->where('task_id', '=', $task['task_id'])->first()->checked === $task['checked'])
+                $continue = true;
+
             UserHasCheckedTask::query()->where('user_id', '=', $task['user_id'])
                 ->where('task_id', '=', $task['task_id'])->update([
                     'checked' => $task['checked'],
                 ]);
+
+            if ($continue)
+                continue;
 
             $attestation = AttestationTasks::query()->where('attestation_tasks.id','=',$task['task_id'])
                 ->join('attestation', 'attestation.id', '=', 'attestation_tasks.attestation_id')
