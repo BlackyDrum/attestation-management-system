@@ -104,7 +104,8 @@ class AttestationController extends Controller
             foreach ($f as $item) {
                 UserHasCheckedTask::query()->create([
                     'user_id' => $user['id'],
-                    'task_id' => $item['id']
+                    'task_id' => $item['id'],
+                    'editor_id' => Auth::id(),
                 ]);
             }
         }
@@ -163,7 +164,8 @@ class AttestationController extends Controller
             foreach ($tasks as $item) {
                 UserHasCheckedTask::query()->firstOrCreate([
                     'user_id' => $user['id'],
-                    'task_id' => $item['id']
+                    'task_id' => $item['id'],
+                    'editor_id' => Auth::id(),
                 ]);
             }
         }

@@ -8,6 +8,7 @@ use App\Models\AttestationTasks;
 use App\Models\UserHasCheckedTask;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
@@ -76,6 +77,7 @@ class AttestationsMakeController extends Controller
             UserHasCheckedTask::query()->where('user_id', '=', $task['user_id'])
                 ->where('task_id', '=', $task['task_id'])->update([
                     'checked' => $task['checked'],
+                    'editor_id' => Auth::id(),
                 ]);
 
             $attestation = AttestationTasks::query()->where('attestation_tasks.id', '=', $task['task_id'])

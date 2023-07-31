@@ -15,5 +15,6 @@ class UserHasCheckedTask extends Model
         'user_id',
         'task_id',
         'checked',
+        'editor_id',
     ];
 }
