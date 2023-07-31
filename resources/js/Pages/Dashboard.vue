@@ -5,7 +5,6 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import {Head, router, usePage} from '@inertiajs/vue3';
 import {onBeforeUpdate, onMounted, ref} from "vue";
 
-import Card from 'primevue/card';
 import Message from "primevue/message";
 
 const page = usePage();

@@ -1,18 +1,19 @@
 <script setup>
 import {onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, ref} from 'vue';
+import {Link, usePage,router } from '@inertiajs/vue3';
+
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Imprint from '@/Components/Imprint.vue';
 import PrivacyStatement from '@/Components/PrivacyStatement.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import {Link, usePage,router } from '@inertiajs/vue3';
+
+
 import {useToast} from 'primevue/usetoast';
 import Dialog from 'primevue/dialog';
 import Toast from "primevue/toast";
-import Badge from 'primevue/badge';
 import OverlayPanel from 'primevue/overlaypanel';
 import Message from 'primevue/message';
 import Button from "primevue/button";
@@ -75,6 +76,9 @@ const deleteNotification = (index, clear) => {
             }
             else
                 notifications.value.splice(index, 1);
+
+            if (notifications.value.length === 0)
+                op.value.toggle();
 
             router.reload('notifications');
         })
