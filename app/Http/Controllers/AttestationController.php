@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationEvent;
 use App\Models\Attestation;
 use App\Models\AttestationTasks;
 use App\Models\Semester;
@@ -11,6 +12,7 @@ use App\Models\UserHasCheckedTask;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
 class AttestationController extends Controller
@@ -94,6 +96,11 @@ class AttestationController extends Controller
                 'attestation_id' => $attestation['id']
             ]);
 
+            event(new NotificationEvent($user['id']));
+
+            $semester = Semester::query()->find($attestation->current_semester)->semester;
+            Redis::command('LPUSH', ["users:{$user['id']}:notifications", "INFO|You have been assigned to the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$semester}.|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
+
             foreach ($f as $item) {
                 UserHasCheckedTask::query()->create([
                     'user_id' => $user['id'],
@@ -152,6 +159,7 @@ class AttestationController extends Controller
                 'user_id' => $user['id'],
                 'attestation_id' => $attestation['id']
             ]);
+
             foreach ($tasks as $item) {
                 UserHasCheckedTask::query()->firstOrCreate([
                     'user_id' => $user['id'],

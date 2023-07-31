@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationEvent;
 use App\Models\Attestation;
+use App\Models\AttestationTasks;
 use App\Models\UserHasCheckedTask;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
 class AttestationsMakeController extends Controller
@@ -70,6 +73,26 @@ class AttestationsMakeController extends Controller
                 ->where('task_id', '=', $task['task_id'])->update([
                     'checked' => $task['checked'],
                 ]);
+
+            $attestation = AttestationTasks::query()->find($task['task_id'])
+                ->join('attestation', 'attestation.id', '=', 'attestation_tasks.attestation_id')
+                ->join('semester', 'semester.id', '=', 'attestation.current_semester')
+                ->select([
+                    'attestation_tasks.title',
+                    'attestation.subject_name',
+                    'attestation.subject_number',
+                    'semester.semester'
+                ])
+                ->first();
+
+            $status = $task['checked'] ? "SUCCESS|You received the attestation '{$attestation->title}' for the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$attestation->semester}.|" :
+                "WARN|Your attestation '{$attestation->title}' for the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$attestation->semester} has been revoked.|";
+
+            event(new NotificationEvent($task['user_id']));
+
+            Redis::command('LPUSH',
+                ["users:{$task['user_id']}:notifications", $status . date('Y-m-d') . ' ' . date('h:i:sa')]);
+
         }
     }
 }

@@ -1,16 +1,14 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Head, router, usePage} from '@inertiajs/vue3';
-import {onMounted, ref} from "vue";
+import {onBeforeUpdate, onMounted, ref} from "vue";
 
 import Button from "primevue/button";
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Checkbox from "primevue/checkbox";
 import InputText from "primevue/inputtext";
-import Dialog from "primevue/dialog";
 import {FilterService} from 'primevue/api';
-import {useToast} from 'primevue/usetoast';
 
 import combine from "@/CombinedData.js";
 
@@ -23,7 +21,7 @@ defineProps({
     }
 })
 
-onMounted(() => {
+function updateData() {
     combinedData.value = combine(page.props.attestations);
     subject_name.value = combinedData.value[0].subject_name;
     tasks.value = combinedData.value[0].tasks;
@@ -55,10 +53,18 @@ onMounted(() => {
     });
 
     headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && !key.startsWith('task_id'));
+}
+
+onMounted(() => {
+    updateData();
 });
 
+onBeforeUpdate(() => {
+    updateData();
+    formData.value = [];
+})
+
 const page = usePage();
-const toast = useToast();
 
 const extractData = (data, index) => {
     const keys = (Object.keys(data).filter(key => key.startsWith('task_id'))).map(key => key.replace('task_id_', ''));
@@ -79,15 +85,16 @@ const handleFormSend = () => {
         tasks: formData.value
     })
         .then(response => {
-            toast.add({
+            window.toast.add({
                 severity: 'success',
                 summary: 'Success',
                 detail: "Attestation updated",
                 life: 3000,
             })
+            router.reload()
         })
         .catch(error => {
-            toast.add({
+            window.toast.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: error.response.data.message,

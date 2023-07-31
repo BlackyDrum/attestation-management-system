@@ -13,6 +13,7 @@ import PrimeVue from "primevue/config";
 import ConfirmationService from "primevue/confirmationservice";
 import Tooltip from "primevue/tooltip";
 import ToastService from "primevue/toastservice";
+import BadgeDirective from 'primevue/badgedirective';
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
@@ -32,6 +33,7 @@ createInertiaApp({
             .use(ToastService)
             .use(ConfirmationService)
             .directive("tooltip", Tooltip)
+            .directive('badge', BadgeDirective)
             .mount(el);
     },
     progress: {

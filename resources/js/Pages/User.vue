@@ -8,7 +8,6 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 
 import {useConfirm} from "primevue/useconfirm";
-import {useToast} from "primevue/usetoast";
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
 import InputText from 'primevue/inputtext';
@@ -53,7 +52,6 @@ const userfileForm = useForm({
 
 const page = usePage();
 const confirm = useConfirm();
-const toast = useToast();
 
 const search = ref("");
 const empty = ref(false);
@@ -70,7 +68,7 @@ const handleSearchRequest = () => {
             empty.value = page.props.users.data.length === 0;
         })
         .catch(error => {
-            toast.add({
+            window.toast.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: error.response.data.message,
@@ -108,12 +106,22 @@ const sendEditForm = () => {
             selectedUser.value.id = userForm.id;
             selectedUser.value.name = userForm.name;
             selectedUser.value.email = userForm.email;
-            toast.add({
+            window.toast.add({
                 severity: 'success',
                 summary: 'Success',
                 detail: 'User credentials updated',
                 life: 3000
             })
+        },
+        onError: () => {
+            if (page.props.errors.id) {
+                window.toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: page.props.errors.id,
+                    life: 3000
+                })
+            }
         }
     });
 }
@@ -134,7 +142,7 @@ const confirm2 = (userid, username) => {
                 .then(response => {
                     for (let i = 0; i < page.props.users.data.length; i++) {
                         if (page.props.users.data[i].id === response.data.user_id) {
-                            toast.add({
+                            window.toast.add({
                                 severity: 'success',
                                 summary: 'Success',
                                 detail: `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} was deleted`,
@@ -147,7 +155,7 @@ const confirm2 = (userid, username) => {
                     }
                 })
                 .catch(error => {
-                    toast.add({
+                    window.toast.add({
                         severity: 'error',
                         summary: 'Error',
                         detail: error.response.data.message,
@@ -178,7 +186,7 @@ const sendCreateForm = () => {
         onStart: () => userFormEdit.reset('password'),
         onSuccess: () => {
             userFormEdit.reset();
-            toast.add({severity: 'success', summary: 'Success', detail: 'New user created', life: 3000})
+            window.toast.add({severity: 'success', summary: 'Success', detail: 'New user created', life: 3000})
         }
     });
 }
@@ -186,7 +194,7 @@ const sendCreateForm = () => {
 const handleUpload = (event) => {
     userfileForm.post('/users/upload', {
         onStart: () => userfileForm.reset(),
-        onSuccess: () => toast.add({
+        onSuccess: () => window.toast.add({
             severity: 'success',
             summary: 'File Uploaded',
             detail: 'User registration successful',
@@ -194,7 +202,7 @@ const handleUpload = (event) => {
         }),
         onError: () => {
             for (const error in page.props.errors) {
-                toast.add({severity: 'error', summary: 'Error', detail: page.props.errors[error], life: 5000})
+                window.toast.add({severity: 'error', summary: 'Error', detail: page.props.errors[error], life: 5000})
             }
         }
     });
@@ -285,7 +293,7 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-user mr-2"></i>
                         </span>
-                        <InputText type="text" required v-model="userFormEdit.name" placeholder="Name"
+                        <InputText :disabled="userFormEdit.processing" type="text" required v-model="userFormEdit.name" placeholder="Name"
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <div class="ml-6 text-red-600" v-if="errors.name">{{ errors.name }}</div>
@@ -293,7 +301,7 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-at mr-2"></i>
                         </span>
-                        <InputText type="email" required v-model="userFormEdit.email" placeholder="E-Mail"
+                        <InputText :disabled="userFormEdit.processing" type="email" required v-model="userFormEdit.email" placeholder="E-Mail"
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <div class="ml-6 text-red-600" v-if="errors.email">{{ errors.email }}</div>
@@ -301,7 +309,7 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-lock mr-2"></i>
                         </span>
-                        <InputText type="password" v-model="userFormEdit.password" placeholder="Password"
+                        <InputText :disabled="userFormEdit.processing" type="password" v-model="userFormEdit.password" placeholder="Password"
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>
@@ -330,7 +338,7 @@ const handleUpload = (event) => {
                         columns for Name, Email, and Password.</em>
                 </p>
                 <div class="mt-4">
-                    <FileUpload mode="basic" name="userfile[]" accept="text/csv" :maxFileSize="1000000"
+                    <FileUpload :disabled="userfileForm.processing" mode="basic" name="userfile[]" accept="text/csv" :maxFileSize="1000000"
                                 @uploader="handleUpload($event)"
                                 @input="userfileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false"
                                 customUpload chooseLabel="Browse">
@@ -361,7 +369,7 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-user mr-2"></i>
                 </span>
-                <InputText type="text" required v-model="userForm.name" placeholder="Name"
+                <InputText :disabled="userForm.processing" type="text" required v-model="userForm.name" placeholder="Name"
                            class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.name">{{ errors.name }}</div>
@@ -369,7 +377,7 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-at mr-2"></i>
                 </span>
-                <InputText type="email" required v-model="userForm.email" placeholder="E-Mail"
+                <InputText :disabled="userForm.processing" type="email" required v-model="userForm.email" placeholder="E-Mail"
                            class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.email">{{ errors.email }}</div>
@@ -377,7 +385,7 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-lock mr-2"></i>
                 </span>
-                <InputText type="password" v-model="userForm.password" placeholder="New Password"
+                <InputText :disabled="userForm.processing" type="password" v-model="userForm.password" placeholder="New Password"
                            class="border border-black rounded-md p-1"/>
             </div>
             <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>

@@ -1,19 +1,95 @@
 <script setup>
-import {ref} from 'vue';
+import {onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, ref} from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Imprint from '@/Components/Imprint.vue';
 import PrivacyStatement from '@/Components/PrivacyStatement.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import {Link} from '@inertiajs/vue3';
+import {Link, usePage,router } from '@inertiajs/vue3';
+import {useToast} from 'primevue/usetoast';
 import Dialog from 'primevue/dialog';
 import Toast from "primevue/toast";
+import Badge from 'primevue/badge';
+import OverlayPanel from 'primevue/overlaypanel';
+import Message from 'primevue/message';
+import Button from "primevue/button";
+
+const page = usePage();
+window.toast = useToast();
+
+onBeforeMount(() => {
+    Echo.private(`notification.${page.props.auth.user.id}`)
+        .listen('NotificationEvent', event => {
+            window.toast.add({
+                severity: 'info',
+                summary: 'Info',
+                detail: 'You have a new notification',
+                life: 8000,
+            })
+            if (!page.props.auth.user.admin)
+                router.reload();
+        })
+})
+
+onBeforeUnmount(() => {
+    Echo.leave(`notification.${page.props.auth.user.id}`);
+});
+
+onMounted(() => {
+    notifications.value = page.props.auth.notifications;
+})
+
+onBeforeUpdate(() => {
+    notifications.value = page.props.auth.notifications;
+})
+
+const notifications = ref([]);
+
 const showingNavigationDropdown = ref(false);
 
-let visibleImprint = ref(false);
-let visiblePrivacy = ref(false);
+const visibleImprint = ref(false);
+const visiblePrivacy = ref(false);
+const op = ref();
+
+
+const togglePanel = (event) => {
+    op.value.toggle(event);
+}
+
+
+
+const deleteNotification = (index, clear) => {
+    axios.delete('/notifications', {
+        data: {
+            index: index,
+            clearAll: clear,
+        }
+    })
+        .then(response => {
+            if (clear) {
+                notifications.value = [];
+                op.value.toggle();
+            }
+            else
+                notifications.value.splice(index, 1);
+
+            router.reload('notifications');
+        })
+        .catch(error => {
+            op.value.toggle();
+
+            window.toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 3000,
+            })
+        })
+}
+
 </script>
 
 <template>
@@ -61,6 +137,22 @@ let visiblePrivacy = ref(false);
                                     Imprint
                                 </div>
                             </NavLink>
+                            <div class="ml-4">
+                                <button @click="togglePanel" v-badge="notifications.length" v-if="notifications.length > 0" class="pi pi-bell p-overlay-badge text-white" style="font-size: 1.5rem" />
+                                <OverlayPanel class="w-[50%] max-lg:w-[60%]" ref="op">
+                                    <div class="flex">
+                                        <div>
+                                            <h2>Notifications</h2>
+                                        </div>
+                                        <div class="ml-auto">
+                                            <Button icon="pi pi-trash" severity="danger" @click="deleteNotification(-1,true)" label="Clear All"></Button>
+                                        </div>
+                                    </div>
+                                    <Message :severity="notification.split('|')[0].trim().toLowerCase()" @close="deleteNotification(index, false)" v-for="(notification, index) in notifications" :key="notification">
+                                        {{notification.split('|')[1].trim()}}
+                                    </Message>
+                                </OverlayPanel>
+                            </div>
                             <div class="ml-3 relative">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>

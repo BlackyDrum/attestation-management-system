@@ -13,7 +13,7 @@
 <br />
 
 <img src="https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white"> <img src="https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D"> <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white"> <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white">
-<img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white">
 
 
 
@@ -35,7 +35,7 @@ $ cd attestation-management-system
 ```
 $ composer install
 ```
-4. **Create a copy of the .env.example file and rename it to .env. Update the necessary configuration values such as the database credentials:**
+4. **Create a copy of the .env.example file and rename it to .env. Update the necessary configuration values such as the Database credentials (PostgreSQL + Redis OR MySQL + Redis) and Pusher credentials:**
 ```
 $ cp .env.example .env
 ```
@@ -63,7 +63,11 @@ $ php artisan serve
 ```
 $ php artisan db:seed
 ```
-11. **Visit http://localhost:8000 in your web browser to access the application.**
+11. **Start the websocket server:**
+```
+$ php artisan websockets:serve
+```
+12. **Visit http://localhost:8000 in your web browser to access the application.**
 
 <br>
 
