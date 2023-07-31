@@ -74,7 +74,7 @@ class AttestationsMakeController extends Controller
                     'checked' => $task['checked'],
                 ]);
 
-            $attestation = AttestationTasks::query()->find($task['task_id'])
+            $attestation = AttestationTasks::query()->where('attestation_tasks.id','=',$task['task_id'])
                 ->join('attestation', 'attestation.id', '=', 'attestation_tasks.attestation_id')
                 ->join('semester', 'semester.id', '=', 'attestation.current_semester')
                 ->select([
