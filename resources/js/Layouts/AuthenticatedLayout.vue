@@ -70,10 +70,8 @@ const deleteNotification = (index, clear) => {
         }
     })
         .then(response => {
-            if (clear) {
+            if (clear)
                 notifications.value = [];
-                op.value.toggle();
-            }
             else
                 notifications.value.splice(index, 1);
 
