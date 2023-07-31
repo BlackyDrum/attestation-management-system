@@ -70,7 +70,7 @@ class AttestationsMakeController extends Controller
 
         foreach ($request->input('tasks') as $task) {
             if (UserHasCheckedTask::query()->where('user_id', '=', $task['user_id'])
-                ->where('task_id', '=', $task['task_id'])->first()->checked === $task['checked'])
+                    ->where('task_id', '=', $task['task_id'])->first()->checked === $task['checked'])
                 continue;
 
             UserHasCheckedTask::query()->where('user_id', '=', $task['user_id'])
@@ -78,7 +78,7 @@ class AttestationsMakeController extends Controller
                     'checked' => $task['checked'],
                 ]);
 
-            $attestation = AttestationTasks::query()->where('attestation_tasks.id','=',$task['task_id'])
+            $attestation = AttestationTasks::query()->where('attestation_tasks.id', '=', $task['task_id'])
                 ->join('attestation', 'attestation.id', '=', 'attestation_tasks.attestation_id')
                 ->join('semester', 'semester.id', '=', 'attestation.semester_id')
                 ->select([
