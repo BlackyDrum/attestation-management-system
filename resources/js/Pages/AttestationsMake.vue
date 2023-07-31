@@ -61,6 +61,7 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
     updateData();
+    formData.value = [];
 })
 
 const page = usePage();
@@ -90,6 +91,7 @@ const handleFormSend = () => {
                 detail: "Attestation updated",
                 life: 3000,
             })
+            router.reload()
         })
         .catch(error => {
             window.toast.add({
