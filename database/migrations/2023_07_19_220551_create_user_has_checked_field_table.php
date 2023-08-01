@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('task_id')->references('id')->on('attestation_tasks')->onDelete('cascade');
-            $table->foreign('editor_id')->references('id')->on('users');
+            $table->foreign('editor_id')->references('id')->on('users')->onDelete('set null');
 
             $table->unique(['user_id','task_id']);
         });

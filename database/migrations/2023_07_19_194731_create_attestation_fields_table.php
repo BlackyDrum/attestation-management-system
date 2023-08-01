@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('attestation_id');
             $table->string('title',255);
-            $table->string('description',2500);
+            $table->string('description',5000)->nullable();
             $table->timestamps();
 
             $table->foreign('attestation_id')->references('id')->on('attestation')->onDelete('cascade');
