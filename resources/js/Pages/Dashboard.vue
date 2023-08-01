@@ -146,7 +146,7 @@ const handleDialogClose = () => {
                                  class="w-full md:w-20rem"/>
                     <label for="users">Users</label>
                 </span>
-                <div v-if="errors.users" class="text-red-600">
+                <div v-if="errors.users" class="text-red-600 font-medium">
                     {{ errors.users }}
                 </div>
                 <div class=" mt-6">
@@ -156,7 +156,7 @@ const handleDialogClose = () => {
                                   class="max-md:w-[16rem] w-80"/>
                         <label>Severity</label>
                     </span>
-                    <div v-if="errors.severity" class="text-red-600">
+                    <div v-if="errors.severity" class="text-red-600 font-medium">
                         {{ errors.severity }}
                     </div>
                 </div>
@@ -165,7 +165,7 @@ const handleDialogClose = () => {
                         <InputText class="w-full" :disabled="notificationForm.processing" v-model="notificationForm.message" autoresize />
                         <label>Message</label>
                     </span>
-                    <div v-if="errors.message" class="text-red-600">
+                    <div v-if="errors.message" class="text-red-600 font-medium">
                         {{ errors.message }}
                     </div>
                 </div>

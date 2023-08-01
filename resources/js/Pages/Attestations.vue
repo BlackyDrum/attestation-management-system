@@ -451,10 +451,10 @@ const colors = ref([
                                      class="w-full md:w-20rem"/>
                         <label for="users">Users</label>
                     </span>
-                    <div v-if="errors.users" class="text-red-600">
+                    <div v-if="errors.users" class="text-red-600 font-medium">
                         {{ errors.users }}
                     </div>
-                    <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))" class="text-red-600">
+                    <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))" class="text-red-600 font-medium">
                         The selected User is invalid
                     </div>
                     <div class="grid xl:grid-cols-2 xl:gap-4 mt-4">
@@ -466,7 +466,7 @@ const colors = ref([
                                               class="w-full"></input-number>
                                 <label for="subject_number">Subject Number</label>
                             </span>
-                            <div v-if="errors.subjectNumber" class="text-red-600">
+                            <div v-if="errors.subjectNumber" class="text-red-600 font-medium">
                                 {{ errors.subjectNumber }}
                             </div>
                         </div>
@@ -477,7 +477,7 @@ const colors = ref([
                                             class="w-full"></input-text>
                                 <label for="subject_name">Subject Name</label>
                             </span>
-                            <div v-if="errors.subjectName" class="text-red-600">
+                            <div v-if="errors.subjectName" class="text-red-600 font-medium">
                                 {{ errors.subjectName }}
                             </div>
                         </div>
@@ -489,7 +489,7 @@ const colors = ref([
                                       class="max-md:w-[16rem] w-80"/>
                             <label for="semester">Semester</label>
                         </span>
-                        <div v-if="errors.semester" class="text-red-600">
+                        <div v-if="errors.semester" class="text-red-600 font-medium">
                             {{ errors.semester }}
                         </div>
                     </div>
@@ -504,7 +504,7 @@ const colors = ref([
                                             placeholder="Title"></input-text>
                                 <div
                                     v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.title'))"
-                                    class="text-red-600">
+                                    class="text-red-600 font-medium">
                                     {{ errors['attestations.' + (task.id - 1) + '.title'] }}
                                 </div>
                             </div>
@@ -563,7 +563,7 @@ const colors = ref([
                                 </Editor>
                                 <div
                                     v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.description'))"
-                                    class="text-red-600">
+                                    class="text-red-600 font-medium">
                                     {{ errors['attestations.' + (task.id - 1) + '.description'] }}
                                 </div>
                             </div>
@@ -575,7 +575,7 @@ const colors = ref([
                         icon="pi pi-trash" severity="danger" aria-label="Filter"/></span>
                     <span v-else-if="isEdit && attestationForm.attestations.length > 1" class="ml-3"><Button
                         @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter"/></span>
-                    <div v-if="errors.attestations" class="text-red-600 mt-2">
+                    <div v-if="errors.attestations" class="text-red-600 font-medium mt-2">
                         {{ errors.attestations }}
                     </div>
                     <div class="my-4 grid grid-cols-2">

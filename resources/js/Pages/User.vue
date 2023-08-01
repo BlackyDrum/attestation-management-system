@@ -299,7 +299,7 @@ const handleUpload = (event) => {
                                    placeholder="Name"
                                    class="border border-black rounded-md p-1"/>
                     </div>
-                    <div class="ml-6 text-red-600" v-if="errors.name">{{ errors.name }}</div>
+                    <div class="ml-6 text-red-600 font-medium" v-if="errors.name">{{ errors.name }}</div>
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-at mr-2"></i>
@@ -308,7 +308,7 @@ const handleUpload = (event) => {
                                    v-model="userFormEdit.email" placeholder="E-Mail"
                                    class="border border-black rounded-md p-1"/>
                     </div>
-                    <div class="ml-6 text-red-600" v-if="errors.email">{{ errors.email }}</div>
+                    <div class="ml-6 text-red-600 font-medium" v-if="errors.email">{{ errors.email }}</div>
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-lock mr-2"></i>
@@ -317,7 +317,7 @@ const handleUpload = (event) => {
                                    placeholder="Password"
                                    class="border border-black rounded-md p-1"/>
                     </div>
-                    <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>
+                    <div class="ml-6 text-red-600 font-medium" v-if="errors.password">{{ errors.password }}</div>
 
                     <div class="mt-4 grid grid-cols-2">
                         <div class="justify-center">
@@ -355,7 +355,7 @@ const handleUpload = (event) => {
                             <span>asd</span>
                         </template>
                     </FileUpload>
-                    <div v-if="errors.userfile" class="mt-2 text-red-600">
+                    <div v-if="errors.userfile" class="mt-2 text-red-600 font-medium">
                         {{ errors.userfile }}
                     </div>
                 </div>
@@ -380,7 +380,7 @@ const handleUpload = (event) => {
                            placeholder="Name"
                            class="border border-black rounded-md p-1"/>
             </div>
-            <div class="ml-6 text-red-600" v-if="errors.name">{{ errors.name }}</div>
+            <div class="ml-6 text-red-600 font-medium" v-if="errors.name">{{ errors.name }}</div>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-at mr-2"></i>
@@ -389,7 +389,7 @@ const handleUpload = (event) => {
                            placeholder="E-Mail"
                            class="border border-black rounded-md p-1"/>
             </div>
-            <div class="ml-6 text-red-600" v-if="errors.email">{{ errors.email }}</div>
+            <div class="ml-6 text-red-600 font-medium" v-if="errors.email">{{ errors.email }}</div>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-lock mr-2"></i>
@@ -398,7 +398,7 @@ const handleUpload = (event) => {
                            placeholder="New Password"
                            class="border border-black rounded-md p-1"/>
             </div>
-            <div class="ml-6 text-red-600" v-if="errors.password">{{ errors.password }}</div>
+            <div class="ml-6 text-red-600 font-medium" v-if="errors.password">{{ errors.password }}</div>
 
             <div class="mt-4 grid grid-cols-2 break-keep">
                 <div class="justify-center">
