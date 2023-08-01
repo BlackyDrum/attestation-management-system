@@ -159,10 +159,18 @@ class AttestationController extends Controller
         $uids = [];
         foreach ($request->input('users') as $user) {
             $uids[] = $user['id'];
-            UserHasAttestation::query()->firstOrCreate([
+            $userHasAttestation = UserHasAttestation::query()->firstOrCreate([
                 'user_id' => $user['id'],
                 'attestation_id' => $attestation['id']
             ]);
+
+            $semester = Semester::query()->find($attestation->semester_id)->semester;
+            if ($userHasAttestation->wasRecentlyCreated) {
+                event(new NotificationEvent($user['id']));
+
+                Redis::command('LPUSH', ["users:{$user['id']}:notifications", "INFO|You have been assigned to the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$semester}.|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
+            }
+
 
             foreach ($tasks as $item) {
                 UserHasCheckedTask::query()->firstOrCreate([
