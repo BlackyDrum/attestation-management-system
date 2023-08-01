@@ -9,6 +9,7 @@ use App\Models\Semester;
 use App\Models\User;
 use App\Models\UserHasAttestation;
 use App\Models\UserHasCheckedTask;
+use App\Rules\NoDuplicateTitle;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -73,7 +74,7 @@ class AttestationController extends Controller
             'subjectNumber' => 'required|integer|min:1',
             'subjectName' => 'required|string|max:255',
             'semester' => 'required|exists:semester,semester',
-            'attestations' => 'required|array|min:1',
+            'attestations' => ['required', 'array', 'min:1', new NoDuplicateTitle],
             'attestations.*.title' => 'required|string|max:255',
             'attestations.*.description' => 'nullable|string|max:5000',
         ]);
@@ -125,7 +126,7 @@ class AttestationController extends Controller
             'subjectNumber' => 'required|integer|min:1',
             'subjectName' => 'required|string|max:255',
             'semester' => 'required|exists:semester,semester',
-            'attestations' => 'required|array|min:1',
+            'attestations' => ['required', 'array', 'min:1', new NoDuplicateTitle],
             'attestations.*.title' => 'required|string|max:255',
             'attestations.*.description' => 'nullable|string|max:5000',
             'attestations.*.task_id' => 'nullable',
