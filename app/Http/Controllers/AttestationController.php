@@ -32,6 +32,7 @@ class AttestationController extends Controller
                     ->on('user_has_attestation.attestation_id', '=', 'attestation.id');
             })
             ->join('users', 'users.id', '=', 'user_has_attestation.user_id')
+            ->leftJoin('users AS editor', 'editor.id', '=', 'user_has_checked_task.editor_id')
             ->orderByRaw($order)
             ->select([
                 'attestation.id',
@@ -46,6 +47,7 @@ class AttestationController extends Controller
                 'user_has_checked_task.checked',
                 'attestation_tasks.id AS task_id',
                 'user_has_checked_task.id AS checked_id',
+                'user_has_checked_task.editor_id',
             ])
             ->orderBy('attestation_tasks.id');
 
@@ -105,7 +107,7 @@ class AttestationController extends Controller
                 UserHasCheckedTask::query()->create([
                     'user_id' => $user['id'],
                     'task_id' => $item['id'],
-                    'editor_id' => Auth::id(),
+                    'editor_id' => null,
                 ]);
             }
         }
@@ -165,7 +167,6 @@ class AttestationController extends Controller
                 UserHasCheckedTask::query()->firstOrCreate([
                     'user_id' => $user['id'],
                     'task_id' => $item['id'],
-                    'editor_id' => Auth::id(),
                 ]);
             }
         }

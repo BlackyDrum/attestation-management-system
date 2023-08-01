@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('attestation_id')->references('id')->on('attestation')->onDelete('cascade');
 
-            $table->unique(['user_id','attestation_id']);
+            $table->unique(['user_id', 'attestation_id']);
         });
     }
 

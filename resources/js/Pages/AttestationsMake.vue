@@ -31,11 +31,11 @@ function updateData() {
     const usersData = {};
 
     tasks.value.flat().forEach((item) => {
-        const {name, title, task_id, checked, user_id} = item;
+        const { name, title, task_id, checked, user_id, editor_name } = item;
         const key = `${name}-${user_id}`;
 
         if (!usersData[key]) {
-            usersData[key] = {Name: name, user_id};
+            usersData[key] = { Name: name, user_id };
             uniqueTitles.forEach((t) => {
                 usersData[key][t] = false;
             });
@@ -43,6 +43,7 @@ function updateData() {
 
         usersData[key][title] = checked;
         usersData[key][`task_id_${title}`] = task_id;
+        usersData[key][`editor_name_${title}`] = editor_name;
     });
 
     userData.value = Object.values(usersData);
@@ -52,8 +53,10 @@ function updateData() {
         return surnameA.localeCompare(surnameB);
     });
 
-    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && !key.startsWith('task_id'));
+    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && key !== 'editor_id' && !key.startsWith('editor_name') && !key.startsWith('task_id'));
 }
+
+
 
 onMounted(() => {
     updateData();
@@ -184,7 +187,7 @@ FilterService.register(FILTER.value, (value, filter) => {
                                 <template #body="{ index, field, data }">
                                     <div class="flex justify-center items-center h-full">
                                         <Checkbox v-model="data[field]" @change="extractData(data, index)"
-                                                  :binary="true"/>
+                                                  :binary="true" v-tooltip.left="{ value: `Edited by ${data[`editor_name_${field}`]}`, showDelay: 500, hideDelay: 0 }"/>
                                     </div>
                                 </template>
                             </Column>
