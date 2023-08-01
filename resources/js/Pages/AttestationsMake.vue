@@ -35,7 +35,7 @@ function updateData() {
         const key = `${name}-${user_id}`;
 
         if (!usersData[key]) {
-            usersData[key] = { Name: name, user_id, updated_at };
+            usersData[key] = { Name: name, user_id };
             uniqueTitles.forEach((t) => {
                 usersData[key][t] = false;
             });
@@ -44,6 +44,7 @@ function updateData() {
         usersData[key][title] = checked;
         usersData[key][`task_id_${title}`] = task_id;
         usersData[key][`editor_name_${title}`] = editor_name;
+        usersData[key][`updated_at_${title}`] = updated_at;
     });
 
     userData.value = Object.values(usersData);
@@ -53,7 +54,7 @@ function updateData() {
         return surnameA.localeCompare(surnameB);
     });
 
-    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && key !== 'editor_id' && key !== 'updated_at' && !key.startsWith('editor_name') && !key.startsWith('task_id'));
+    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && key !== 'editor_id' && !key.startsWith('updated_at') && !key.startsWith('editor_name') && !key.startsWith('task_id'));
 }
 
 
@@ -187,7 +188,7 @@ FilterService.register(FILTER.value, (value, filter) => {
                                 <template #body="{ index, field, data }">
                                     <div class="flex justify-center items-center h-full">
                                         <Checkbox v-model="data[field]" @change="extractData(data, index)"
-                                                  :binary="true" v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at`].split('T')[0]} ${data[`updated_at`].split('T')[1].split('.')[0]}` : 'No Edit', showDelay: 500, hideDelay: 0 }"/>
+                                                  :binary="true" v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
                                     </div>
                                 </template>
                             </Column>
