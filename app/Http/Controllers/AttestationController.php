@@ -48,6 +48,7 @@ class AttestationController extends Controller
                 'attestation_tasks.id AS task_id',
                 'user_has_checked_task.id AS checked_id',
                 'user_has_checked_task.editor_id',
+                'user_has_checked_task.updated_at',
             ])
             ->orderBy('attestation_tasks.id');
 

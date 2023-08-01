@@ -54,6 +54,7 @@ class AttestationsMakeController extends Controller
                 'user_has_checked_task.id AS checked_id',
                 'user_has_checked_task.editor_id',
                 'editor.name AS editor_name',
+                'user_has_checked_task.updated_at',
             ])
             ->orderBy('attestation_tasks.id')
             ->get();

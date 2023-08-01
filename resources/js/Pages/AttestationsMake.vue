@@ -31,11 +31,11 @@ function updateData() {
     const usersData = {};
 
     tasks.value.flat().forEach((item) => {
-        const { name, title, task_id, checked, user_id, editor_name } = item;
+        const { name, title, task_id, checked, user_id, editor_name, updated_at } = item;
         const key = `${name}-${user_id}`;
 
         if (!usersData[key]) {
-            usersData[key] = { Name: name, user_id };
+            usersData[key] = { Name: name, user_id, updated_at };
             uniqueTitles.forEach((t) => {
                 usersData[key][t] = false;
             });
@@ -53,7 +53,7 @@ function updateData() {
         return surnameA.localeCompare(surnameB);
     });
 
-    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && key !== 'editor_id' && !key.startsWith('editor_name') && !key.startsWith('task_id'));
+    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && key !== 'editor_id' && key !== 'updated_at' && !key.startsWith('editor_name') && !key.startsWith('task_id'));
 }
 
 
@@ -187,7 +187,7 @@ FilterService.register(FILTER.value, (value, filter) => {
                                 <template #body="{ index, field, data }">
                                     <div class="flex justify-center items-center h-full">
                                         <Checkbox v-model="data[field]" @change="extractData(data, index)"
-                                                  :binary="true" v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]}` : 'No Edit', showDelay: 500, hideDelay: 0 }"/>
+                                                  :binary="true" v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at`].split('T')[0]} ${data[`updated_at`].split('T')[1].split('.')[0]}` : 'No Edit', showDelay: 500, hideDelay: 0 }"/>
                                     </div>
                                 </template>
                             </Column>

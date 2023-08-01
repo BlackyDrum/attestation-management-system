@@ -17,6 +17,7 @@ export default function combine(data) {
             checked: item.checked,
             editor_id: item.editor_id,
             editor_name: item.editor_name,
+            updated_at: item.updated_at
         };
 
         if (foundItem) {
@@ -25,7 +26,8 @@ export default function combine(data) {
                 f.description === task.description &&
                 f.user_id === task.user_id &&
                 f.name === task.name && f.checked === task.checked &&
-                f.editor_id === task.editor_id && f.editor_name === task.editor_name
+                f.editor_id === task.editor_id && f.editor_name === task.editor_name &&
+                f.updated_at === task.updated_at
             ));
 
             if (existingTaskIndex === -1) {
