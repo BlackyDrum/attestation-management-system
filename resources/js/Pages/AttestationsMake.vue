@@ -187,7 +187,7 @@ FilterService.register(FILTER.value, (value, filter) => {
                                 <template #body="{ index, field, data }">
                                     <div class="flex justify-center items-center h-full">
                                         <Checkbox v-model="data[field]" @change="extractData(data, index)"
-                                                  :binary="true" v-tooltip.left="{ value: `Edited by ${data[`editor_name_${field}`]}`, showDelay: 500, hideDelay: 0 }"/>
+                                                  :binary="true" v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]}` : 'No Edit', showDelay: 500, hideDelay: 0 }"/>
                                     </div>
                                 </template>
                             </Column>
