@@ -57,7 +57,8 @@ const op = ref();
 
 
 const togglePanel = (event) => {
-    op.value.toggle(event);
+    if (notifications.value.length !== 0)
+        op.value.toggle(event);
 }
 
 
@@ -139,8 +140,8 @@ const deleteNotification = (index, clear) => {
                                 </div>
                             </NavLink>
                             <div class="ml-4">
-                                <button @click="togglePanel" v-badge="notifications.length"
-                                        v-if="notifications.length > 0" class="pi pi-bell p-overlay-badge text-white"
+                                <button @click="togglePanel" v-badge="notifications.length !== 0 ? notifications.length : '0'"
+                                        class="pi pi-bell p-overlay-badge text-white"
                                         style="font-size: 1.5rem"/>
                                 <OverlayPanel class="w-[50%] max-lg:w-[60%]" ref="op">
                                     <div class="flex">
