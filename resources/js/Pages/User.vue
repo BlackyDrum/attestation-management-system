@@ -355,7 +355,7 @@ const handleUpload = (event) => {
                 </template>
                 <p class="font-bold">
                     <em>To create multiple users simultaneously, you have the option of uploading a CSV file containing
-                        columns for Matriculation_Number, Name, Email, and Password.</em>
+                        columns for Matriculation Number, Name, Email, and Password.</em>
                 </p>
                 <div class="mt-4">
                     <FileUpload :disabled="userfileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
