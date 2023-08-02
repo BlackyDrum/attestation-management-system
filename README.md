@@ -55,13 +55,13 @@ $ npm install
 ```
 $ npm run dev
 ```
-9. **Start the development server:**
-```
-$ php artisan serve
-```
-10. **(Optional) Seed the database with initial users:**
+9. **(Optional) Seed the database with initial users:**
 ```
 $ php artisan db:seed
+```
+10. **Start the development server:**
+```
+$ php artisan serve
 ```
 11. **Start the websocket server:**
 ```
