@@ -297,12 +297,12 @@ const deleteNotification = (index, clear) => {
             <!-- Dialogs -->
             <Dialog v-model:visible="visibleImprint" modal header="Imprint"
                     class="bg-gray-200 font-bold p-2 rounded-md"
-                    :style="{ width: '75vw' }">
+                    :style="{ width: '90vw' }">
                 <imprint></imprint>
             </Dialog>
             <Dialog v-model:visible="visiblePrivacy" modal header="Privacy Statement"
                     class="bg-gray-200 font-bold p-2 rounded-md"
-                    :style="{ width: '75vw' }">
+                    :style="{ width: '90vw' }">
                 <privacy-statement></privacy-statement>
             </Dialog>
 
