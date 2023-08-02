@@ -54,12 +54,25 @@ function updateData() {
         const surnameB = b.Name.split(' ').slice(-1)[0];
         return surnameA.localeCompare(surnameB);
     });
+
     headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'matriculation_number' && key !== 'user_id' && key !== 'editor_id' && !key.startsWith('updated_at') && !key.startsWith('editor_name') && !key.startsWith('task_id'));
+
+    for (const header of headers.value) {
+        checkedCount.value[header] = 0;
+    }
+
+    for (const user of userData.value) {
+        for (const header of headers.value) {
+            if (user[header])
+                checkedCount.value[header]++;
+        }
+    }
 
     userWithMatriculationNumber.value = userData.value;
     userWithMatriculationNumber.value.map(user => {
         user.Name = `${user.Name} (${user.matriculation_number})`;
     })
+
 }
 
 
@@ -124,6 +137,7 @@ const userData = ref(null);
 const headers = ref(null);
 const userWithMatriculationNumber = ref([]);
 const formData = ref([]);
+const checkedCount = ref({});
 
 const dt = ref();
 
@@ -187,7 +201,10 @@ FilterService.register(FILTER.value, (value, filter) => {
                             <Column v-for="header in headers" :field="header" :key="header">
                                 <template #header>
                                     <div class="mx-auto break-all">
-                                        <div>{{ header }}</div>
+                                        <div>
+                                            {{ header }}
+                                            <span v-tooltip.left="`Checked: ${checkedCount[header]}`" class="pi pi-info-circle"></span>
+                                        </div>
                                     </div>
                                 </template>
                                 <template #body="{ index, field, data }">
