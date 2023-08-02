@@ -51,18 +51,21 @@ class UserController extends Controller
     {
         $request->validate([
             'id' => 'required|integer|exists:users,id',
+            'matriculation_number' => ['required', 'integer', Rule::unique('users')->ignore($request->input('id'))],
             'name' => 'required|string|max:50',
             'email' => ['required', 'max:255', 'email', Rule::unique('users')->ignore($request->input('id'))],
             'password' => ['nullable', Rules\Password::defaults()],
         ]);
 
         $id = $request->input('id');
+        $matriculation_number = $request->input('matriculation_number');
         $name = $request->input('name');
         $email = $request->input('email');
         $password = $request->input('password');
 
         $user = User::query()->find($id)->fill([
             'name' => $name,
+            'matriculation_number' => $matriculation_number,
             'email' => $email,
         ]);
 
@@ -82,12 +85,14 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $request->validate([
+            'matriculation_number' => 'required|integer|unique:users,matriculation_number',
             'name' => 'required|string|max:50,',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => ['required', Rules\Password::defaults()],
         ]);
 
         User::query()->create([
+            'matriculation_number' => $request->input('matriculation_number'),
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
@@ -108,12 +113,20 @@ class UserController extends Controller
             DB::beginTransaction();
 
             while ($data = fgetcsv($handle, 1000)) {
+                if (count($data) !== 4) {
+                    DB::rollBack();
+                    return to_route('user')->withErrors([
+                        'message' => 'Wrong file format',
+                    ]);
+                }
+
                 if (!$firstRowSkipped) {
                     $firstRowSkipped = true;
                     continue;
                 }
 
-                $validator = Validator::make(['name' => $data[0], 'email' => $data[1], 'password' => $data[2]], [
+                $validator = Validator::make(['matriculation_number' => $data[0],'name' => $data[1], 'email' => $data[2], 'password' => $data[3]], [
+                    'matriculation_number' => 'required|integer|unique:users,matriculation_number',
                     'name' => 'required|string|max:50',
                     'email' => 'required|string|email|max:255|unique:users,email',
                     'password' => ['required', Rules\Password::defaults()],
@@ -123,15 +136,20 @@ class UserController extends Controller
                     DB::rollBack();
                     if (!empty($validator->failed()['email']['Unique'])) {
                         $validator->errors()->forget('email');
-                        $validator->errors()->add('email', "The email '{$data[1]}' is already taken.");
+                        $validator->errors()->add('email', "The email '{$data[2]}' is already taken.");
+                    }
+                    if (!empty($validator->failed()['matriculation_number']['Unique'])) {
+                        $validator->errors()->forget('matriculation_number');
+                        $validator->errors()->add('matriculation_number', "The matriculation number '{$data[0]}' is already taken.");
                     }
                     return to_route('user')->withErrors($validator->errors()->all());
                 }
 
                 User::query()->create([
-                    'name' => $data[0],
-                    'email' => $data[1],
-                    'password' => Hash::make($data[2]),
+                    'matriculation_number' => $data[0],
+                    'name' => $data[1],
+                    'email' => $data[2],
+                    'password' => Hash::make($data[3]),
                 ]);
             }
 

@@ -14,6 +14,7 @@ export default function combine(data) {
             description: item.description,
             user_id: item.user_id,
             name: item.name,
+            matriculation_number: item.matriculation_number,
             checked: item.checked,
             editor_id: item.editor_id,
             editor_name: item.editor_name,
@@ -27,7 +28,7 @@ export default function combine(data) {
                 f.user_id === task.user_id &&
                 f.name === task.name && f.checked === task.checked &&
                 f.editor_id === task.editor_id && f.editor_name === task.editor_name &&
-                f.updated_at === task.updated_at
+                f.updated_at === task.updated_at && f.matriculation_number === task.matriculation_number
             ));
 
             if (existingTaskIndex === -1) {

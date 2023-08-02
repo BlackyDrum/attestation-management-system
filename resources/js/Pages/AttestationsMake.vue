@@ -31,7 +31,7 @@ function updateData() {
     const usersData = {};
 
     tasks.value.flat().forEach((item) => {
-        const { name, title, task_id, checked, user_id, editor_name, updated_at } = item;
+        const { name, title, task_id, checked, user_id, editor_name, updated_at, matriculation_number } = item;
         const key = `${name}-${user_id}`;
 
         if (!usersData[key]) {
@@ -42,6 +42,7 @@ function updateData() {
         }
 
         usersData[key][title] = checked;
+        usersData[key]['matriculation_number'] = matriculation_number;
         usersData[key][`task_id_${title}`] = task_id;
         usersData[key][`editor_name_${title}`] = editor_name;
         usersData[key][`updated_at_${title}`] = updated_at;
@@ -53,8 +54,12 @@ function updateData() {
         const surnameB = b.Name.split(' ').slice(-1)[0];
         return surnameA.localeCompare(surnameB);
     });
+    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'matriculation_number' && key !== 'user_id' && key !== 'editor_id' && !key.startsWith('updated_at') && !key.startsWith('editor_name') && !key.startsWith('task_id'));
 
-    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && key !== 'editor_id' && !key.startsWith('updated_at') && !key.startsWith('editor_name') && !key.startsWith('task_id'));
+    userWithMatriculationNumber.value = userData.value;
+    userWithMatriculationNumber.value.map(user => {
+        user.Name = `${user.Name} (${user.matriculation_number})`;
+    })
 }
 
 
@@ -117,7 +122,7 @@ const subject_name = ref("");
 const tasks = ref([]);
 const userData = ref(null);
 const headers = ref(null);
-
+const userWithMatriculationNumber = ref([]);
 const formData = ref([]);
 
 const dt = ref();
@@ -176,7 +181,7 @@ FilterService.register(FILTER.value, (value, filter) => {
                             <Column field="Name" header="Name">
                                 <template #filter="{ filterModel, filterCallback }">
                                     <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-                                               class="p-column-filter" placeholder="Search by name"/>
+                                               class="p-column-filter" placeholder="Search user"/>
                                 </template>
                             </Column>
                             <Column v-for="header in headers" :field="header" :key="header">

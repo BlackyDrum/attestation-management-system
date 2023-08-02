@@ -15,6 +15,7 @@ import Button from "primevue/button";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import FileUpload from 'primevue/fileupload';
+import InputNumber from "primevue/inputnumber";
 
 defineProps({
     users: {
@@ -35,12 +36,14 @@ onMounted(() => {
 
 const userForm = useForm({
     id: null,
+    matriculation_number: null,
     name: null,
     email: null,
     password: null,
 })
 
 const userFormEdit = useForm({
+    matriculation_number: null,
     name: null,
     email: null,
     password: null,
@@ -83,6 +86,7 @@ const handleUserEdit = (user) => {
     userForm.reset('password');
 
     userForm.id = user.id;
+    userForm.matriculation_number = user.matriculation_number;
     userForm.name = user.name;
     userForm.email = user.email;
 }
@@ -95,7 +99,7 @@ const handleUserEditClose = () => {
 }
 
 const sendEditForm = () => {
-    if ((selectedUser.value.name === userForm.name && selectedUser.value.email === userForm.email) && !userForm.password) return;
+    if ((selectedUser.value.name === userForm.name && selectedUser.value.email === userForm.email && selectedUser.value.matriculation_number === userForm.matriculation_number) && !userForm.password) return;
 
     userForm.put('/users', {
         preserveScroll: true,
@@ -104,6 +108,7 @@ const sendEditForm = () => {
         },
         onSuccess: () => {
             selectedUser.value.id = userForm.id;
+            selectedUser.value.matriculation_number = userForm.matriculation_number;
             selectedUser.value.name = userForm.name;
             selectedUser.value.email = userForm.email;
             window.toast.add({
@@ -221,6 +226,7 @@ const handleUpload = (event) => {
                 </div>
             </div>
         </template>
+
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="w-full text-right">
@@ -293,6 +299,15 @@ const handleUpload = (event) => {
                 <form @submit.prevent>
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
+                            <i class="pi pi-hashtag mr-2"></i>
+                        </span>
+                        <InputText :useGrouping="false" :disabled="userFormEdit.processing" required v-model="userFormEdit.matriculation_number"
+                                   placeholder="Matriculation Number"
+                        />
+                    </div>
+                    <div class="ml-6 text-red-600 font-medium" v-if="errors.matriculation_number">{{ errors.matriculation_number }}</div>
+                    <div class="p-inputgroup mt-2">
+                        <span class="p-inputgroup-addon">
                             <i class="pi pi-user mr-2"></i>
                         </span>
                         <InputText :disabled="userFormEdit.processing" type="text" required v-model="userFormEdit.name"
@@ -340,7 +355,7 @@ const handleUpload = (event) => {
                 </template>
                 <p class="font-bold">
                     <em>To create multiple users simultaneously, you have the option of uploading a CSV file containing
-                        columns for Name, Email, and Password.</em>
+                        columns for Matriculation_Number, Name, Email, and Password.</em>
                 </p>
                 <div class="mt-4">
                     <FileUpload :disabled="userfileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
@@ -374,11 +389,20 @@ const handleUpload = (event) => {
         <form @submit.prevent>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
+                    <i class="pi pi-hashtag mr-2"></i>
+                </span>
+                <InputText :useGrouping="false" :disabled="userForm.processing" required v-model="userForm.matriculation_number"
+                           placeholder="Matriculation Number"
+                           />
+            </div>
+            <div class="ml-6 text-red-600 font-medium" v-if="errors.matriculation_number">{{ errors.matriculation_number }}</div>
+            <div class="p-inputgroup mt-2">
+                <span class="p-inputgroup-addon">
                     <i class="pi pi-user mr-2"></i>
                 </span>
                 <InputText :disabled="userForm.processing" type="text" required v-model="userForm.name"
                            placeholder="Name"
-                           class="border border-black rounded-md p-1"/>
+                           />
             </div>
             <div class="ml-6 text-red-600 font-medium" v-if="errors.name">{{ errors.name }}</div>
             <div class="p-inputgroup mt-2">
@@ -387,7 +411,7 @@ const handleUpload = (event) => {
                 </span>
                 <InputText :disabled="userForm.processing" type="email" required v-model="userForm.email"
                            placeholder="E-Mail"
-                           class="border border-black rounded-md p-1"/>
+                           c/>
             </div>
             <div class="ml-6 text-red-600 font-medium" v-if="errors.email">{{ errors.email }}</div>
             <div class="p-inputgroup mt-2">
@@ -396,7 +420,7 @@ const handleUpload = (event) => {
                 </span>
                 <InputText :disabled="userForm.processing" type="password" v-model="userForm.password"
                            placeholder="New Password"
-                           class="border border-black rounded-md p-1"/>
+                           />
             </div>
             <div class="ml-6 text-red-600 font-medium" v-if="errors.password">{{ errors.password }}</div>
 
@@ -406,7 +430,7 @@ const handleUpload = (event) => {
                 </div>
                 <div class="flex justify-end" style="height: 3rem">
                     <primary-button class="mr-5 "
-                                    :disabled="userForm.processing || (selectedUser.name === userForm.name && selectedUser.email === userForm.email && !userForm.password)"
+                                    :disabled="userForm.processing || (selectedUser.name === userForm.name && selectedUser.email === userForm.email && selectedUser.matriculation_number === parseInt(userForm.matriculation_number) && !userForm.password)"
                                     @click="sendEditForm">Save Changes
                     </primary-button>
                     <secondary-button @click="handleUserEditClose">Cancel</secondary-button>

@@ -41,16 +41,22 @@ defineProps({
     }
 })
 
+const page = usePage();
+const confirm = useConfirm();
+
+
 onMounted(() => {
     combinedData.value = combine(page.props.attestations);
+
+    userWithMatriculationNumber.value = page.props.users;
+    userWithMatriculationNumber.value.map(user => {
+        user.name = `${user.name} (${user.matriculation_number})`;
+    })
 })
 
 onBeforeUpdate(() => {
     combinedData.value = combine(page.props.attestations);
 })
-
-const page = usePage();
-const confirm = useConfirm();
 
 const handleDialogOpen = () => {
     reset();
@@ -275,6 +281,7 @@ const successForm = ref(false);
 const subject_name = ref("");
 const tasks = ref([]);
 const userData = ref([]);
+const userWithMatriculationNumber = ref([]);
 const headers = ref(null);
 const descriptions = ref([]);
 
@@ -445,7 +452,7 @@ const colors = ref([
                 <form @submit.prevent="handleForm">
                     <span class="p-float-label mt-5">
                         <MultiSelect :disabled="attestationForm.processing" :loading="!$props.users"
-                                     v-model="attestationForm.users" :options="users" filter
+                                     v-model="attestationForm.users" :options="userWithMatriculationNumber" filter
                                      optionLabel="name" :maxSelectedLabels="3"
                                      :virtualScrollerOptions="{ itemSize: 44 }"
                                      class="w-full md:w-20rem"/>

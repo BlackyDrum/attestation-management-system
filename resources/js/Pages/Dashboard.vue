@@ -27,6 +27,11 @@ const page = usePage();
 
 onMounted(() => {
     notifications.value = page.props.auth.notifications;
+
+    userWithMatriculationNumber.value = page.props.users;
+    userWithMatriculationNumber.value.map(user => {
+        user.name = `${user.name} (${user.matriculation_number})`;
+    })
 })
 
 onBeforeUpdate(() => {
@@ -35,6 +40,7 @@ onBeforeUpdate(() => {
 
 const notifications = ref([]);
 const showDialog = ref(false);
+const userWithMatriculationNumber = ref([]);
 
 const notificationForm = useForm({
     users: null,
@@ -140,7 +146,7 @@ const handleDialogClose = () => {
             <form @submit.prevent="handleDialogSend">
                 <span class="p-float-label mt-5">
                     <MultiSelect :disabled="notificationForm.processing" :loading="!$props.users"
-                                 v-model="notificationForm.users" :options="users" filter
+                                 v-model="notificationForm.users" :options="userWithMatriculationNumber" filter
                                  optionLabel="name" :maxSelectedLabels="3"
                                  :virtualScrollerOptions="{ itemSize: 44 }"
                                  class="w-full md:w-20rem"/>

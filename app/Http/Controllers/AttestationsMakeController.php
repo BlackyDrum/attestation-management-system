@@ -49,6 +49,7 @@ class AttestationsMakeController extends Controller
                 'attestation_tasks.description',
                 'user_has_attestation.user_id',
                 'users.name',
+                'users.matriculation_number',
                 'user_has_checked_task.checked',
                 'attestation_tasks.id AS task_id',
                 'user_has_checked_task.id AS checked_id',
