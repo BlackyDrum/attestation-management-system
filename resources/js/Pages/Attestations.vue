@@ -85,6 +85,7 @@ const handleForm = () => {
             .post('/attestations', {
                 onSuccess: () => {
                     reset();
+                    showDialog.value = false;
                     successForm.value = true;
                     combinedData.value = combine(page.props.attestations);
                     window.toast.add({
