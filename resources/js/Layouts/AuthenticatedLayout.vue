@@ -113,15 +113,18 @@ const deleteNotification = (index, clear) => {
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <div class="hidden space-x-8 sm:-my-px lg:ml-10 md:ml-5 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                                    <span class="pi pi-inbox mr-1"></span>
                                     Dashboard
                                 </NavLink>
                                 <NavLink :href="route('attestations')" :active="route().current('attestations')">
+                                    <span class="pi pi-book mr-1"></span>
                                     Attestations
                                 </NavLink>
                                 <NavLink v-if="$page.props.auth.user.admin" :href="route('user')"
                                          :active="route().current('user')">
+                                    <span class="pi pi-users mr-1"></span>
                                     Users
                                 </NavLink>
                             </div>
@@ -131,11 +134,13 @@ const deleteNotification = (index, clear) => {
                             <!-- Settings Dropdown -->
                             <NavLink :no-link="true" @click="visiblePrivacy = true">
                                 <div class="text-white mx-4 max-lg:hidden">
+                                    <span class="pi pi-flag"></span>
                                     Privacy Statement
                                 </div>
                             </NavLink>
                             <NavLink :no-link="true" @click="visibleImprint = true">
                                 <div class="text-white mx-4 max-lg:hidden">
+                                    <span class="pi pi-info-circle"></span>
                                     Imprint
                                 </div>
                             </NavLink>
@@ -187,7 +192,10 @@ const deleteNotification = (index, clear) => {
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route('profile.edit')"> Profile</DropdownLink>
+                                        <DropdownLink :href="route('profile.edit')">
+                                            <span class="pi pi-user mr-1"></span>
+                                            Profile
+                                        </DropdownLink>
                                         <button @click="visiblePrivacy = true"
                                                 class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
                                         >
@@ -200,6 +208,7 @@ const deleteNotification = (index, clear) => {
                                         </button>
                                         <hr class="lg:hidden">
                                         <DropdownLink :href="route('logout')" method="post" as="button">
+                                            <span class="pi pi-arrow-left mr-1"></span>
                                             Log Out
                                         </DropdownLink>
                                     </template>
@@ -247,14 +256,17 @@ const deleteNotification = (index, clear) => {
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                            <span class="pi pi-inbox mr-1"></span>
                             Dashboard
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('attestations')" :active="route().current('attestations')">
+                            <span class="pi pi-book mr-1"></span>
                             Attestations
                         </ResponsiveNavLink>
                         <ResponsiveNavLink v-if="$page.props.auth.user.admin" :href="route('user')"
                                            :active="route().current('user')">
-                            User
+                            <span class="pi pi-users mr-1"></span>
+                            Users
                         </ResponsiveNavLink>
                         <NavLink :no-link="true" @click="visiblePrivacy = true">
                             <div class="text-white mx-4">
@@ -278,8 +290,12 @@ const deleteNotification = (index, clear) => {
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> Profile</ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('profile.edit')">
+                                <span class="pi pi-user mr-1"></span>
+                                Profile
+                            </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
+                                <span class="pi pi-arrow-left mr-1"></span>
                                 Log Out
                             </ResponsiveNavLink>
                         </div>
