@@ -22,6 +22,7 @@ import Checkbox from "primevue/checkbox";
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Editor from 'primevue/editor';
+import Chart from 'primevue/chart';
 
 import combine from "@/CombinedData.js";
 
@@ -57,6 +58,17 @@ const userData = ref([]);
 const userWithMatriculationNumber = ref([]);
 const headers = ref(null);
 const descriptions = ref([]);
+const chartData = ref([]);
+const chartOptions = ref({
+    scales: {
+        y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 1
+            },
+        }
+    }
+});
 
 const attestationForm = useForm({
     id: null,
@@ -94,11 +106,45 @@ onMounted(() => {
     userWithMatriculationNumber.value.map(user => {
         user.name = `${user.name} (${user.matriculation_number})`;
     })
+
+    setupChart();
 })
 
 onBeforeUpdate(() => {
     combinedData.value = combine(page.props.attestations);
+    chartData.value = [];
+
+    setupChart();
 })
+
+const setupChart = () => {
+    for (let i = 0; i < combinedData.value.length; i++) {
+        chartData.value.push({
+            labels: [],
+            datasets: [
+                {
+                    label: 'Checked',
+                    data: [],
+                    backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)'],
+                    borderColor: ['rgb(255, 159, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)'],
+                    borderWidth: 1
+                }
+            ]
+        })
+        for (const item of combinedData.value[i].tasks[0]) {
+            chartData.value[i].labels.push(item.title)
+            chartData.value[i].datasets[0].data.push(0);
+        }
+        for (const user of combinedData.value[i].tasks) {
+            for (const item of user) {
+                if (item.checked) {
+                    let index = chartData.value[i].labels.findIndex((label) => label === item.title);
+                    chartData.value[i].datasets[0].data[index]++;
+                }
+            }
+        }
+    }
+}
 
 const handleDialogOpen = () => {
     reset();
@@ -324,7 +370,7 @@ const handleAttestationInfo = (attestation, index) => {
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" :key="attestation.id"
+                <div v-if="$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="attestation.id"
                      class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 rounded-lg">
                     <div class="w-full bg-blue-500 h-3"/>
                     <Card class="break-words">
@@ -349,6 +395,9 @@ const handleAttestationInfo = (attestation, index) => {
                                                    placeholder="Search"></InputText>
                                     </span>
                                 </div>
+                            </div>
+                            <div>
+                                <Chart type="bar" :data="chartData[index]" :options="chartOptions" />
                             </div>
                         </template>
                         <template #footer>
