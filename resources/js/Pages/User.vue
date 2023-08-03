@@ -340,7 +340,7 @@ const handleUpload = (event) => {
                         </div>
                         <div class="flex justify-end" style="height: 3rem">
                             <primary-button class="max-md:mr-2 mr-5"
-                                            :disabled="userFormEdit.processing"
+                                            :disabled="userFormEdit.processing || !userFormEdit.matriculation_number || !userFormEdit.name || !userFormEdit.email || !userFormEdit.password"
                                             @click="sendCreateForm">Create User
                             </primary-button>
                             <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
