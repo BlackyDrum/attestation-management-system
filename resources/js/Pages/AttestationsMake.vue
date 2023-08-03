@@ -192,7 +192,7 @@ FilterService.register(FILTER.value, (value, filter) => {
                                     </div>
                                 </div>
                             </template>
-                            <Column field="Name" header="Name">
+                            <Column style="font-weight: bold" field="Name" header="Name">
                                 <template #filter="{ filterModel, filterCallback }">
                                     <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
                                                class="p-column-filter" placeholder="Search user"/>

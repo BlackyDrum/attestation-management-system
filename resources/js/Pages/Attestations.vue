@@ -326,25 +326,26 @@ const colors = ref([
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div v-if="$page.props.auth.user.admin" v-for="attestation in combinedData" :key="attestation.id"
-                     class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 p-4 rounded-lg">
-                    <Card class="rounded-lg break-words">
+                     class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 rounded-lg">
+                    <div class="w-full bg-blue-500 h-3"/>
+                    <Card class="break-words">
                         <template #title> {{ attestation.subject_name }} ({{ attestation.semester }})</template>
                         <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
                         <template #content>
-                            <div class="flex flex-wrap justify-evenly gap-2">
-                                <div class="w-1/2 max-md:w-full">
+                            <div class="grid grid-cols-2 max-md:grid-cols-1 justify-evenly gap-2">
+                                <div class="w-1/2 w-full">
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-user"/>
-                                        <InputText class="w-full" disabled
+                                        <InputText style="font-weight: bold" class="w-full" disabled
                                                    :value="`Current Users: ${attestation.tasks.length}`"
                                                    placeholder="Search">
                                         </InputText>
                                     </span>
                                 </div>
-                                <div class="w-1/2 max-md:w-full">
+                                <div class="w-1/2 w-full">
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-file"/>
-                                        <InputText class="w-full" disabled
+                                        <InputText style="font-weight: bold" class="w-full" disabled
                                                    :value="`Tasks: ${attestation.tasks[0].length}`"
                                                    placeholder="Search"></InputText>
                                     </span>
@@ -611,3 +612,10 @@ const colors = ref([
         </span>
     </AuthenticatedLayout>
 </template>
+
+<style>
+.p-card {
+    border-top-left-radius: revert;
+    border-top-right-radius: revert;
+}
+</style>
