@@ -107,13 +107,14 @@ onMounted(() => {
         user.name = `${user.name} (${user.matriculation_number})`;
     })
 
+    chartData.value = [];
     setupChart();
 })
 
 onBeforeUpdate(() => {
     combinedData.value = combine(page.props.attestations);
-    chartData.value = [];
 
+    chartData.value = [];
     setupChart();
 })
 
@@ -259,7 +260,9 @@ const confirm1 = (attestation) => {
                                 detail: `Attestation '${combinedData.value[i].subject_name}' with ID ${combinedData.value[i].id} was deleted`,
                                 life: 3000,
                             })
-                            combinedData.value.splice(i, 1);
+                            router.reload({
+                                only: ['attestations'],
+                            })
                             break;
                         }
                     }
