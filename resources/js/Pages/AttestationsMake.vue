@@ -88,6 +88,15 @@ function updateData() {
         checkedCount.value[header] = 0;
     }
 
+    let sortable = [];
+    for (const header of headers.value) {
+        sortable.push([header, userData.value[0][`task_id_${header}`]]);
+    }
+    sortable.sort((a,b) => {
+        return a[1] - b[1];
+    });
+    headers.value = sortable.flat().filter((item, index) => index % 2 === 0);
+
     for (const user of userData.value) {
         for (const header of headers.value) {
             if (user[header])
