@@ -65,7 +65,7 @@ const deleteNotification = (index, clear) => {
         .then(response => {
             if (clear) {
                 notifications.value = [];
-                router.reload('notifications');
+                router.reload();
             } else
                 notifications.value.splice(index, 1);
 

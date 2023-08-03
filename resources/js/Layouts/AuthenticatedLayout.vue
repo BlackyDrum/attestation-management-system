@@ -78,7 +78,7 @@ const deleteNotification = (index, clear) => {
             if (notifications.value.length === 0)
                 op.value.toggle();
 
-            router.reload('notifications');
+            router.reload();
         })
         .catch(error => {
             op.value.toggle();
