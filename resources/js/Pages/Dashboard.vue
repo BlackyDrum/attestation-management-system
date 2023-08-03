@@ -1,11 +1,11 @@
 <script setup>
+import {Head, router, useForm, usePage} from '@inertiajs/vue3';
+import {onBeforeUpdate, onMounted, ref} from "vue";
+
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
-
-import {Head, router, useForm, usePage} from '@inertiajs/vue3';
-import {onBeforeUpdate, onMounted, ref} from "vue";
 
 import Message from "primevue/message";
 import Button from "primevue/button";
@@ -13,6 +13,7 @@ import Dialog from "primevue/dialog";
 import MultiSelect from "primevue/multiselect";
 import InputText from "primevue/inputtext";
 import Dropdown from "primevue/dropdown";
+
 
 defineProps({
     users: {
@@ -23,7 +24,21 @@ defineProps({
     }
 })
 
+
 const page = usePage();
+
+const notifications = ref([]);
+const showDialog = ref(false);
+const userWithMatriculationNumber = ref([]);
+
+const notificationForm = useForm({
+    users: null,
+    message: null,
+    severity: null,
+})
+
+const severities = ref(["info", "error", "warn", "success"]);
+
 
 onMounted(() => {
     notifications.value = page.props.auth.notifications;
@@ -42,18 +57,6 @@ onMounted(() => {
 onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
 })
-
-const notifications = ref([]);
-const showDialog = ref(false);
-const userWithMatriculationNumber = ref([]);
-
-const notificationForm = useForm({
-    users: null,
-    message: null,
-    severity: null,
-})
-
-const severities = ref(["info", "error", "warn", "success"]);
 
 const deleteNotification = (index, clear) => {
     axios.delete('/notifications', {
@@ -79,6 +82,7 @@ const deleteNotification = (index, clear) => {
             })
         })
 }
+
 const handleDialogSend = () => {
     notificationForm.post('/notifications', {
         onSuccess: () => {

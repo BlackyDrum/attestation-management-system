@@ -1,7 +1,8 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Head, router, usePage} from '@inertiajs/vue3';
 import {onBeforeUpdate, onMounted, ref} from "vue";
+
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 import Button from "primevue/button";
 import DataTable from 'primevue/datatable';
@@ -19,6 +20,32 @@ defineProps({
     id: {
         type: Number
     }
+})
+
+
+const page = usePage();
+
+const combinedData = ref(null);
+const subject_name = ref("");
+const tasks = ref([]);
+const userData = ref(null);
+const headers = ref(null);
+const userWithMatriculationNumber = ref([]);
+const formData = ref([]);
+const checkedCount = ref({});
+const dt = ref();
+const FILTER = ref('FILTER');
+const filters = ref({
+    'Name': {value: null, matchMode: 'contains'},
+});
+
+onMounted(() => {
+    updateData();
+});
+
+onBeforeUpdate(() => {
+    updateData();
+    formData.value = [];
 })
 
 function updateData() {
@@ -75,19 +102,6 @@ function updateData() {
 
 }
 
-
-
-onMounted(() => {
-    updateData();
-});
-
-onBeforeUpdate(() => {
-    updateData();
-    formData.value = [];
-})
-
-const page = usePage();
-
 const extractData = (data, index) => {
     const keys = (Object.keys(data).filter(key => key.startsWith('task_id'))).map(key => key.replace('task_id_', ''));
 
@@ -130,22 +144,6 @@ const exportCSV = () => {
     dt.value.exportCSV();
 };
 
-const combinedData = ref(null);
-const subject_name = ref("");
-const tasks = ref([]);
-const userData = ref(null);
-const headers = ref(null);
-const userWithMatriculationNumber = ref([]);
-const formData = ref([]);
-const checkedCount = ref({});
-
-const dt = ref();
-
-const FILTER = ref('FILTER');
-const filters = ref({
-    'Name': {value: null, matchMode: 'contains'},
-});
-
 FilterService.register(FILTER.value, (value, filter) => {
 
     if (filter === undefined || filter === null || filter.trim() === '') return true;
@@ -154,8 +152,6 @@ FilterService.register(FILTER.value, (value, filter) => {
 
     return value.toString() === filter.toString();
 });
-
-
 </script>
 
 <template>

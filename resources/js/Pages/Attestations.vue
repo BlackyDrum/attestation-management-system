@@ -23,8 +23,8 @@ import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Editor from 'primevue/editor';
 
-
 import combine from "@/CombinedData.js";
+
 
 defineProps({
     users: {
@@ -41,8 +41,45 @@ defineProps({
     }
 })
 
+
 const page = usePage();
 const confirm = useConfirm();
+
+const showDialog = ref(false);
+const showAttestation = ref(false);
+const isEdit = ref(false);
+const taskCount = ref(1);
+const combinedData = ref(null);
+const successForm = ref(false);
+const subject_name = ref("");
+const tasks = ref([]);
+const userData = ref([]);
+const userWithMatriculationNumber = ref([]);
+const headers = ref(null);
+const descriptions = ref([]);
+
+const attestationForm = useForm({
+    id: null,
+    users: null,
+    subjectNumber: null,
+    subjectName: null,
+    semester: null,
+    attestations: [],
+})
+
+const colors = ref([
+    {rgb: "rgb(0, 0, 0)", label: "Black"},
+    {rgb: "rgb(255, 255, 255)", label: "White"},
+    {rgb: "rgb(255, 0, 0)", label: "Red"},
+    {rgb: "rgb(0, 255, 0)", label: "Green"},
+    {rgb: "rgb(0, 0, 255)", label: "Blue"},
+    {rgb: "rgb(255, 165, 0)", label: "Orange"},
+    {rgb: "rgb(128, 0, 128)", label: "Purple"},
+    {rgb: "rgb(255, 255, 0)", label: "Yellow"},
+    {rgb: "rgb(0, 128, 128)", label: "Teal"},
+    {rgb: "rgb(128, 128, 0)", label: "Olive"},
+    {rgb: "rgb(128, 0, 0)", label: "Maroon"},
+]);
 
 
 onMounted(() => {
@@ -153,16 +190,6 @@ const removeTask = () => {
     taskCount.value--;
     delete page.props.errors['attestations.' + (taskCount.value - 1) + '.title'];
 }
-
-
-const attestationForm = useForm({
-    id: null,
-    users: null,
-    subjectNumber: null,
-    subjectName: null,
-    semester: null,
-    attestations: [],
-})
 
 const confirm1 = (attestation) => {
     confirm.require({
@@ -276,34 +303,6 @@ const handleAttestationInfo = (attestation, index) => {
         descriptions.value.push(combinedData.value[index].tasks[0][i].description)
     }
 }
-
-const showDialog = ref(false);
-const showAttestation = ref(false);
-const isEdit = ref(false);
-const taskCount = ref(1);
-const combinedData = ref(null);
-const successForm = ref(false);
-
-const subject_name = ref("");
-const tasks = ref([]);
-const userData = ref([]);
-const userWithMatriculationNumber = ref([]);
-const headers = ref(null);
-const descriptions = ref([]);
-
-const colors = ref([
-    {rgb: "rgb(0, 0, 0)", label: "Black"},
-    {rgb: "rgb(255, 255, 255)", label: "White"},
-    {rgb: "rgb(255, 0, 0)", label: "Red"},
-    {rgb: "rgb(0, 255, 0)", label: "Green"},
-    {rgb: "rgb(0, 0, 255)", label: "Blue"},
-    {rgb: "rgb(255, 165, 0)", label: "Orange"},
-    {rgb: "rgb(128, 0, 128)", label: "Purple"},
-    {rgb: "rgb(255, 255, 0)", label: "Yellow"},
-    {rgb: "rgb(0, 128, 128)", label: "Teal"},
-    {rgb: "rgb(128, 128, 0)", label: "Olive"},
-    {rgb: "rgb(128, 0, 0)", label: "Maroon"},
-]);
 </script>
 
 <template>

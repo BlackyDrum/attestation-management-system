@@ -10,7 +10,6 @@ import Imprint from '@/Components/Imprint.vue';
 import PrivacyStatement from '@/Components/PrivacyStatement.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
-
 import {useToast} from 'primevue/usetoast';
 import Dialog from 'primevue/dialog';
 import Toast from "primevue/toast";
@@ -18,8 +17,16 @@ import OverlayPanel from 'primevue/overlaypanel';
 import Message from 'primevue/message';
 import Button from "primevue/button";
 
+
 const page = usePage();
 window.toast = useToast();
+
+const notifications = ref([]);
+const showingNavigationDropdown = ref(false);
+const visibleImprint = ref(false);
+const visiblePrivacy = ref(false);
+const op = ref();
+
 
 onBeforeMount(() => {
     Echo.private(`notification.${page.props.auth.user.id}`)
@@ -47,20 +54,10 @@ onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
 })
 
-const notifications = ref([]);
-
-const showingNavigationDropdown = ref(false);
-
-const visibleImprint = ref(false);
-const visiblePrivacy = ref(false);
-const op = ref();
-
-
 const togglePanel = (event) => {
     if (notifications.value.length !== 0)
         op.value.toggle(event);
 }
-
 
 const deleteNotification = (index, clear) => {
     axios.delete('/notifications', {
@@ -91,7 +88,6 @@ const deleteNotification = (index, clear) => {
             })
         })
 }
-
 </script>
 
 <template>

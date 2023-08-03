@@ -15,7 +15,7 @@ import Button from "primevue/button";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import FileUpload from 'primevue/fileupload';
-import InputNumber from "primevue/inputnumber";
+
 
 defineProps({
     users: {
@@ -29,10 +29,14 @@ defineProps({
     }
 })
 
-onMounted(() => {
-    search.value = page.props.search;
-    empty.value = page.props.users.data.length === 0;
-})
+const page = usePage();
+const confirm = useConfirm();
+
+const search = ref("");
+const empty = ref(false);
+const editShow = ref(false);
+const selectedUser = ref(null);
+const createShow = ref(false);
 
 const userForm = useForm({
     id: null,
@@ -53,16 +57,11 @@ const userfileForm = useForm({
     userfile: null
 })
 
-const page = usePage();
-const confirm = useConfirm();
 
-const search = ref("");
-const empty = ref(false);
-
-const editShow = ref(false);
-const selectedUser = ref(null);
-
-const createShow = ref(false);
+onMounted(() => {
+    search.value = page.props.search;
+    empty.value = page.props.users.data.length === 0;
+})
 
 const handleSearchRequest = () => {
     axios.get(`/users/?search=${search.value}&response=true`)
