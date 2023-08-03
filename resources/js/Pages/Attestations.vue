@@ -363,7 +363,7 @@ const colors = ref([
                                 <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
                                     <Button @click="router.get(`/attestations/${attestation.id}`)"
                                             icon="pi pi-arrow-right"
-                                            label="Make attestations" severity="secondary"/>
+                                            label="Make attestations" severity="info"/>
                                 </div>
                             </div>
                         </template>
