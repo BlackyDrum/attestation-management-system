@@ -348,6 +348,15 @@ const handleAttestationInfo = (attestation, index) => {
 
     headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && !key.startsWith('task_id'));
 
+    let sortable = [];
+    for (const header of headers.value) {
+        sortable.push([header, userData.value[0][`task_id_${header}`]]);
+    }
+    sortable.sort((a,b) => {
+        return a[1] - b[1];
+    });
+    headers.value = sortable.flat().filter(item => headers.value.includes(item));
+
     for (let i = 0; i < headers.value.length; i++) {
         descriptions.value.push(combinedData.value[index].tasks[0][i].description)
     }
@@ -449,7 +458,7 @@ const handleAttestationInfo = (attestation, index) => {
                             <TabPanel v-for="(header, index1) in headers" :key="index">
                                 <template #header>
                                     <i class="pi pi-file-edit mr-2"></i>
-                                    <span class="font-medium">{{ header }}</span>
+                                    <span class="font-medium" style="white-space: nowrap">{{ header }}</span>
                                 </template>
                                 <Editor v-if="descriptions[index1]" class="h-full w-full" readonly
                                         v-model="descriptions[index1]">
