@@ -109,7 +109,7 @@ const deleteNotification = (index, clear) => {
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px lg:ml-10 md:ml-5 sm:flex">
+                            <div class="hidden space-x-5 sm:-my-px lg:ml-10 md:ml-5 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     <span class="pi pi-inbox mr-1"></span>
                                     Dashboard
@@ -128,14 +128,14 @@ const deleteNotification = (index, clear) => {
                         </div>
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <!-- Settings Dropdown -->
-                            <NavLink :no-link="true" @click="visiblePrivacy = true">
+                            <NavLink class="max-lg:hidden" :no-link="true" @click="visiblePrivacy = true">
                                 <div class="text-white mx-4 max-lg:hidden">
                                     <span class="pi pi-flag"></span>
                                     Privacy Statement
                                 </div>
                             </NavLink>
-                            <NavLink :no-link="true" @click="visibleImprint = true">
-                                <div class="text-white mx-4 max-lg:hidden">
+                            <NavLink class="max-lg:hidden" :no-link="true" @click="visibleImprint = true">
+                                <div class="text-white mx-4">
                                     <span class="pi pi-info-circle"></span>
                                     Imprint
                                 </div>
@@ -143,7 +143,7 @@ const deleteNotification = (index, clear) => {
                             <div class="ml-4">
                                 <button @click="togglePanel"
                                         v-badge="notifications.length !== 0 ? notifications.length : '0'"
-                                        class="pi pi-bell p-overlay-badge text-white"
+                                        class="pi pi-bell p-overlay-badge text-white mr-0.5"
                                         style="font-size: 1.5rem"/>
                                 <OverlayPanel class="w-[50%] max-lg:w-[60%]" ref="op">
                                     <div class="flex">
