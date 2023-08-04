@@ -192,7 +192,9 @@ const handleDialogClose = () => {
                         <CustomProgressSpinner :processing="notificationForm.processing"></CustomProgressSpinner>
                     </div>
                     <div class="flex justify-end" style="height: 3rem">
-                        <primary-button class="mr-5" :disabled="notificationForm.processing">Send</primary-button>
+                        <primary-button class="mr-5 disabled:cursor-not-allowed" :disabled="notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)">
+                            Send
+                        </primary-button>
                         <secondary-button @click="handleDialogClose">Cancel</secondary-button>
                     </div>
                 </div>

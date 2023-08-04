@@ -654,7 +654,7 @@ const handleAttestationInfo = (attestation, index) => {
                             <CustomProgressSpinner :processing="attestationForm.processing"></CustomProgressSpinner>
                         </div>
                         <div class="flex justify-end" style="height: 3rem">
-                            <primary-button class="mr-5" :disabled="attestationForm.processing">{{
+                            <primary-button class="mr-5 disabled:cursor-not-allowed" :disabled="attestationForm.processing || (!attestationForm.users || !attestationForm.subjectName || !attestationForm.subjectNumber || !attestationForm.semester || attestationForm.attestations.length === 0)">{{
                                     isEdit ? "Save Changes" :
                                         "Create new subject"
                                 }}</primary-button>
