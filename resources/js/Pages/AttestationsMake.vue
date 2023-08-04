@@ -203,7 +203,7 @@ FilterService.register(FILTER.value, (value, filter) => {
                                                class="p-column-filter" placeholder="Search user"/>
                                 </template>
                             </Column>
-                            <Column v-for="header in headers" :field="header" :key="header">
+                            <Column v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
                                 <template #header>
                                     <div class="mx-auto break-all">
                                         <div>
