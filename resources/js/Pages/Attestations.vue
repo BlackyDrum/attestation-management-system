@@ -607,8 +607,8 @@ const handleAttestationInfo = (attestation, index) => {
                                             <button class="ql-bold"></button>
                                             <button class="ql-italic"></button>
                                             <button class="ql-underline"></button>
-                                            <button class="ql-list"></button>
-                                            <span class="ql-formats">
+                                        </span>
+                                        <span class="ql-formats">
                                                 <select class="ql-color">
                                                     <template v-for="color in colors">
                                                         <option :value="color.rgb" :label="color.label"></option>
@@ -634,7 +634,6 @@ const handleAttestationInfo = (attestation, index) => {
                                                 <button class="ql-link" value="bullet"></button>
                                                 <button class="ql-code-block"></button>
                                             </span>
-                                        </span>
                                     </template>
                                 </Editor>
                                 <error-message
