@@ -98,7 +98,8 @@ const handleUserEditClose = () => {
 }
 
 const sendEditForm = () => {
-    if ((selectedUser.value.name === userForm.name && selectedUser.value.email === userForm.email && selectedUser.value.matriculation_number === userForm.matriculation_number) && !userForm.password) return;
+    if ((selectedUser.value.name === userForm.name && selectedUser.value.email === userForm.email && selectedUser.value.matriculation_number === userForm.matriculation_number) && !userForm.password)
+        return;
 
     userForm.put('/users', {
         preserveScroll: true,
@@ -107,7 +108,7 @@ const sendEditForm = () => {
         },
         onSuccess: () => {
             selectedUser.value.id = userForm.id;
-            selectedUser.value.matriculation_number = userForm.matriculation_number;
+            selectedUser.value.matriculation_number = parseInt(userForm.matriculation_number);
             selectedUser.value.name = userForm.name;
             selectedUser.value.email = userForm.email;
             window.toast.add({
@@ -338,7 +339,7 @@ const handleUpload = (event) => {
                             <CustomProgressSpinner :processing="userFormEdit.processing"></CustomProgressSpinner>
                         </div>
                         <div class="flex justify-end" style="height: 3rem">
-                            <primary-button class="max-md:mr-2 mr-5"
+                            <primary-button class="max-md:mr-2 mr-5 disabled:cursor-not-allowed"
                                             :disabled="userFormEdit.processing || !userFormEdit.matriculation_number || !userFormEdit.name || !userFormEdit.email || !userFormEdit.password"
                                             @click="sendCreateForm">Create User
                             </primary-button>
@@ -428,7 +429,7 @@ const handleUpload = (event) => {
                     <CustomProgressSpinner :processing="userForm.processing"></CustomProgressSpinner>
                 </div>
                 <div class="flex justify-end" style="height: 3rem">
-                    <primary-button class="mr-5 "
+                    <primary-button class="mr-5 disabled:cursor-not-allowed"
                                     :disabled="userForm.processing || (selectedUser.name === userForm.name && selectedUser.email === userForm.email && selectedUser.matriculation_number === parseInt(userForm.matriculation_number) && !userForm.password)"
                                     @click="sendEditForm">Save Changes
                     </primary-button>
