@@ -64,7 +64,7 @@ const chartOptions = ref({
         y: {
             beginAtZero: true,
             ticks: {
-                stepSize: 1
+                stepSize: 5
             },
         }
     }
