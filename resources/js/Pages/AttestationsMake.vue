@@ -35,7 +35,7 @@ const userWithMatriculationNumber = ref([]);
 const formData = ref([]);
 const checkedCount = ref({});
 const dt = ref();
-const FILTER = ref('FILTER');
+
 const filters = ref({
     'Name': {value: null, matchMode: 'contains'},
 });
