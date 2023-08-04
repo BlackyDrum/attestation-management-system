@@ -6,6 +6,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
+import ErrorMessage from '@/Components/ErrorMessage.vue';
 
 import {useConfirm} from "primevue/useconfirm";
 import Dialog from "primevue/dialog";
@@ -525,9 +526,9 @@ const handleAttestationInfo = (attestation, index) => {
                                      class="w-full md:w-20rem"/>
                         <label for="users">Users</label>
                     </span>
-                    <div v-if="errors.users" class="text-red-600 font-medium">
-                        {{ errors.users }}
-                    </div>
+                    <error-message :show="errors.users">
+                        {{errors.users}}
+                    </error-message>
                     <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))" class="text-red-600 font-medium">
                         The selected User is invalid
                     </div>
@@ -540,9 +541,9 @@ const handleAttestationInfo = (attestation, index) => {
                                               class="w-full"></input-number>
                                 <label for="subject_number">Subject Number</label>
                             </span>
-                            <div v-if="errors.subjectNumber" class="text-red-600 font-medium">
-                                {{ errors.subjectNumber }}
-                            </div>
+                            <error-message :show="errors.subjectNumber">
+                                {{errors.subjectNumber}}
+                            </error-message>
                         </div>
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">
@@ -551,9 +552,9 @@ const handleAttestationInfo = (attestation, index) => {
                                             class="w-full"></input-text>
                                 <label for="subject_name">Subject Name</label>
                             </span>
-                            <div v-if="errors.subjectName" class="text-red-600 font-medium">
-                                {{ errors.subjectName }}
-                            </div>
+                            <error-message :show="errors.subjectName">
+                                {{errors.subjectName}}
+                            </error-message>
                         </div>
                     </div>
                     <div class="mt-4">
@@ -563,9 +564,9 @@ const handleAttestationInfo = (attestation, index) => {
                                       class="max-md:w-[16rem] w-80"/>
                             <label for="semester">Semester</label>
                         </span>
-                        <div v-if="errors.semester" class="text-red-600 font-medium">
-                            {{ errors.semester }}
-                        </div>
+                        <error-message :show="errors.semester">
+                            {{errors.semester}}
+                        </error-message>
                     </div>
                     <div class="mt-4">
                         <div v-for="task in attestationForm.attestations" :key="task.id" class="my-4 w-full">
@@ -576,11 +577,9 @@ const handleAttestationInfo = (attestation, index) => {
                                 <input-text :disabled="attestationForm.processing"
                                             v-model="attestationForm.attestations[task.id - 1].title" class="w-full"
                                             placeholder="Title"></input-text>
-                                <div
-                                    v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.title'))"
-                                    class="text-red-600 font-medium">
+                                <error-message :show="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.title'))">
                                     {{ errors['attestations.' + (task.id - 1) + '.title'] }}
-                                </div>
+                                </error-message>
                             </div>
                             <div class="mt-2">
                                 <Editor v-model="attestationForm.attestations[task.id - 1].description"
@@ -635,11 +634,9 @@ const handleAttestationInfo = (attestation, index) => {
                                         </span>
                                     </template>
                                 </Editor>
-                                <div
-                                    v-if="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.description'))"
-                                    class="text-red-600 font-medium">
+                                <error-message :show="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.description'))">
                                     {{ errors['attestations.' + (task.id - 1) + '.description'] }}
-                                </div>
+                                </error-message>
                             </div>
                         </div>
                     </div>
@@ -649,9 +646,9 @@ const handleAttestationInfo = (attestation, index) => {
                         icon="pi pi-trash" severity="danger" aria-label="Filter"/></span>
                     <span v-else-if="isEdit && attestationForm.attestations.length > 1" class="ml-3"><Button
                         @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter"/></span>
-                    <div v-if="errors.attestations" class="text-red-600 font-medium mt-2">
-                        {{ errors.attestations }}
-                    </div>
+                    <error-message :show="errors.attestations">
+                        {{errors.attestations}}
+                    </error-message>
                     <div class="my-4 grid grid-cols-2">
                         <div class="justify-center">
                             <CustomProgressSpinner :processing="attestationForm.processing"></CustomProgressSpinner>

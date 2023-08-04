@@ -6,6 +6,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
+import ErrorMessage from '@/Components/ErrorMessage.vue';
 
 import {useConfirm} from "primevue/useconfirm";
 import Dialog from 'primevue/dialog';
@@ -305,7 +306,9 @@ const handleUpload = (event) => {
                                    placeholder="Matriculation Number"
                         />
                     </div>
-                    <div class="ml-6 text-red-600 font-medium" v-if="errors.matriculation_number">{{ errors.matriculation_number }}</div>
+                    <error-message :show="errors.matriculation_number">
+                        {{errors.matriculation_number}}
+                    </error-message>
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-user mr-2"></i>
@@ -314,7 +317,9 @@ const handleUpload = (event) => {
                                    placeholder="Name"
                                    class="border border-black rounded-md p-1"/>
                     </div>
-                    <div class="ml-6 text-red-600 font-medium" v-if="errors.name">{{ errors.name }}</div>
+                    <error-message :show="errors.name">
+                        {{errors.name}}
+                    </error-message>
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-at mr-2"></i>
@@ -323,7 +328,9 @@ const handleUpload = (event) => {
                                    v-model="userFormEdit.email" placeholder="E-Mail"
                                    class="border border-black rounded-md p-1"/>
                     </div>
-                    <div class="ml-6 text-red-600 font-medium" v-if="errors.email">{{ errors.email }}</div>
+                    <error-message :show="errors.email">
+                        {{errors.email}}
+                    </error-message>
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-lock mr-2"></i>
@@ -332,7 +339,9 @@ const handleUpload = (event) => {
                                    placeholder="Password"
                                    class="border border-black rounded-md p-1"/>
                     </div>
-                    <div class="ml-6 text-red-600 font-medium" v-if="errors.password">{{ errors.password }}</div>
+                    <error-message :show="errors.password">
+                        {{errors.password}}
+                    </error-message>
 
                     <div class="mt-4 grid grid-cols-2">
                         <div class="justify-center">
@@ -370,9 +379,9 @@ const handleUpload = (event) => {
                             <span>asd</span>
                         </template>
                     </FileUpload>
-                    <div v-if="errors.userfile" class="mt-2 text-red-600 font-medium">
-                        {{ errors.userfile }}
-                    </div>
+                    <error-message :show="errors.userfile">
+                        {{errors.userfile}}
+                    </error-message>
                 </div>
                 <div class="mt-2 flex md:justify-end">
                     <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
@@ -395,7 +404,9 @@ const handleUpload = (event) => {
                            placeholder="Matriculation Number"
                            />
             </div>
-            <div class="ml-6 text-red-600 font-medium" v-if="errors.matriculation_number">{{ errors.matriculation_number }}</div>
+            <error-message :show="errors.matriculation_number">
+                {{errors.matriculation_number}}
+            </error-message>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-user mr-2"></i>
@@ -404,7 +415,9 @@ const handleUpload = (event) => {
                            placeholder="Name"
                            />
             </div>
-            <div class="ml-6 text-red-600 font-medium" v-if="errors.name">{{ errors.name }}</div>
+            <error-message :show="errors.name">
+                {{errors.name}}
+            </error-message>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-at mr-2"></i>
@@ -413,7 +426,9 @@ const handleUpload = (event) => {
                            placeholder="E-Mail"
                            c/>
             </div>
-            <div class="ml-6 text-red-600 font-medium" v-if="errors.email">{{ errors.email }}</div>
+            <error-message :show="errors.email">
+                {{errors.email}}
+            </error-message>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-lock mr-2"></i>
@@ -422,7 +437,9 @@ const handleUpload = (event) => {
                            placeholder="New Password"
                            />
             </div>
-            <div class="ml-6 text-red-600 font-medium" v-if="errors.password">{{ errors.password }}</div>
+            <error-message :show="errors.password">
+                {{errors.password}}
+            </error-message>
 
             <div class="mt-4 grid grid-cols-2 break-keep">
                 <div class="justify-center">
