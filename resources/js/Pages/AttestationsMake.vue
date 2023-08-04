@@ -115,7 +115,7 @@ const extractData = (data, index) => {
     const keys = (Object.keys(data).filter(key => key.startsWith('task_id'))).map(key => key.replace('task_id_', ''));
 
     formData.value = formData.value.filter(obj => obj.user_id !== data.user_id);
-    console.log(formData.value)
+
     for (const key of keys) {
         formData.value.push({
             user_id: data.user_id,
