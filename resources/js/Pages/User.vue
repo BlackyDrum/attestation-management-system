@@ -302,12 +302,13 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-hashtag mr-2"></i>
                         </span>
-                        <InputText :useGrouping="false" :disabled="userFormEdit.processing" required v-model="userFormEdit.matriculation_number"
+                        <InputText :useGrouping="false" :disabled="userFormEdit.processing" required
+                                   v-model="userFormEdit.matriculation_number"
                                    placeholder="Matriculation Number"
                         />
                     </div>
                     <error-message :show="errors.matriculation_number">
-                        {{errors.matriculation_number}}
+                        {{ errors.matriculation_number }}
                     </error-message>
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
@@ -318,7 +319,7 @@ const handleUpload = (event) => {
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <error-message :show="errors.name">
-                        {{errors.name}}
+                        {{ errors.name }}
                     </error-message>
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
@@ -329,7 +330,7 @@ const handleUpload = (event) => {
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <error-message :show="errors.email">
-                        {{errors.email}}
+                        {{ errors.email }}
                     </error-message>
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
@@ -340,7 +341,7 @@ const handleUpload = (event) => {
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <error-message :show="errors.password">
-                        {{errors.password}}
+                        {{ errors.password }}
                     </error-message>
 
                     <div class="mt-4 grid grid-cols-2">
@@ -380,7 +381,7 @@ const handleUpload = (event) => {
                         </template>
                     </FileUpload>
                     <error-message :show="errors.userfile">
-                        {{errors.userfile}}
+                        {{ errors.userfile }}
                     </error-message>
                 </div>
                 <div class="mt-2 flex md:justify-end">
@@ -400,12 +401,13 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-hashtag mr-2"></i>
                 </span>
-                <InputText :useGrouping="false" :disabled="userForm.processing" required v-model="userForm.matriculation_number"
+                <InputText :useGrouping="false" :disabled="userForm.processing" required
+                           v-model="userForm.matriculation_number"
                            placeholder="Matriculation Number"
-                           />
+                />
             </div>
             <error-message :show="errors.matriculation_number">
-                {{errors.matriculation_number}}
+                {{ errors.matriculation_number }}
             </error-message>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
@@ -413,10 +415,10 @@ const handleUpload = (event) => {
                 </span>
                 <InputText :disabled="userForm.processing" type="text" required v-model="userForm.name"
                            placeholder="Name"
-                           />
+                />
             </div>
             <error-message :show="errors.name">
-                {{errors.name}}
+                {{ errors.name }}
             </error-message>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
@@ -427,7 +429,7 @@ const handleUpload = (event) => {
                            c/>
             </div>
             <error-message :show="errors.email">
-                {{errors.email}}
+                {{ errors.email }}
             </error-message>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
@@ -435,10 +437,10 @@ const handleUpload = (event) => {
                 </span>
                 <InputText :disabled="userForm.processing" type="password" v-model="userForm.password"
                            placeholder="New Password"
-                           />
+                />
             </div>
             <error-message :show="errors.password">
-                {{errors.password}}
+                {{ errors.password }}
             </error-message>
 
             <div class="mt-4 grid grid-cols-2 break-keep">

@@ -152,7 +152,8 @@ const handleDialogClose = () => {
             </div>
         </div>
 
-        <Dialog v-model:visible="showDialog" :closable="false" modal header="Send notification" :style="{ width: '90vw' }">
+        <Dialog v-model:visible="showDialog" :closable="false" modal header="Send notification"
+                :style="{ width: '90vw' }">
             <form @submit.prevent="handleDialogSend">
                 <span class="p-float-label mt-5">
                     <MultiSelect :disabled="notificationForm.processing" :loading="!$props.users"
@@ -163,7 +164,7 @@ const handleDialogClose = () => {
                     <label for="users">Users</label>
                 </span>
                 <error-message :show="errors.users">
-                    {{errors.users}}
+                    {{ errors.users }}
                 </error-message>
 
                 <div class=" mt-6">
@@ -174,16 +175,17 @@ const handleDialogClose = () => {
                         <label>Severity</label>
                     </span>
                     <error-message :show="errors.severity">
-                        {{errors.severity}}
+                        {{ errors.severity }}
                     </error-message>
                 </div>
                 <div class="mt-6">
                     <span class="p-float-label">
-                        <InputText class="w-full" :disabled="notificationForm.processing" v-model="notificationForm.message" autoresize />
+                        <InputText class="w-full" :disabled="notificationForm.processing"
+                                   v-model="notificationForm.message" autoresize/>
                         <label>Message</label>
                     </span>
                     <error-message :show="errors.message">
-                        {{errors.message}}
+                        {{ errors.message }}
                     </error-message>
                 </div>
 
@@ -192,7 +194,8 @@ const handleDialogClose = () => {
                         <CustomProgressSpinner :processing="notificationForm.processing"></CustomProgressSpinner>
                     </div>
                     <div class="flex justify-end" style="height: 3rem">
-                        <primary-button class="mr-5 disabled:cursor-not-allowed" :disabled="notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)">
+                        <primary-button class="mr-5 disabled:cursor-not-allowed"
+                                        :disabled="notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)">
                             Send
                         </primary-button>
                         <secondary-button @click="handleDialogClose">Cancel</secondary-button>

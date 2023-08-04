@@ -58,11 +58,11 @@ function updateData() {
     const usersData = {};
 
     tasks.value.flat().forEach((item) => {
-        const { name, title, task_id, checked, user_id, editor_name, updated_at, matriculation_number } = item;
+        const {name, title, task_id, checked, user_id, editor_name, updated_at, matriculation_number} = item;
         const key = `${name}-${user_id}`;
 
         if (!usersData[key]) {
-            usersData[key] = { Name: name, user_id };
+            usersData[key] = {Name: name, user_id};
             uniqueTitles.forEach((t) => {
                 usersData[key][t] = false;
             });
@@ -92,7 +92,7 @@ function updateData() {
     for (const header of headers.value) {
         sortable.push([header, userData.value[0][`task_id_${header}`]]);
     }
-    sortable.sort((a,b) => {
+    sortable.sort((a, b) => {
         return a[1] - b[1];
     });
     headers.value = sortable.flat().filter(item => headers.value.includes(item));
@@ -197,26 +197,28 @@ FilterService.register(FILTER.value, (value, filter) => {
                                     </div>
                                     <div class="flex justify-content-end">
                                         <span class="p-input-icon-left">
-                                            <i class="pi pi-search" />
-                                            <InputText v-model="filters['Name'].value" placeholder="Keyword Search" />
+                                            <i class="pi pi-search"/>
+                                            <InputText v-model="filters['Name'].value" placeholder="Keyword Search"/>
                                         </span>
                                     </div>
                                 </div>
                             </template>
-                            <Column style="font-weight: bold" field="Name" header="Name" />
+                            <Column style="font-weight: bold" field="Name" header="Name"/>
                             <Column v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
                                 <template #header>
                                     <div class="mx-auto break-all">
                                         <div>
                                             {{ header }}
-                                            <span v-tooltip.left="`Checked: ${checkedCount[header]}`" class="pi pi-info-circle"></span>
+                                            <span v-tooltip.left="`Checked: ${checkedCount[header]}`"
+                                                  class="pi pi-info-circle"></span>
                                         </div>
                                     </div>
                                 </template>
                                 <template #body="{ index, field, data }">
                                     <div class="flex justify-center items-center h-full">
                                         <Checkbox v-model="data[field]" @change="extractData(data, index)"
-                                                  :binary="true" v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
+                                                  :binary="true"
+                                                  v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
                                     </div>
                                 </template>
                             </Column>

@@ -353,7 +353,7 @@ const handleAttestationInfo = (attestation, index) => {
     for (const header of headers.value) {
         sortable.push([header, userData.value[0][`task_id_${header}`]]);
     }
-    sortable.sort((a,b) => {
+    sortable.sort((a, b) => {
         return a[1] - b[1];
     });
     headers.value = sortable.flat().filter(item => headers.value.includes(item));
@@ -383,7 +383,8 @@ const handleAttestationInfo = (attestation, index) => {
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div v-if="$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="attestation.id"
+                <div v-if="$page.props.auth.user.admin" v-for="(attestation, index) in combinedData"
+                     :key="attestation.id"
                      class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 rounded-lg">
                     <div class="w-full bg-blue-500 h-3"/>
                     <Card class="break-words">
@@ -410,7 +411,7 @@ const handleAttestationInfo = (attestation, index) => {
                                 </div>
                             </div>
                             <div>
-                                <Chart type="bar" :data="chartData[index]" :options="chartOptions" />
+                                <Chart type="bar" :data="chartData[index]" :options="chartOptions"/>
                             </div>
                         </template>
                         <template #footer>
@@ -527,9 +528,10 @@ const handleAttestationInfo = (attestation, index) => {
                         <label for="users">Users</label>
                     </span>
                     <error-message :show="errors.users">
-                        {{errors.users}}
+                        {{ errors.users }}
                     </error-message>
-                    <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))" class="text-red-600 font-medium">
+                    <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))"
+                         class="text-red-600 font-medium">
                         The selected User is invalid
                     </div>
                     <div class="grid xl:grid-cols-2 xl:gap-4 mt-4">
@@ -542,7 +544,7 @@ const handleAttestationInfo = (attestation, index) => {
                                 <label for="subject_number">Subject Number</label>
                             </span>
                             <error-message :show="errors.subjectNumber">
-                                {{errors.subjectNumber}}
+                                {{ errors.subjectNumber }}
                             </error-message>
                         </div>
                         <div class="my-4">
@@ -553,7 +555,7 @@ const handleAttestationInfo = (attestation, index) => {
                                 <label for="subject_name">Subject Name</label>
                             </span>
                             <error-message :show="errors.subjectName">
-                                {{errors.subjectName}}
+                                {{ errors.subjectName }}
                             </error-message>
                         </div>
                     </div>
@@ -565,7 +567,7 @@ const handleAttestationInfo = (attestation, index) => {
                             <label for="semester">Semester</label>
                         </span>
                         <error-message :show="errors.semester">
-                            {{errors.semester}}
+                            {{ errors.semester }}
                         </error-message>
                     </div>
                     <div class="mt-4">
@@ -577,7 +579,8 @@ const handleAttestationInfo = (attestation, index) => {
                                 <input-text :disabled="attestationForm.processing"
                                             v-model="attestationForm.attestations[task.id - 1].title" class="w-full"
                                             placeholder="Title"></input-text>
-                                <error-message :show="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.title'))">
+                                <error-message
+                                    :show="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.title'))">
                                     {{ errors['attestations.' + (task.id - 1) + '.title'] }}
                                 </error-message>
                             </div>
@@ -634,7 +637,8 @@ const handleAttestationInfo = (attestation, index) => {
                                         </span>
                                     </template>
                                 </Editor>
-                                <error-message :show="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.description'))">
+                                <error-message
+                                    :show="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.description'))">
                                     {{ errors['attestations.' + (task.id - 1) + '.description'] }}
                                 </error-message>
                             </div>
@@ -647,14 +651,15 @@ const handleAttestationInfo = (attestation, index) => {
                     <span v-else-if="isEdit && attestationForm.attestations.length > 1" class="ml-3"><Button
                         @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter"/></span>
                     <error-message :show="errors.attestations">
-                        {{errors.attestations}}
+                        {{ errors.attestations }}
                     </error-message>
                     <div class="my-4 grid grid-cols-2">
                         <div class="justify-center">
                             <CustomProgressSpinner :processing="attestationForm.processing"></CustomProgressSpinner>
                         </div>
                         <div class="flex justify-end" style="height: 3rem">
-                            <primary-button class="mr-5 disabled:cursor-not-allowed" :disabled="attestationForm.processing || (!attestationForm.users || !attestationForm.subjectName || !attestationForm.subjectNumber || !attestationForm.semester || attestationForm.attestations.length === 0)">{{
+                            <primary-button class="mr-5 disabled:cursor-not-allowed"
+                                            :disabled="attestationForm.processing || (!attestationForm.users || !attestationForm.subjectName || !attestationForm.subjectNumber || !attestationForm.semester || attestationForm.attestations.length === 0)">{{
                                     isEdit ? "Save Changes" :
                                         "Create new subject"
                                 }}</primary-button>
