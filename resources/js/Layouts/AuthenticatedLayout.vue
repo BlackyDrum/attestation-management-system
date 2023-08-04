@@ -154,11 +154,15 @@ const deleteNotification = (index, clear) => {
                                                     @click="deleteNotification(-1,true)" label="Clear All"></Button>
                                         </div>
                                     </div>
-                                    <Message :severity="notification.split('|')[0].trim().toLowerCase()"
-                                             @close="deleteNotification(index, false)"
-                                             v-for="(notification, index) in notifications" :key="notification">
-                                        {{ notification.split('|')[1].trim() }}
-                                    </Message>
+                                    <div v-for="(notification, index) in notifications" :key="notification">
+                                        <template v-if="index < 5">
+                                            <Message :severity="notification.split('|')[0].trim().toLowerCase()"
+                                                     @close="deleteNotification(index, false)"
+                                            >
+                                                {{ notification.split('|')[1].trim() }}
+                                            </Message>
+                                        </template>
+                                    </div>
                                 </OverlayPanel>
                             </div>
                             <div class="ml-3 relative">
