@@ -195,14 +195,15 @@ FilterService.register(FILTER.value, (value, filter) => {
                                                 icon="pi pi-save"
                                                 severity="success" label="Save changes"/>
                                     </div>
+                                    <div class="flex justify-content-end">
+                                        <span class="p-input-icon-left">
+                                            <i class="pi pi-search" />
+                                            <InputText v-model="filters['Name'].value" placeholder="Keyword Search" />
+                                        </span>
+                                    </div>
                                 </div>
                             </template>
-                            <Column style="font-weight: bold" field="Name" header="Name">
-                                <template #filter="{ filterModel, filterCallback }">
-                                    <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-                                               class="p-column-filter" placeholder="Search user"/>
-                                </template>
-                            </Column>
+                            <Column style="font-weight: bold" field="Name" header="Name" />
                             <Column v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
                                 <template #header>
                                     <div class="mx-auto break-all">
