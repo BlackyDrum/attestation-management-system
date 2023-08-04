@@ -26,6 +26,7 @@ import Editor from 'primevue/editor';
 import Chart from 'primevue/chart';
 
 import combine from "@/CombinedData.js";
+import reduce_tasks from "@/ReduceTasks.js";
 
 
 defineProps({
@@ -321,42 +322,11 @@ const handleAttestationInfo = (attestation, index) => {
     tasks.value = combinedData.value[index].tasks;
     descriptions.value = [];
 
-    const uniqueTitles = Array.from(new Set(tasks.value.flat().map((item) => item.title)));
+    let tmp = reduce_tasks(tasks.value, userData.value, headers.value);
 
-    const usersData = {};
-
-    tasks.value.flat().forEach((item) => {
-        const {name, title, task_id, checked, user_id} = item;
-        const key = `${name}-${user_id}`;
-
-        if (!usersData[key]) {
-            usersData[key] = {Name: name, user_id};
-            uniqueTitles.forEach((t) => {
-                usersData[key][t] = false;
-            });
-        }
-
-        usersData[key][title] = checked;
-        usersData[key][`task_id_${title}`] = task_id;
-    });
-
-    userData.value = Object.values(usersData);
-    userData.value = userData.value.slice().sort((a, b) => {
-        const surnameA = a.Name.split(' ').slice(-1)[0];
-        const surnameB = b.Name.split(' ').slice(-1)[0];
-        return surnameA.localeCompare(surnameB);
-    });
-
-    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'user_id' && !key.startsWith('task_id'));
-
-    let sortable = [];
-    for (const header of headers.value) {
-        sortable.push([header, userData.value[0][`task_id_${header}`]]);
-    }
-    sortable.sort((a, b) => {
-        return a[1] - b[1];
-    });
-    headers.value = sortable.flat().filter(item => headers.value.includes(item));
+    tasks.value = tmp.tasks;
+    userData.value = tmp.userData;
+    headers.value = tmp.headers;
 
     for (let i = 0; i < headers.value.length; i++) {
         descriptions.value.push(combinedData.value[index].tasks[0][i].description)
@@ -457,7 +427,7 @@ const handleAttestationInfo = (attestation, index) => {
                                     </Column>
                                 </DataTable>
                             </TabPanel>
-                            <TabPanel v-for="(header, index1) in headers" :key="index">
+                            <TabPanel v-for="(header, index1) in headers" :key="header">
                                 <template #header>
                                     <i class="pi pi-file-edit mr-2"></i>
                                     <span class="font-medium" style="white-space: nowrap">{{ header }}</span>

@@ -12,6 +12,7 @@ import InputText from "primevue/inputtext";
 import {FilterService} from 'primevue/api';
 
 import combine from "@/CombinedData.js";
+import reduce_tasks from "@/ReduceTasks.js";
 
 defineProps({
     attestations: {
@@ -53,49 +54,15 @@ function updateData() {
     subject_name.value = combinedData.value[0].subject_name;
     tasks.value = combinedData.value[0].tasks;
 
-    const uniqueTitles = Array.from(new Set(tasks.value.flat().map((item) => item.title)));
+    let tmp = reduce_tasks(tasks.value, userData.value, headers.value);
 
-    const usersData = {};
-
-    tasks.value.flat().forEach((item) => {
-        const {name, title, task_id, checked, user_id, editor_name, updated_at, matriculation_number} = item;
-        const key = `${name}-${user_id}`;
-
-        if (!usersData[key]) {
-            usersData[key] = {Name: name, user_id};
-            uniqueTitles.forEach((t) => {
-                usersData[key][t] = false;
-            });
-        }
-
-        usersData[key][title] = checked;
-        usersData[key]['matriculation_number'] = matriculation_number;
-        usersData[key][`task_id_${title}`] = task_id;
-        usersData[key][`editor_name_${title}`] = editor_name;
-        usersData[key][`updated_at_${title}`] = updated_at;
-    });
-
-    userData.value = Object.values(usersData);
-    userData.value = userData.value.slice().sort((a, b) => {
-        const surnameA = a.Name.split(' ').slice(-1)[0];
-        const surnameB = b.Name.split(' ').slice(-1)[0];
-        return surnameA.localeCompare(surnameB);
-    });
-
-    headers.value = Object.keys(userData.value[0]).filter((key) => key !== 'Name' && key !== 'matriculation_number' && key !== 'user_id' && key !== 'editor_id' && !key.startsWith('updated_at') && !key.startsWith('editor_name') && !key.startsWith('task_id'));
+    tasks.value = tmp.tasks;
+    userData.value = tmp.userData;
+    headers.value = tmp.headers;
 
     for (const header of headers.value) {
         checkedCount.value[header] = 0;
     }
-
-    let sortable = [];
-    for (const header of headers.value) {
-        sortable.push([header, userData.value[0][`task_id_${header}`]]);
-    }
-    sortable.sort((a, b) => {
-        return a[1] - b[1];
-    });
-    headers.value = sortable.flat().filter(item => headers.value.includes(item));
 
     for (const user of userData.value) {
         for (const header of headers.value) {
