@@ -95,7 +95,7 @@ function updateData() {
     sortable.sort((a,b) => {
         return a[1] - b[1];
     });
-    headers.value = sortable.flat().filter((item, index) => index % 2 === 0);
+    headers.value = sortable.flat().filter(item => headers.value.includes(item));
 
     for (const user of userData.value) {
         for (const header of headers.value) {
