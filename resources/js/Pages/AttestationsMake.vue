@@ -136,7 +136,7 @@ const exportCSV = () => {
         </div>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-4">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <div>
                         <DataTable showGridlines stripedRows ref="dt"
                                    :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ', '_')"

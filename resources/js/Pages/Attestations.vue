@@ -403,7 +403,8 @@ const handleAttestationInfo = (attestation, index) => {
                 </div>
                 <div v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData"
                      :key="attestation.id"
-                     class="mb-10 p-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                     class="mb-10 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="w-full bg-blue-500 h-3"/>
                     <Dialog v-model:visible="showAttestation" modal :header="subject_name" :style="{ width: '90vw' }">
                         <TabView :scrollable="true">
                             <TabPanel>

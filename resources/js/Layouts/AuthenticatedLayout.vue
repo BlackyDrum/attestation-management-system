@@ -37,8 +37,8 @@ onBeforeMount(() => {
                 detail: 'You have a new notification',
                 life: 8000,
             })
-            if (!page.props.auth.user.admin)
-                router.reload();
+
+            router.reload();
         })
 })
 
