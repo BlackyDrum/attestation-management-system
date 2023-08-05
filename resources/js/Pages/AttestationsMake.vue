@@ -104,7 +104,9 @@ const handleFormSend = () => {
                 detail: "Attestation updated",
                 life: 3000,
             })
-            router.reload()
+            router.reload({
+                only: ['attestations']
+            })
         })
         .catch(error => {
             window.toast.add({
