@@ -64,17 +64,24 @@ function updateData() {
         checkedCount.value[header] = 0;
     }
 
+    let index = 0;
     for (const user of userData.value) {
         for (const header of headers.value) {
             if (user[header])
                 checkedCount.value[header]++;
         }
+        if (!user.user_id) {
+            userData.value.splice(index, 1);
+        }
+
+        index++;
     }
 
     userWithMatriculationNumber.value = userData.value;
     userWithMatriculationNumber.value.map(user => {
         user.Name = `${user.Name} (${user.matriculation_number})`;
     })
+
 
 }
 
@@ -176,7 +183,7 @@ const exportCSV = () => {
                                 </template>
                                 <template #body="{ index, field, data }">
                                     <div class="flex justify-center items-center h-full">
-                                        <Checkbox v-model="data[field]" @change="extractData(data, index)"
+                                        <Checkbox v-if="data['user_id']" v-model="data[field]" @change="extractData(data, index)"
                                                   :binary="true"
                                                   v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
                                     </div>

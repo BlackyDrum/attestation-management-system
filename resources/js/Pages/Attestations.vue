@@ -12,7 +12,7 @@ import {useConfirm} from "primevue/useconfirm";
 import Dialog from "primevue/dialog";
 import MultiSelect from 'primevue/multiselect';
 import InputText from "primevue/inputtext";
-import InputNumber from 'primevue/inputnumber';
+import Message from "primevue/message";
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
@@ -74,7 +74,7 @@ const chartOptions = ref({
 
 const attestationForm = useForm({
     id: null,
-    users: null,
+    users: [],
     subjectNumber: null,
     subjectName: null,
     semester: null,
@@ -98,7 +98,19 @@ const colors = ref([
 
 onMounted(() => {
     combinedData.value = combine(page.props.attestations);
+    createNameWithMatNumber();
+    chartData.value = [];
+    setupChart();
+})
 
+onBeforeUpdate(() => {
+    combinedData.value = combine(page.props.attestations);
+    createNameWithMatNumber();
+    chartData.value = [];
+    setupChart();
+})
+
+const createNameWithMatNumber = () => {
     userWithMatriculationNumber.value = page.props.users;
     userWithMatriculationNumber.value = userWithMatriculationNumber.value.slice().sort((a, b) => {
         const surnameA = a.name.split(' ').slice(-1)[0];
@@ -108,17 +120,7 @@ onMounted(() => {
     userWithMatriculationNumber.value.map(user => {
         user.name = `${user.name} (${user.matriculation_number})`;
     })
-
-    chartData.value = [];
-    setupChart();
-})
-
-onBeforeUpdate(() => {
-    combinedData.value = combine(page.props.attestations);
-
-    chartData.value = [];
-    setupChart();
-})
+}
 
 const setupChart = () => {
     for (let i = 0; i < combinedData.value.length; i++) {
@@ -304,6 +306,7 @@ const handleEdit = (attestation) => {
             }
         }
     }
+
     let count = 1
     for (const task of attestation.tasks[0]) {
         attestationForm.attestations.push({
@@ -366,7 +369,7 @@ const handleAttestationInfo = (attestation, index) => {
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-user"/>
                                         <InputText style="font-weight: bold" class="w-full" disabled
-                                                   :value="`Current Users: ${attestation.tasks.length}`"
+                                                   :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`"
                                                    placeholder="Search">
                                         </InputText>
                                     </span>
@@ -501,11 +504,12 @@ const handleAttestationInfo = (attestation, index) => {
                     <error-message :show="errors.users">
                         {{ errors.users }}
                     </error-message>
-                <span v-for="(error, key) in errors">
-                    <error-message :show="true" v-if="key.includes('users.')">
-                        {{error}}
-                    </error-message>
-                </span>
+                    <span v-for="(error, key) in errors">
+                        <error-message :show="true" v-if="key.includes('users.')">
+                            {{error}}
+                        </error-message>
+                    </span>
+                    <Message v-if="!isEdit" :closable="false">After creating, you'll have the opportunity to upload a CSV file containing the matriculation numbers of users you wish to add to this subject. This way, you won't need to select users at this moment.</Message>
                     <div class="grid xl:grid-cols-2 xl:gap-4 mt-4">
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">
@@ -630,7 +634,7 @@ const handleAttestationInfo = (attestation, index) => {
                         </div>
                         <div class="flex justify-end" style="height: 3rem">
                             <primary-button class="mr-5 disabled:cursor-not-allowed"
-                                            :disabled="attestationForm.processing || (!attestationForm.users || !attestationForm.subjectName || !attestationForm.subjectNumber || !attestationForm.semester || attestationForm.attestations.length === 0)">{{
+                                            :disabled="attestationForm.processing || (!attestationForm.subjectName || !attestationForm.subjectNumber || !attestationForm.semester || attestationForm.attestations.length === 0)">{{
                                     isEdit ? "Save Changes" :
                                         "Create new subject"
                                 }}</primary-button>

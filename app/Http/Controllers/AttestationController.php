@@ -27,12 +27,12 @@ class AttestationController extends Controller
         $attestationQuery = Attestation::query()
             ->join('semester', 'attestation.semester_id', '=', 'semester.id')
             ->join('attestation_tasks', 'attestation.id', '=', 'attestation_tasks.attestation_id')
-            ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
-            ->join('user_has_attestation', function ($join) {
+            ->leftJoin('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
+            ->leftJoin('user_has_attestation', function ($join) {
                 $join->on('user_has_attestation.user_id', '=', 'user_has_checked_task.user_id')
                     ->on('user_has_attestation.attestation_id', '=', 'attestation.id');
             })
-            ->join('users', 'users.id', '=', 'user_has_attestation.user_id')
+            ->leftJoin('users', 'users.id', '=', 'user_has_attestation.user_id')
             ->leftJoin('users AS editor', 'editor.id', '=', 'user_has_checked_task.editor_id')
             ->orderByRaw($order)
             ->select([
@@ -70,7 +70,7 @@ class AttestationController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'users' => 'required|array|min:1',
+            'users' => 'nullable|array',
             'users.*.id' => 'required|exists:users,id',
             'subjectNumber' => 'required|integer|min:1',
             'subjectName' => 'required|string|max:255',
@@ -127,7 +127,7 @@ class AttestationController extends Controller
     {
         $request->validate([
             'id' => 'required|integer|exists:attestation,id',
-            'users' => 'required|array|min:1',
+            'users' => 'nullable|array',
             'users.*.id' => 'required|exists:users,id',
             'subjectNumber' => 'required|integer|min:1',
             'subjectName' => 'required|string|max:255',

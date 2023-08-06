@@ -31,12 +31,12 @@ class AttestationsMakeController extends Controller
             ->where('attestation.id', '=', $id)
             ->join('semester', 'attestation.semester_id', '=', 'semester.id')
             ->join('attestation_tasks', 'attestation.id', '=', 'attestation_tasks.attestation_id')
-            ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
-            ->join('user_has_attestation', function (JoinClause $join) {
+            ->leftJoin('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
+            ->leftJoin('user_has_attestation', function (JoinClause $join) {
                 $join->on('user_has_attestation.user_id', '=', 'user_has_checked_task.user_id')
                     ->on('user_has_attestation.attestation_id', '=', 'attestation.id');
             })
-            ->join('users', 'users.id', '=', 'user_has_attestation.user_id')
+            ->leftJoin('users', 'users.id', '=', 'user_has_attestation.user_id')
             ->leftJoin('users AS editor', 'editor.id', '=', 'user_has_checked_task.editor_id')
             ->orderByRaw($order)
             ->select([
