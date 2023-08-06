@@ -510,9 +510,9 @@ const handleAttestationInfo = (attestation, index) => {
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">
                                 <i class="pi pi-hashtag"/>
-                                <input-number :disabled="attestationForm.processing"
+                                <input-text :disabled="attestationForm.processing"
                                               v-model="attestationForm.subjectNumber" :useGrouping="false"
-                                              class="w-full"></input-number>
+                                              class="w-full"></input-text>
                                 <label for="subject_number">Subject Number</label>
                             </span>
                             <error-message :show="errors.subjectNumber">
