@@ -265,7 +265,7 @@ const confirm1 = (attestation) => {
                                 life: 3000,
                             })
                             router.reload({
-                                only: ['attestations'],
+                                only: ['attestations', 'users'],
                             })
                             break;
                         }
