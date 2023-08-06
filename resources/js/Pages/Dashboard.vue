@@ -95,6 +95,18 @@ const handleDialogSend = () => {
                 detail: 'Notification sent',
                 life: 3000,
             })
+        },
+        onError: () => {
+            for (const error in page.props.errors) {
+                if (error.startsWith('users.')){
+                    window.toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: page.props.errors[error],
+                        life: 3000,
+                    })
+                }
+            }
         }
     })
 }
