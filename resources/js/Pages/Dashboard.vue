@@ -96,18 +96,6 @@ const handleDialogSend = () => {
                 life: 3000,
             })
         },
-        onError: () => {
-            for (const error in page.props.errors) {
-                if (error.startsWith('users.')){
-                    window.toast.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: page.props.errors[error],
-                        life: 3000,
-                    })
-                }
-            }
-        }
     })
 }
 
@@ -179,6 +167,11 @@ const handleDialogClose = () => {
                     {{ errors.users }}
                 </error-message>
 
+                <span v-for="error in errors">
+                    <error-message :show="true" v-if="error.includes('users.')">
+                        {{error}}
+                    </error-message>
+                </span>
                 <div class=" mt-6">
                     <span class="p-float-label">
                         <Dropdown :disabled="notificationForm.processing" v-model="notificationForm.severity"
