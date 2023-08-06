@@ -17,6 +17,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('notification.{id}', function($user, $id) {
-    return $user->id === intval($id);
+Broadcast::channel('notification.{id}', function($user, int $id) {
+    return $user->id === $id;
 });
