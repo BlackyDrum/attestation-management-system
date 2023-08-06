@@ -501,10 +501,11 @@ const handleAttestationInfo = (attestation, index) => {
                     <error-message :show="errors.users">
                         {{ errors.users }}
                     </error-message>
-                    <div v-if="Object.keys(errors).some(key => key.startsWith('users.'))"
-                         class="text-red-600 font-medium">
-                        The selected User is invalid
-                    </div>
+                <span v-for="(error, key) in errors">
+                    <error-message :show="true" v-if="key.includes('users.')">
+                        {{error}}
+                    </error-message>
+                </span>
                     <div class="grid xl:grid-cols-2 xl:gap-4 mt-4">
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">

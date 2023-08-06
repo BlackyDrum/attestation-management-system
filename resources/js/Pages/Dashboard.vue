@@ -167,8 +167,8 @@ const handleDialogClose = () => {
                     {{ errors.users }}
                 </error-message>
 
-                <span v-for="error in errors">
-                    <error-message :show="true" v-if="error.includes('users.')">
+                <span v-for="(error, key) in errors">
+                    <error-message :show="true" v-if="key.includes('users.')">
                         {{error}}
                     </error-message>
                 </span>

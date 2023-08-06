@@ -48,6 +48,8 @@ class NotificationController extends Controller
             'users.*.id' => 'required|exists:users,id',
             'message' => ['required', 'string', 'max:500', new NoPipeCharacter],
             'severity' => ['required', new ValidSeverity],
+        ],[
+            'users.*.id.exists' => "The selected user is invalid or does not exist"
         ]);
 
         foreach ($request->input('users') as $user) {
