@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationEvent implements ShouldBroadcast
 {
@@ -16,12 +17,16 @@ class NotificationEvent implements ShouldBroadcast
 
     public $id;
 
+    public $initiator_id;
+
     /**
      * Create a new event instance.
      */
     public function __construct($id)
     {
         $this->id = $id;
+
+        $this->initiator_id = Auth::id();
     }
 
     /**

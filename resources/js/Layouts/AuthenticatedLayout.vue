@@ -38,7 +38,8 @@ onBeforeMount(() => {
                 life: 8000,
             })
 
-            router.reload();
+            if (event.initiator_id !== page.props.auth.user.id)
+                router.reload();
         })
 })
 

@@ -18,5 +18,5 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('notification.{id}', function($user, $id) {
-    return $user->id === \App\Models\User::query()->find($id)->id;
+    return $user->id === intval($id);
 });
