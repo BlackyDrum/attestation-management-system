@@ -12,20 +12,20 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
 import {useToast} from 'primevue/usetoast';
 import Dialog from 'primevue/dialog';
-import Toast from "primevue/toast";
+import Toast from 'primevue/toast';
 import OverlayPanel from 'primevue/overlaypanel';
 import Message from 'primevue/message';
-import Button from "primevue/button";
+import Button from 'primevue/button';
 
 
 const page = usePage();
 window.toast = useToast();
 
 const notifications = ref([]);
-const showingNavigationDropdown = ref(false);
-const visibleImprint = ref(false);
-const visiblePrivacy = ref(false);
-const op = ref();
+const showNavigationDropdown = ref(false);
+const showImprint = ref(false);
+const showPrivacyStatement = ref(false);
+const notificationOverlayPanel = ref();
 
 
 onBeforeMount(() => {
@@ -37,7 +37,8 @@ onBeforeMount(() => {
                 detail: 'You have a new notification',
                 life: 8000,
             })
-
+            // Do not partially reload the data for the user who initiated the notification,
+            // because it leads to unexpected behaviour
             if (event.initiator_id !== page.props.auth.user.id)
                 router.reload();
         })
@@ -55,9 +56,9 @@ onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
 })
 
-const togglePanel = (event) => {
+const toggleNotificationOverlayPanel = (event) => {
     if (notifications.value.length !== 0)
-        op.value.toggle(event);
+        notificationOverlayPanel.value.toggle(event);
 }
 
 const deleteNotification = (index, clear) => {
@@ -74,12 +75,12 @@ const deleteNotification = (index, clear) => {
                 notifications.value.splice(index, 1);
 
             if (notifications.value.length === 0)
-                op.value.toggle();
+                notificationOverlayPanel.value.toggle();
 
             router.reload();
         })
         .catch(error => {
-            op.value.toggle();
+            notificationOverlayPanel.value.toggle();
 
             window.toast.add({
                 severity: 'error',
@@ -129,24 +130,24 @@ const deleteNotification = (index, clear) => {
                         </div>
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <!-- Settings Dropdown -->
-                            <NavLink class="max-lg:hidden" :no-link="true" @click="visiblePrivacy = true">
+                            <NavLink class="max-lg:hidden" :no-link="true" @click="showPrivacyStatement = true">
                                 <div class="text-white mx-4 max-lg:hidden">
                                     <span class="pi pi-flag"></span>
                                     Privacy Statement
                                 </div>
                             </NavLink>
-                            <NavLink class="max-lg:hidden" :no-link="true" @click="visibleImprint = true">
+                            <NavLink class="max-lg:hidden" :no-link="true" @click="showImprint = true">
                                 <div class="text-white mx-4">
                                     <span class="pi pi-info-circle"></span>
                                     Imprint
                                 </div>
                             </NavLink>
                             <div class="ml-4">
-                                <button @click="togglePanel"
+                                <button @click="toggleNotificationOverlayPanel"
                                         v-badge="notifications.length !== 0 ? notifications.length : '0'"
                                         class="pi pi-bell p-overlay-badge text-white mr-0.5"
                                         style="font-size: 1.5rem"/>
-                                <OverlayPanel class="w-[50%] max-lg:w-[60%]" ref="op">
+                                <OverlayPanel class="w-[50%] max-lg:w-[60%]" ref="notificationOverlayPanel">
                                     <div class="flex">
                                         <div>
                                             <h2>Notifications</h2>
@@ -198,12 +199,12 @@ const deleteNotification = (index, clear) => {
                                             <span class="pi pi-user mr-1"></span>
                                             Profile
                                         </DropdownLink>
-                                        <button @click="visiblePrivacy = true"
+                                        <button @click="showPrivacyStatement = true"
                                                 class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
                                         >
                                             Privacy Statement
                                         </button>
-                                        <button @click="visibleImprint = true"
+                                        <button @click="showImprint = true"
                                                 class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
                                         >
                                             Imprint
@@ -221,14 +222,14 @@ const deleteNotification = (index, clear) => {
                         <!-- Hamburger -->
                         <div class="-mr-2 flex items-center sm:hidden">
                             <button
-                                @click="showingNavigationDropdown = !showingNavigationDropdown"
+                                @click="showNavigationDropdown = !showNavigationDropdown"
                                 class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
                             >
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path
                                         :class="{
-                                            hidden: showingNavigationDropdown,
-                                            'inline-flex': !showingNavigationDropdown,
+                                            hidden: showNavigationDropdown,
+                                            'inline-flex': !showNavigationDropdown,
                                         }"
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -237,8 +238,8 @@ const deleteNotification = (index, clear) => {
                                     />
                                     <path
                                         :class="{
-                                            hidden: !showingNavigationDropdown,
-                                            'inline-flex': showingNavigationDropdown,
+                                            hidden: !showNavigationDropdown,
+                                            'inline-flex': showNavigationDropdown,
                                         }"
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -253,7 +254,7 @@ const deleteNotification = (index, clear) => {
 
                 <!-- Responsive Navigation Menu -->
                 <div
-                    :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
+                    :class="{ block: showNavigationDropdown, hidden: !showNavigationDropdown }"
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
@@ -270,12 +271,12 @@ const deleteNotification = (index, clear) => {
                             <span class="pi pi-users mr-1"></span>
                             Users
                         </ResponsiveNavLink>
-                        <NavLink :no-link="true" @click="visiblePrivacy = true">
+                        <NavLink :no-link="true" @click="showPrivacyStatement = true">
                             <div class="text-white mx-4">
                                 Privacy Statement
                             </div>
                         </NavLink>
-                        <NavLink :no-link="true" @click="visibleImprint = true">
+                        <NavLink :no-link="true" @click="showImprint = true">
                             <div class="text-white mx-4">
                                 Imprint
                             </div>
@@ -313,12 +314,12 @@ const deleteNotification = (index, clear) => {
             </header>
 
             <!-- Dialogs -->
-            <Dialog v-model:visible="visibleImprint" modal header="Imprint"
+            <Dialog v-model:visible="showImprint" modal header="Imprint"
                     class="bg-gray-200 font-bold p-2 rounded-md"
                     :style="{ width: '90vw' }">
                 <imprint></imprint>
             </Dialog>
-            <Dialog v-model:visible="visiblePrivacy" modal header="Privacy Statement"
+            <Dialog v-model:visible="showPrivacyStatement" modal header="Privacy Statement"
                     class="bg-gray-200 font-bold p-2 rounded-md"
                     :style="{ width: '90vw' }">
                 <privacy-statement></privacy-statement>

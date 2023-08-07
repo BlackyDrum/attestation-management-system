@@ -1,32 +1,32 @@
 <script setup>
 import {Head, useForm, usePage, router} from '@inertiajs/vue3';
-import {onBeforeUpdate, onMounted, ref} from "vue";
+import {onBeforeUpdate, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 
-import {useConfirm} from "primevue/useconfirm";
-import Dialog from "primevue/dialog";
+import {useConfirm} from 'primevue/useconfirm';
+import Dialog from 'primevue/dialog';
 import MultiSelect from 'primevue/multiselect';
-import InputText from "primevue/inputtext";
-import Message from "primevue/message";
+import InputText from 'primevue/inputtext';
+import Message from 'primevue/message';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import Checkbox from "primevue/checkbox";
+import Checkbox from 'primevue/checkbox';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Editor from 'primevue/editor';
 import Chart from 'primevue/chart';
 
-import combine from "@/CombinedData.js";
-import reduce_tasks from "@/ReduceTasks.js";
+import combine from '@/CombinedData.js';
+import reduce_tasks from '@/ReduceTasks.js';
 
 
 defineProps({
@@ -110,6 +110,9 @@ onBeforeUpdate(() => {
     setupChart();
 })
 
+// This function creates a deep copy of the users array
+// and modifies the name by concatenating it with the user's
+// matriculation number
 const createNameWithMatNumber = () => {
     userWithMatriculationNumber.value = deepCopy(page.props.users);
     userWithMatriculationNumber.value = userWithMatriculationNumber.value.slice().sort((a, b) => {
@@ -122,19 +125,20 @@ const createNameWithMatNumber = () => {
     })
 }
 
+// This function recursively creates a deep copy of a given array or object. This is
+// necessary because 'page.props.users' is a proxy array, and we want
+// to avoid overwriting its values
 const deepCopy = obj => {
     if (Array.isArray(obj)) {
-        // If the object is an array, create a new array and copy its elements recursively.
         return obj.map((item) => deepCopy(item));
-    } else if (typeof obj === 'object' && obj !== null) {
-        // If the object is a non-null object, create a new object and copy its properties recursively.
+    }
+    else if (typeof obj === 'object' && obj !== null) {
         const copiedObject = {};
         for (let key in obj) {
             copiedObject[key] = deepCopy(obj[key]);
         }
         return copiedObject;
     }
-    // For primitives or null, return the value as is (base case of recursion).
     return obj;
 }
 

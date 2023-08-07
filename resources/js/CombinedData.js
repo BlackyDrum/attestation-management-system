@@ -1,5 +1,9 @@
+// This function combines the data based on specific properties coming from the controller,
+// groups tasks within each entry by user_id, and finally sorts the
+// combined data array alphabetically by subject_name
 export default function combine(data) {
     const combinedData = data.reduce((acc, item) => {
+        // Check if an entry with the same properties already exists in the 'acc' array
         const foundItem = acc.find(entry => (
             entry.id === item.id &&
             entry.subject_name === item.subject_name &&
@@ -8,6 +12,7 @@ export default function combine(data) {
             entry.semester === item.semester
         ));
 
+        // Extract relevant task properties to simplify comparison
         const task = {
             task_id: item.task_id,
             title: item.title,
@@ -21,6 +26,7 @@ export default function combine(data) {
             updated_at: item.updated_at
         };
 
+        // If an entry with the same properties exists, check if the task is already present
         if (foundItem) {
             const existingTaskIndex = foundItem.tasks.findIndex(f => (
                 f.title === task.title &&
@@ -31,10 +37,12 @@ export default function combine(data) {
                 f.updated_at === task.updated_at && f.matriculation_number === task.matriculation_number
             ));
 
+            // If the task doesn't exist, add it to the existing entry's 'tasks' array.
             if (existingTaskIndex === -1) {
                 foundItem.tasks.push(task);
             }
         } else {
+            // If no matching entry exists, create a new entry in the 'combinedData' array
             acc.push({
                 id: item.id,
                 subject_name: item.subject_name,
