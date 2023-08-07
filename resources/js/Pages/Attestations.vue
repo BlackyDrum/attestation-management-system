@@ -108,7 +108,6 @@ onBeforeUpdate(() => {
     createNameWithMatNumber();
     chartData.value = [];
     setupChart();
-    console.log(page.props.users)
 })
 
 const createNameWithMatNumber = () => {
@@ -123,7 +122,7 @@ const createNameWithMatNumber = () => {
     })
 }
 
-function deepCopy(obj) {
+const deepCopy = obj => {
     if (Array.isArray(obj)) {
         // If the object is an array, create a new array and copy its elements recursively.
         return obj.map((item) => deepCopy(item));
@@ -131,15 +130,12 @@ function deepCopy(obj) {
         // If the object is a non-null object, create a new object and copy its properties recursively.
         const copiedObject = {};
         for (let key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                copiedObject[key] = deepCopy(obj[key]);
-            }
+            copiedObject[key] = deepCopy(obj[key]);
         }
         return copiedObject;
-    } else {
-        // For primitives or null, return the value as is (base case of recursion).
-        return obj;
     }
+    // For primitives or null, return the value as is (base case of recursion).
+    return obj;
 }
 
 const setupChart = () => {
