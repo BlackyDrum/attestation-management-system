@@ -69,21 +69,7 @@ class AttestationController extends Controller
 
     public function create(Request $request)
     {
-        $request->validate([
-            'users' => 'nullable|array',
-            'users.*.id' => 'required|exists:users,id',
-            'subjectNumber' => 'required|integer|min:1',
-            'subjectName' => 'required|string|max:255',
-            'semester' => 'required|exists:semester,semester',
-            'attestations' => ['required', 'array', 'min:1', new NoDuplicateTitle],
-            'attestations.*.title' => 'required|string|max:255',
-            'attestations.*.description' => 'nullable|string|max:5000',
-        ], [
-            'users.*.id.exists' => "The selected user is invalid or does not exist.",
-            'attestations.*.title.required' => "The title field is required.",
-            'attestations.*.title.max' => "The title field must not be greater than :max characters.",
-            'attestations.*.description.max' => "The description field must not be greater than :max characters."
-        ]);
+        $this->validateRequest($request);
 
         $attestation = Attestation::query()->create([
             'subject_number' => $request->input('subjectNumber'),
@@ -125,22 +111,13 @@ class AttestationController extends Controller
 
     public function edit(Request $request)
     {
+        $this->validateRequest($request);
+
         $request->validate([
             'id' => 'required|integer|exists:attestation,id',
-            'users' => 'nullable|array',
-            'users.*.id' => 'required|exists:users,id',
-            'subjectNumber' => 'required|integer|min:1',
-            'subjectName' => 'required|string|max:255',
-            'semester' => 'required|exists:semester,semester',
-            'attestations' => ['required', 'array', 'min:1', new NoDuplicateTitle],
-            'attestations.*.title' => 'required|string|max:255',
-            'attestations.*.description' => 'nullable|string|max:5000',
             'attestations.*.task_id' => 'nullable',
-        ], [
-            'users.*.id.exists' => "The selected user is invalid or does not exist.",
-            'attestations.*.title.required' => "The title field is required.",
-            'attestations.*.title.max' => "The title field must not be greater than :max characters.",
-            'attestations.*.description.max' => "The description field must not be greater than :max characters."
+        ],[
+            'id.*' => "The selected attestation id is invalid"
         ]);
 
         $attestation = Attestation::query()->find($request->input('id'))->fill([
@@ -209,5 +186,24 @@ class AttestationController extends Controller
         Attestation::query()->find($request->input('attestation_id'))->delete();
 
         return response()->json(['success' => true, 'attestation_id' => $request->input('attestation_id')]);
+    }
+
+    private function validateRequest(Request $request)
+    {
+        $request->validate([
+            'users' => 'nullable|array',
+            'users.*.id' => 'required|exists:users,id',
+            'subjectNumber' => 'required|integer|min:1',
+            'subjectName' => 'required|string|max:255',
+            'semester' => 'required|exists:semester,semester',
+            'attestations' => ['required', 'array', 'min:1', new NoDuplicateTitle],
+            'attestations.*.title' => 'required|string|max:255',
+            'attestations.*.description' => 'nullable|string|max:5000',
+        ], [
+            'users.*.id.exists' => "The selected user is invalid or does not exist.",
+            'attestations.*.title.required' => "The title field is required.",
+            'attestations.*.title.max' => "The title field must not be greater than :max characters.",
+            'attestations.*.description.max' => "The description field must not be greater than :max characters."
+        ]);
     }
 }

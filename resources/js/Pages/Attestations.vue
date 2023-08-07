@@ -228,6 +228,14 @@ const handleFormSend = () => {
                 combinedData.value = combine(page.props.attestations);
             },
             onError: (error) => {
+                if (error.id) {
+                    window.toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.id,
+                        life: 3000,
+                    })
+                }
                 for (const e in error) {
                     attestationForm.reset(e)
                 }
