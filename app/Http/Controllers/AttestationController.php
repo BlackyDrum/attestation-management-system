@@ -79,10 +79,10 @@ class AttestationController extends Controller
             'attestations.*.title' => 'required|string|max:255',
             'attestations.*.description' => 'nullable|string|max:5000',
         ], [
-            'users.*.id.exists' => "The selected user is invalid or does not exist",
-            'attestations.*.title.required' => "The title field is required",
-            'attestations.*.title.max' => "The title field must not be greater than :max characters",
-            'attestations.*.description.max' => "The description field must not be greater than :max characters"
+            'users.*.id.exists' => "The selected user is invalid or does not exist.",
+            'attestations.*.title.required' => "The title field is required.",
+            'attestations.*.title.max' => "The title field must not be greater than :max characters.",
+            'attestations.*.description.max' => "The description field must not be greater than :max characters."
         ]);
 
         $attestation = Attestation::query()->create([
@@ -137,10 +137,10 @@ class AttestationController extends Controller
             'attestations.*.description' => 'nullable|string|max:5000',
             'attestations.*.task_id' => 'nullable',
         ], [
-            'users.*.id.exists' => "The selected user is invalid or does not exist",
-            'attestations.*.title.required' => "The title field is required",
-            'attestations.*.title.max' => "The title field must not be greater than :max characters",
-            'attestations.*.description.max' => "The description field must not be greater than :max characters"
+            'users.*.id.exists' => "The selected user is invalid or does not exist.",
+            'attestations.*.title.required' => "The title field is required.",
+            'attestations.*.title.max' => "The title field must not be greater than :max characters.",
+            'attestations.*.description.max' => "The description field must not be greater than :max characters."
         ]);
 
         $attestation = Attestation::query()->find($request->input('id'))->fill([
