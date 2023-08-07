@@ -281,7 +281,7 @@ const handleUserFileUpload = (event) => {
                     <Link v-if="links.url" :href="links.url + '&search=' + searchValue"
                           class="lg:p-3 sm:p-1 md:p-2 max-sm:p-0.5">
                     <span v-html="links.label"
-                          :class="{ 'bg-gray-600 p-2 rounded-xl': users.current_page === Number.parseInt(links.label) }"></span>
+                          :class="{ 'bg-gray-600 p-2 rounded-xl': links.active }"></span>
                     </Link>
                     <span v-else v-html="links.label"></span>
                 </template>
