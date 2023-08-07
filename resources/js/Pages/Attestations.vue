@@ -378,7 +378,16 @@ const handleAttestationInfo = (attestation, index) => {
                      class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 rounded-lg">
                     <div class="w-full bg-blue-500 h-3"/>
                     <Card class="break-words">
-                        <template #title> {{ attestation.subject_name }} ({{ attestation.semester }})</template>
+                        <template #title>
+                            <div class="grid grid-cols-[90%,10%]">
+                                <div>
+                                    {{ attestation.subject_name }} ({{ attestation.semester }})
+                                </div>
+                                <div class="ml-auto mr-1">
+                                    <Button icon="pi pi-upload" v-tooltip.left="'Upload'"></Button>
+                                </div>
+                            </div>
+                        </template>
                         <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
                         <template #content>
                             <div class="grid grid-cols-2 max-md:grid-cols-1 justify-evenly gap-2">
