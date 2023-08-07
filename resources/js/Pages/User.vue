@@ -3,20 +3,20 @@ import {Head, Link, usePage, useForm} from '@inertiajs/vue3';
 import {onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 
-import {useConfirm} from "primevue/useconfirm";
+import {useConfirm} from 'primevue/useconfirm';
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
 import InputText from 'primevue/inputtext';
-import Button from "primevue/button";
-import TabView from "primevue/tabview";
-import TabPanel from "primevue/tabpanel";
+import Button from 'primevue/button';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
 import FileUpload from 'primevue/fileupload';
-import Message from "primevue/message";
+import Message from 'primevue/message';
 
 
 defineProps({
@@ -34,13 +34,13 @@ defineProps({
 const page = usePage();
 const confirm = useConfirm();
 
-const search = ref("");
-const empty = ref(false);
-const editShow = ref(false);
+const searchValue = ref("");
+const emptyUsers = ref(false);
+const showUserEditDialog = ref(false);
 const selectedUser = ref(null);
-const createShow = ref(false);
+const showUserCreateDialog = ref(false);
 
-const userForm = useForm({
+const userEditForm = useForm({
     id: null,
     matriculation_number: null,
     name: null,
@@ -48,28 +48,28 @@ const userForm = useForm({
     password: null,
 })
 
-const userFormEdit = useForm({
+const userCreateForm = useForm({
     matriculation_number: null,
     name: null,
     email: null,
     password: null,
 })
 
-const userfileForm = useForm({
+const userFileForm = useForm({
     userfile: null
 })
 
 
 onMounted(() => {
-    search.value = page.props.search;
-    empty.value = page.props.users.data.length === 0;
+    searchValue.value = page.props.search;
+    emptyUsers.value = page.props.users.data.length === 0;
 })
 
 const handleSearchRequest = () => {
-    axios.get(`/users/?search=${search.value}&response=true`)
+    axios.get(`/users/?search=${searchValue.value}&response=true`)
         .then(response => {
             page.props.users = response.data;
-            empty.value = page.props.users.data.length === 0;
+            emptyUsers.value = page.props.users.data.length === 0;
         })
         .catch(error => {
             window.toast.add({
@@ -82,37 +82,37 @@ const handleSearchRequest = () => {
 }
 
 const handleUserEdit = (user) => {
-    editShow.value = true;
+    showUserEditDialog.value = true;
     selectedUser.value = user;
-    userForm.reset('password');
+    userEditForm.reset('password');
 
-    userForm.id = user.id;
-    userForm.matriculation_number = user.matriculation_number;
-    userForm.name = user.name;
-    userForm.email = user.email;
+    userEditForm.id = user.id;
+    userEditForm.matriculation_number = user.matriculation_number;
+    userEditForm.name = user.name;
+    userEditForm.email = user.email;
 }
 
 const handleUserEditClose = () => {
-    editShow.value = false;
+    showUserEditDialog.value = false;
     page.props.errors = {};
-    userForm.password = null;
-    userForm.wasSuccessful = false;
+    userEditForm.password = null;
+    userEditForm.wasSuccessful = false;
 }
 
-const sendEditForm = () => {
-    if ((selectedUser.value.name === userForm.name && selectedUser.value.email === userForm.email && selectedUser.value.matriculation_number === userForm.matriculation_number) && !userForm.password)
+const sendUserEditForm = () => {
+    if ((selectedUser.value.name === userEditForm.name && selectedUser.value.email === userEditForm.email && selectedUser.value.matriculation_number === userEditForm.matriculation_number) && !userEditForm.password)
         return;
 
-    userForm.put('/users', {
+    userEditForm.put('/users', {
         preserveScroll: true,
         onStart: () => {
-            userForm.reset('password');
+            userEditForm.reset('password');
         },
         onSuccess: () => {
-            selectedUser.value.id = userForm.id;
-            selectedUser.value.matriculation_number = parseInt(userForm.matriculation_number);
-            selectedUser.value.name = userForm.name;
-            selectedUser.value.email = userForm.email;
+            selectedUser.value.id = userEditForm.id;
+            selectedUser.value.matriculation_number = parseInt(userEditForm.matriculation_number);
+            selectedUser.value.name = userEditForm.name;
+            selectedUser.value.email = userEditForm.email;
             window.toast.add({
                 severity: 'success',
                 summary: 'Success',
@@ -133,7 +133,7 @@ const sendEditForm = () => {
     });
 }
 
-const confirm2 = (userid, username) => {
+const confirmUserDeletion = (userid, username) => {
     confirm.require({
         message: `Do you want to delete user '${username}'?`,
         header: 'Delete Confirmation',
@@ -156,7 +156,7 @@ const confirm2 = (userid, username) => {
                                 life: 3000,
                             })
                             page.props.users.data.splice(i, 1);
-                            empty.value = page.props.users.data.length === 0;
+                            emptyUsers.value = page.props.users.data.length === 0;
                             break;
                         }
                     }
@@ -177,30 +177,30 @@ const confirm2 = (userid, username) => {
 };
 
 const handleCreateUserOpen = () => {
-    userFormEdit.reset();
-    createShow.value = true;
+    userCreateForm.reset();
+    showUserCreateDialog.value = true;
 }
 
 const handleCreateUserClose = () => {
-    createShow.value = false;
-    userFormEdit.wasSuccessful = false;
+    showUserCreateDialog.value = false;
+    userCreateForm.wasSuccessful = false;
     page.props.errors = {};
 }
 
-const sendCreateForm = () => {
-    userFormEdit.post('/users', {
+const sendUserCreateForm = () => {
+    userCreateForm.post('/users', {
         preserveScroll: true,
-        onStart: () => userFormEdit.reset('password'),
+        onStart: () => userCreateForm.reset('password'),
         onSuccess: () => {
-            userFormEdit.reset();
+            userCreateForm.reset();
             window.toast.add({severity: 'success', summary: 'Success', detail: 'New user created', life: 3000})
         }
     });
 }
 
-const handleUpload = (event) => {
-    userfileForm.post('/users/upload', {
-        onStart: () => userfileForm.reset(),
+const handleUserFileUpload = (event) => {
+    userFileForm.post('/users/upload', {
+        onStart: () => userFileForm.reset(),
         onSuccess: () => window.toast.add({
             severity: 'success',
             summary: 'File Uploaded',
@@ -235,7 +235,7 @@ const handleUpload = (event) => {
                     <span class="p-input-icon-left">
                         <i class="pi pi-search"/>
                         <input-text type="text" class="rounded-xl text-black" placeholder="Search user"
-                                    @input="handleSearchRequest" v-model="search"></input-text>
+                                    @input="handleSearchRequest" v-model="searchValue"></input-text>
                     </span>
                 </div>
                 <div v-for="user in users.data" :key="user.id"
@@ -246,11 +246,11 @@ const handleUpload = (event) => {
                             </div>
                             <div class="ml-auto mr-5 flex flex-wrap  justify-content-center">
                                 <div class="mr-4 md:hidden">
-                                    <Button v-if="!user.admin" @click="confirm2(user.id, user.name)" icon="pi pi-trash"
+                                    <Button v-if="!user.admin" @click="confirmUserDeletion(user.id, user.name)" icon="pi pi-trash"
                                             severity="danger"/>
                                 </div>
                                 <div class="mr-4 max-md:hidden">
-                                    <Button v-if="!user.admin" @click="confirm2(user.id, user.name)" label="Delete"
+                                    <Button v-if="!user.admin" @click="confirmUserDeletion(user.id, user.name)" label="Delete"
                                             icon="pi pi-trash" severity="danger"/>
                                 </div>
                                 <div class="max-md:hidden">
@@ -270,7 +270,7 @@ const handleUpload = (event) => {
                 </ConfirmDialog>
             </div>
         </div>
-        <div v-if="empty" class="text-white flex">
+        <div v-if="emptyUsers" class="text-white flex">
             <div class="mx-auto text-3xl p-5">
                 User Not Found
             </div>
@@ -278,7 +278,7 @@ const handleUpload = (event) => {
         <div class="text-white flex pb-5">
             <div class="mx-auto">
                 <template v-for="links in users.links">
-                    <Link v-if="links.url" :href="links.url + '&search=' + search"
+                    <Link v-if="links.url" :href="links.url + '&search=' + searchValue"
                           class="lg:p-3 sm:p-1 md:p-2 max-sm:p-0.5">
                     <span v-html="links.label"
                           :class="{ 'bg-gray-600 p-2 rounded-xl': users.current_page === Number.parseInt(links.label) }"></span>
@@ -290,7 +290,7 @@ const handleUpload = (event) => {
     </AuthenticatedLayout>
 
     <!-- Create new User -->
-    <Dialog v-model:visible="createShow" :closable="false" header="Create new User"
+    <Dialog v-model:visible="showUserCreateDialog" :closable="false" header="Create new User"
             class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '90vw' }" :modal="true" :draggable="false">
         <TabView>
             <TabPanel>
@@ -303,8 +303,8 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-hashtag mr-2"></i>
                         </span>
-                        <InputText :useGrouping="false" :disabled="userFormEdit.processing" required
-                                   v-model="userFormEdit.matriculation_number"
+                        <InputText :useGrouping="false" :disabled="userCreateForm.processing" required
+                                   v-model="userCreateForm.matriculation_number"
                                    placeholder="Matriculation Number"
                         />
                     </div>
@@ -315,7 +315,7 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-user mr-2"></i>
                         </span>
-                        <InputText :disabled="userFormEdit.processing" type="text" required v-model="userFormEdit.name"
+                        <InputText :disabled="userCreateForm.processing" type="text" required v-model="userCreateForm.name"
                                    placeholder="Name"
                                    class="border border-black rounded-md p-1"/>
                     </div>
@@ -326,8 +326,8 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-at mr-2"></i>
                         </span>
-                        <InputText :disabled="userFormEdit.processing" type="email" required
-                                   v-model="userFormEdit.email" placeholder="E-Mail"
+                        <InputText :disabled="userCreateForm.processing" type="email" required
+                                   v-model="userCreateForm.email" placeholder="E-Mail"
                                    class="border border-black rounded-md p-1"/>
                     </div>
                     <error-message :show="errors.email">
@@ -337,7 +337,7 @@ const handleUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-lock mr-2"></i>
                         </span>
-                        <InputText :disabled="userFormEdit.processing" type="password" v-model="userFormEdit.password"
+                        <InputText :disabled="userCreateForm.processing" type="password" v-model="userCreateForm.password"
                                    placeholder="Password"
                                    class="border border-black rounded-md p-1"/>
                     </div>
@@ -347,12 +347,12 @@ const handleUpload = (event) => {
 
                     <div class="mt-4 grid grid-cols-2">
                         <div class="justify-center">
-                            <CustomProgressSpinner :processing="userFormEdit.processing"></CustomProgressSpinner>
+                            <CustomProgressSpinner :processing="userCreateForm.processing"></CustomProgressSpinner>
                         </div>
                         <div class="flex justify-end" style="height: 3rem">
                             <primary-button class="max-md:mr-2 mr-5 disabled:cursor-not-allowed"
-                                            :disabled="userFormEdit.processing || !userFormEdit.matriculation_number || !userFormEdit.name || !userFormEdit.email || !userFormEdit.password"
-                                            @click="sendCreateForm">Create User
+                                            :disabled="userCreateForm.processing || !userCreateForm.matriculation_number || !userCreateForm.name || !userCreateForm.email || !userCreateForm.password"
+                                            @click="sendUserCreateForm">Create User
                             </primary-button>
                             <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
                         </div>
@@ -369,10 +369,10 @@ const handleUpload = (event) => {
                         columns for Matriculation Number, Name, Email, and Password.</Message>
                 </p>
                 <div class="mt-4">
-                    <FileUpload :disabled="userfileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
+                    <FileUpload :disabled="userFileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
                                 :maxFileSize="1000000"
-                                @uploader="handleUpload($event)"
-                                @input="userfileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false"
+                                @uploader="handleUserFileUpload($event)"
+                                @input="userFileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false"
                                 customUpload chooseLabel="Browse">
                         <template #empty>
                             <p>Drag and drop files to upload.</p>
@@ -388,13 +388,13 @@ const handleUpload = (event) => {
                 <div class="mt-2 flex md:justify-end">
                     <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
                 </div>
-                <CustomProgressSpinner :processing="userfileForm.processing"></CustomProgressSpinner>
+                <CustomProgressSpinner :processing="userFileForm.processing"></CustomProgressSpinner>
             </TabPanel>
         </TabView>
     </Dialog>
 
     <!-- Edit User -->
-    <Dialog v-model:visible="editShow" :closable="false" v-if="selectedUser" :header="selectedUser.name"
+    <Dialog v-model:visible="showUserEditDialog" :closable="false" v-if="selectedUser" :header="selectedUser.name"
             class="bg-gray-200 rounded-lg p-2 font-bold break-all" :style="{ width: '90vw' }" :modal="true"
             :draggable="false">
         <form @submit.prevent>
@@ -402,8 +402,8 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-hashtag mr-2"></i>
                 </span>
-                <InputText :useGrouping="false" :disabled="userForm.processing" required
-                           v-model="userForm.matriculation_number"
+                <InputText :useGrouping="false" :disabled="userEditForm.processing" required
+                           v-model="userEditForm.matriculation_number"
                            placeholder="Matriculation Number"
                 />
             </div>
@@ -414,7 +414,7 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-user mr-2"></i>
                 </span>
-                <InputText :disabled="userForm.processing" type="text" required v-model="userForm.name"
+                <InputText :disabled="userEditForm.processing" type="text" required v-model="userEditForm.name"
                            placeholder="Name"
                 />
             </div>
@@ -425,7 +425,7 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-at mr-2"></i>
                 </span>
-                <InputText :disabled="userForm.processing" type="email" required v-model="userForm.email"
+                <InputText :disabled="userEditForm.processing" type="email" required v-model="userEditForm.email"
                            placeholder="E-Mail"
                            c/>
             </div>
@@ -436,7 +436,7 @@ const handleUpload = (event) => {
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-lock mr-2"></i>
                 </span>
-                <InputText :disabled="userForm.processing" type="password" v-model="userForm.password"
+                <InputText :disabled="userEditForm.processing" type="password" v-model="userEditForm.password"
                            placeholder="New Password"
                 />
             </div>
@@ -446,12 +446,12 @@ const handleUpload = (event) => {
 
             <div class="mt-4 grid grid-cols-2 break-keep">
                 <div class="justify-center">
-                    <CustomProgressSpinner :processing="userForm.processing"></CustomProgressSpinner>
+                    <CustomProgressSpinner :processing="userEditForm.processing"></CustomProgressSpinner>
                 </div>
                 <div class="flex justify-end" style="height: 3rem">
                     <primary-button class="mr-5 disabled:cursor-not-allowed"
-                                    :disabled="userForm.processing || (selectedUser.name === userForm.name && selectedUser.email === userForm.email && selectedUser.matriculation_number === parseInt(userForm.matriculation_number) && !userForm.password)"
-                                    @click="sendEditForm">Save Changes
+                                    :disabled="userEditForm.processing || (selectedUser.name === userEditForm.name && selectedUser.email === userEditForm.email && selectedUser.matriculation_number === parseInt(userEditForm.matriculation_number) && !userEditForm.password)"
+                                    @click="sendUserEditForm">Save Changes
                     </primary-button>
                     <secondary-button @click="handleUserEditClose">Cancel</secondary-button>
                 </div>

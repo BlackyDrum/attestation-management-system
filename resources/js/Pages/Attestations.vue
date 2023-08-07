@@ -48,12 +48,11 @@ defineProps({
 const page = usePage();
 const confirm = useConfirm();
 
-const showDialog = ref(false);
-const showAttestation = ref(false);
+const showAttestationDialog = ref(false);
+const showAttestationInfoDialog = ref(false);
 const isEdit = ref(false);
 const taskCount = ref(1);
 const combinedData = ref(null);
-const successForm = ref(false);
 const subject_name = ref("");
 const tasks = ref([]);
 const userData = ref([]);
@@ -172,18 +171,18 @@ const setupChart = () => {
 }
 
 const handleDialogOpen = () => {
-    reset();
-    showDialog.value = true;
+    resetForm();
+    showAttestationDialog.value = true;
     isEdit.value = false;
 }
 
 const handleDialogClose = () => {
-    reset();
-    showDialog.value = false;
+    resetForm();
+    showAttestationDialog.value = false;
     isEdit.value = false;
 }
 
-const handleForm = () => {
+const handleFormSend = () => {
     if (!isEdit.value) {
         attestationForm
             .transform((data) => ({
@@ -192,9 +191,8 @@ const handleForm = () => {
             }))
             .post('/attestations', {
                 onSuccess: () => {
-                    reset();
-                    showDialog.value = false;
-                    successForm.value = true;
+                    resetForm();
+                    showAttestationDialog.value = false;
                     combinedData.value = combine(page.props.attestations);
                     window.toast.add({
                         severity: 'success',
@@ -224,8 +222,8 @@ const handleForm = () => {
                     detail: `Subject '${attestationForm.subjectName}' updated`,
                     life: 3000,
                 })
-                reset();
-                showDialog.value = false;
+                resetForm();
+                showAttestationDialog.value = false;
                 isEdit.value = false;
                 combinedData.value = combine(page.props.attestations);
             },
@@ -237,10 +235,9 @@ const handleForm = () => {
         })
 }
 
-const reset = () => {
+const resetForm = () => {
     attestationForm.reset();
     taskCount.value = 1;
-    successForm.value = false;
 
     for (const e in page.props.errors) {
         delete page.props.errors[e];
@@ -262,7 +259,7 @@ const removeTask = () => {
     delete page.props.errors['attestations.' + (taskCount.value - 1) + '.title'];
 }
 
-const confirm1 = (attestation) => {
+const confirmAttestationDeletion = (attestation) => {
     confirm.require({
         message: `Do you want to delete '${attestation.subject_name}'?`,
         header: 'Delete Confirmation',
@@ -306,10 +303,10 @@ const confirm1 = (attestation) => {
     });
 };
 
-const handleEdit = (attestation) => {
-    reset();
+const handleAttestationEdit = (attestation) => {
+    resetForm();
     isEdit.value = true;
-    showDialog.value = true;
+    showAttestationDialog.value = true;
     attestationForm.subjectName = attestation.subject_name;
     attestationForm.subjectNumber = attestation.subject_number;
     for (let i = 0; i < page.props.semester.length; i++) {
@@ -340,7 +337,7 @@ const handleEdit = (attestation) => {
 }
 
 const handleAttestationInfo = (attestation, index) => {
-    showAttestation.value = true;
+    showAttestationInfoDialog.value = true;
     subject_name.value = combinedData.value[index].subject_name;
     tasks.value = combinedData.value[index].tasks;
     descriptions.value = [];
@@ -410,9 +407,9 @@ const handleAttestationInfo = (attestation, index) => {
                         <template #footer>
                             <div class="grid grid-cols-2 max-md:grid-cols-1">
                                 <div>
-                                    <Button @click="handleEdit(attestation)" icon="pi pi-file-edit" label="Edit"
+                                    <Button @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit" label="Edit"
                                             severity="success"/>
-                                    <Button @click="confirm1(attestation)" icon="pi pi-trash" label="Delete"
+                                    <Button @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash" label="Delete"
                                             severity="danger" style="margin-left: 0.5em"/>
                                 </div>
                                 <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
@@ -428,7 +425,7 @@ const handleAttestationInfo = (attestation, index) => {
                      :key="attestation.id"
                      class="mb-10 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="w-full bg-blue-500 h-3"/>
-                    <Dialog v-model:visible="showAttestation" modal :header="subject_name" :style="{ width: '90vw' }">
+                    <Dialog v-model:visible="showAttestationInfoDialog" modal :header="subject_name" :style="{ width: '90vw' }">
                         <TabView :scrollable="true">
                             <TabPanel>
                                 <template #header>
@@ -510,9 +507,9 @@ const handleAttestationInfo = (attestation, index) => {
             <ConfirmDialog ref="confirmDialog"
                            class="bg-white p-4 custom-confirm-dialog rounded-md gap-8 break-all"></ConfirmDialog>
 
-            <Dialog v-model:visible="showDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'"
+            <Dialog v-model:visible="showAttestationDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'"
                     :style="{ width: '90vw' }">
-                <form @submit.prevent="handleForm">
+                <form @submit.prevent="handleFormSend">
                     <span class="p-float-label mt-5">
                         <MultiSelect :disabled="attestationForm.processing" :loading="!$props.users"
                                      v-model="attestationForm.users" :options="userWithMatriculationNumber" filter
@@ -660,7 +657,7 @@ const handleAttestationInfo = (attestation, index) => {
                                 }}</primary-button>
                             <secondary-button @click="handleDialogClose">Cancel</secondary-button>
                             <span v-if="!isEdit" class="ml-10 max-md:hidden">
-                                <Button severity="danger" aria-label="Cancel" @click="reset">Reset</Button>
+                                <Button severity="danger" aria-label="Cancel" @click="resetForm">Reset</Button>
                             </span>
                         </div>
                     </div>

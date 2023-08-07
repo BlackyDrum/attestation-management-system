@@ -1,18 +1,17 @@
 <script setup>
 import {Head, router, usePage} from '@inertiajs/vue3';
-import {onBeforeUpdate, onMounted, ref} from "vue";
+import {onBeforeUpdate, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
-import Button from "primevue/button";
+import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import Checkbox from "primevue/checkbox";
-import InputText from "primevue/inputtext";
-import {FilterService} from 'primevue/api';
+import Checkbox from 'primevue/checkbox';
+import InputText from 'primevue/inputtext';
 
-import combine from "@/CombinedData.js";
-import reduce_tasks from "@/ReduceTasks.js";
+import combine from '@/CombinedData.js';
+import reduce_tasks from '@/ReduceTasks.js';
 
 defineProps({
     attestations: {
@@ -34,7 +33,7 @@ const headers = ref(null);
 const userWithMatriculationNumber = ref([]);
 const formData = ref([]);
 const checkedCount = ref({});
-const dt = ref();
+const dataTable = ref();
 
 const filters = ref({
     'Name': {value: null, matchMode: 'contains'},
@@ -81,8 +80,6 @@ function updateData() {
     userWithMatriculationNumber.value.map(user => {
         user.Name = `${user.Name} (${user.matriculation_number})`;
     })
-
-
 }
 
 const extractData = (data, index) => {
@@ -126,7 +123,7 @@ const handleFormSend = () => {
 }
 
 const exportCSV = () => {
-    dt.value.exportCSV();
+    dataTable.value.exportCSV();
 };
 </script>
 
@@ -147,7 +144,7 @@ const exportCSV = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <div>
-                        <DataTable showGridlines stripedRows ref="dt"
+                        <DataTable showGridlines stripedRows ref="dataTable"
                                    :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ', '_')"
                                    v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true"
                                    :rows="10">

@@ -1,6 +1,6 @@
 <script setup>
 import {Head, router, useForm, usePage} from '@inertiajs/vue3';
-import {onBeforeUpdate, onMounted, ref} from "vue";
+import {onBeforeUpdate, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -8,12 +8,12 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 
-import Message from "primevue/message";
-import Button from "primevue/button";
-import Dialog from "primevue/dialog";
-import MultiSelect from "primevue/multiselect";
-import InputText from "primevue/inputtext";
-import Dropdown from "primevue/dropdown";
+import Message from 'primevue/message';
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import MultiSelect from 'primevue/multiselect';
+import InputText from 'primevue/inputtext';
+import Dropdown from 'primevue/dropdown';
 
 
 defineProps({
@@ -29,7 +29,7 @@ defineProps({
 const page = usePage();
 
 const notifications = ref([]);
-const showDialog = ref(false);
+const showSendNotificationDialog = ref(false);
 const userWithMatriculationNumber = ref([]);
 
 const notificationForm = useForm({
@@ -88,7 +88,7 @@ const handleDialogSend = () => {
     notificationForm.post('/notifications', {
         onSuccess: () => {
             notificationForm.reset();
-            showDialog.value = false;
+            showSendNotificationDialog.value = false;
             window.toast.add({
                 severity: 'success',
                 summary: 'Success',
@@ -100,7 +100,7 @@ const handleDialogSend = () => {
 }
 
 const handleDialogClose = () => {
-    showDialog.value = false;
+    showSendNotificationDialog.value = false;
     notificationForm.reset();
     page.props.errors = {};
 }
@@ -118,7 +118,7 @@ const handleDialogClose = () => {
                     </h2>
                 </div>
                 <div class="ml-auto">
-                    <primary-button v-if="$page.props.auth.user.admin" @click="showDialog = true">Send Notification
+                    <primary-button v-if="$page.props.auth.user.admin" @click="showSendNotificationDialog = true">Send Notification
                     </primary-button>
                 </div>
             </div>
@@ -152,7 +152,7 @@ const handleDialogClose = () => {
             </div>
         </div>
 
-        <Dialog v-model:visible="showDialog" :closable="false" modal header="Send notification"
+        <Dialog v-model:visible="showSendNotificationDialog" :closable="false" modal header="Send notification"
                 :style="{ width: '90vw' }">
             <form @submit.prevent="handleDialogSend">
                 <span class="p-float-label mt-5">
