@@ -16,6 +16,7 @@ import Button from "primevue/button";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import FileUpload from 'primevue/fileupload';
+import Message from "primevue/message";
 
 
 defineProps({
@@ -364,8 +365,8 @@ const handleUpload = (event) => {
                     <span class="max-md:text-xs">Upload</span>
                 </template>
                 <p class="font-bold">
-                    <em>To create multiple users simultaneously, you have the option of uploading a CSV file containing
-                        columns for Matriculation Number, Name, Email, and Password.</em>
+                    <Message :closable="false">To create multiple users simultaneously, you have the option of uploading a CSV file containing
+                        columns for Matriculation Number, Name, Email, and Password.</Message>
                 </p>
                 <div class="mt-4">
                     <FileUpload :disabled="userfileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
