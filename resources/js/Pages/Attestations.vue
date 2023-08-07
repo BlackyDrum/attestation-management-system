@@ -108,10 +108,11 @@ onBeforeUpdate(() => {
     createNameWithMatNumber();
     chartData.value = [];
     setupChart();
+    console.log(page.props.users)
 })
 
 const createNameWithMatNumber = () => {
-    userWithMatriculationNumber.value = page.props.users;
+    userWithMatriculationNumber.value = deepCopy(page.props.users);
     userWithMatriculationNumber.value = userWithMatriculationNumber.value.slice().sort((a, b) => {
         const surnameA = a.name.split(' ').slice(-1)[0];
         const surnameB = b.name.split(' ').slice(-1)[0];
@@ -120,6 +121,25 @@ const createNameWithMatNumber = () => {
     userWithMatriculationNumber.value.map(user => {
         user.name = `${user.name} (${user.matriculation_number})`;
     })
+}
+
+function deepCopy(obj) {
+    if (Array.isArray(obj)) {
+        // If the object is an array, create a new array and copy its elements recursively.
+        return obj.map((item) => deepCopy(item));
+    } else if (typeof obj === 'object' && obj !== null) {
+        // If the object is a non-null object, create a new object and copy its properties recursively.
+        const copiedObject = {};
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                copiedObject[key] = deepCopy(obj[key]);
+            }
+        }
+        return copiedObject;
+    } else {
+        // For primitives or null, return the value as is (base case of recursion).
+        return obj;
+    }
 }
 
 const setupChart = () => {
@@ -265,7 +285,7 @@ const confirm1 = (attestation) => {
                                 life: 3000,
                             })
                             router.reload({
-                                only: ['attestations', 'users'],
+                                only: ['attestations',],
                             })
                             break;
                         }
