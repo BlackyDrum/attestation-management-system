@@ -104,7 +104,7 @@ class UserController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'userfile' => 'mimes:csv|mimetypes:text/csv|max:1000000',
+            'userfile' => 'required|mimes:csv|mimetypes:text/csv|max:1000000',
         ]);
 
         if ($handle = fopen($request->file('userfile'), "r")) {

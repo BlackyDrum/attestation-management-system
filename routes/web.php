@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/attestations/{id}', [\App\Http\Controllers\AttestationsMakeController::class, 'show']);
         Route::patch('/attestations', [\App\Http\Controllers\AttestationsMakeController::class, 'make']);
         Route::post('/attestations', [\App\Http\Controllers\AttestationController::class, 'create']);
+        Route::post('/attestations/users', [\App\Http\Controllers\AttestationController::class, 'upload']);
         Route::delete('/attestations', [\App\Http\Controllers\AttestationController::class, 'delete']);
         Route::put('/attestations', [\App\Http\Controllers\AttestationController::class, 'edit']);
 

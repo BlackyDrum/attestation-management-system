@@ -24,6 +24,7 @@ import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import Editor from 'primevue/editor';
 import Chart from 'primevue/chart';
+import FileUpload from 'primevue/fileupload';
 
 import combine from '@/CombinedData.js';
 import reduce_tasks from '@/ReduceTasks.js';
@@ -80,6 +81,11 @@ const attestationForm = useForm({
     attestations: [],
 })
 
+const userFileForm = useForm({
+    id: null,
+    userfile: null,
+})
+
 const colors = ref([
     {rgb: "rgb(0, 0, 0)", label: "Black"},
     {rgb: "rgb(255, 255, 255)", label: "White"},
@@ -97,19 +103,16 @@ const colors = ref([
 
 onMounted(() => {
     combinedData.value = combine(page.props.attestations);
-
     createNameWithMatNumber();
     chartData.value = [];
     setupChart();
 })
 
 onBeforeUpdate(() => {
-
     combinedData.value = combine(page.props.attestations);
     createNameWithMatNumber();
     chartData.value = [];
     setupChart();
-    console.log(userWithMatriculationNumber.value)
 })
 
 const createNameWithMatNumber = () => {
@@ -343,6 +346,30 @@ const handleAttestationInfo = (attestation, index) => {
         descriptions.value.push(combinedData.value[index].tasks[0][i].description)
     }
 }
+
+const handleUserFileUpload = (attestation) => {
+    userFileForm.id = attestation.id;
+    userFileForm.post('/attestations/users',{
+        onSuccess : () => {
+            window.toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: `Users added to '${attestation.subject_name}'`,
+                life: 3000,
+            })
+        },
+        onError: (errors) => {
+            for (const error in errors) {
+                window.toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: errors[error],
+                    life: 5000,
+                })
+            }
+        }
+    })
+}
 </script>
 
 <template>
@@ -370,13 +397,8 @@ const handleAttestationInfo = (attestation, index) => {
                     <div class="w-full bg-blue-500 h-3"/>
                     <Card class="break-words">
                         <template #title>
-                            <div class="grid grid-cols-[90%,10%]">
-                                <div>
-                                    {{ attestation.subject_name }} ({{ attestation.semester }})
-                                </div>
-                                <div class="ml-auto mr-1">
-                                    <Button icon="pi pi-upload" v-tooltip.left="'Upload'"></Button>
-                                </div>
+                            <div>
+                                {{ attestation.subject_name }} ({{ attestation.semester }})
                             </div>
                         </template>
                         <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
@@ -406,11 +428,16 @@ const handleAttestationInfo = (attestation, index) => {
                         </template>
                         <template #footer>
                             <div class="grid grid-cols-2 max-md:grid-cols-1">
-                                <div>
+                                <div class="flex flex-wrap gap-2">
                                     <Button @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit" label="Edit"
                                             severity="success"/>
                                     <Button @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash" label="Delete"
-                                            severity="danger" style="margin-left: 0.5em"/>
+                                            severity="danger"/>
+                                    <FileUpload :disabled="userFileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
+                                                :maxFileSize="1000000"
+                                                @uploader="handleUserFileUpload(attestation)"
+                                                @input="userFileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false"
+                                                customUpload chooseLabel="Upload" />
                                 </div>
                                 <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
                                     <Button @click="router.get(`/attestations/${attestation.id}`)"

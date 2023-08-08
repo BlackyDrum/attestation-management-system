@@ -14,7 +14,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class AttestationController extends Controller
@@ -155,6 +158,71 @@ class AttestationController extends Controller
         Attestation::query()->find($request->input('attestation_id'))->delete();
 
         return response()->json(['success' => true, 'attestation_id' => $request->input('attestation_id')]);
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:attestation,id',
+            'userfile' => 'required|mimes:csv,txt|mimetypes:text/csv,text/plain|max:1000000',
+        ],[
+            'id.*' => 'Invalid subject'
+        ]);
+
+        if ($handle = fopen($request->file('userfile'), "r")) {
+            $firstRowSkipped = false;
+
+            DB::beginTransaction();
+
+            while ($data = fgetcsv($handle, 1000)) {
+                if (count($data) !== 1) {
+                    DB::rollBack();
+                    return to_route('attestations')->withErrors([
+                        'message' => 'Wrong file format. Make sure to only have one column for the matriculation number.',
+                    ]);
+                }
+
+                if (!$firstRowSkipped) {
+                    $firstRowSkipped = true;
+                    continue;
+                }
+
+                $validator = Validator::make(['matriculation_number' => $data[0]], [
+                    'matriculation_number' => 'required|integer|exists:users,matriculation_number',
+                ]);
+
+                if ($validator->fails()) {
+                    DB::rollBack();
+                    if (!empty($validator->failed()['matriculation_number']['Exists'])) {
+                        $validator->errors()->forget('matriculation_number');
+                        $validator->errors()->add('matriculation_number', "The matriculation number '{$data[0]}' does not exist.");
+                    }
+                    return to_route('attestations')->withErrors($validator->errors()->all());
+                }
+
+                $user = User::query()->where('matriculation_number', '=', $data[0])->first();
+
+                UserHasAttestation::query()->firstOrCreate([
+                    'user_id' => $user->id,
+                    'attestation_id' => $request->input('id')
+                ]);
+
+                $tasks = AttestationTasks::query()->where('attestation_id', '=', $request->input('id'))->get();
+
+                foreach ($tasks as $task) {
+                    UserHasCheckedTask::query()->firstOrCreate([
+                        'user_id' => $user->id,
+                        'task_id' => $task->id
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            fclose($handle);
+        }
+
+        return to_route('attestations');
     }
 
     private function validateRequest(Request $request)
