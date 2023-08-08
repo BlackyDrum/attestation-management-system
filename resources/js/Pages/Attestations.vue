@@ -97,23 +97,23 @@ const colors = ref([
 
 onMounted(() => {
     combinedData.value = combine(page.props.attestations);
+
     createNameWithMatNumber();
     chartData.value = [];
     setupChart();
 })
 
 onBeforeUpdate(() => {
+
     combinedData.value = combine(page.props.attestations);
     createNameWithMatNumber();
     chartData.value = [];
     setupChart();
+    console.log(userWithMatriculationNumber.value)
 })
 
-// This function creates a deep copy of the users array
-// and modifies the name by concatenating it with the user's
-// matriculation number
 const createNameWithMatNumber = () => {
-    userWithMatriculationNumber.value = deepCopy(page.props.users);
+    userWithMatriculationNumber.value = page.props.users;
     userWithMatriculationNumber.value = userWithMatriculationNumber.value.slice().sort((a, b) => {
         const surnameA = a.name.split(' ').slice(-1)[0];
         const surnameB = b.name.split(' ').slice(-1)[0];
@@ -122,23 +122,6 @@ const createNameWithMatNumber = () => {
     userWithMatriculationNumber.value.map(user => {
         user.name = `${user.name} (${user.matriculation_number})`;
     })
-}
-
-// This function recursively creates a deep copy of a given array or object. This is
-// necessary because 'page.props.users' is a proxy array, and we want
-// to avoid overwriting its values
-const deepCopy = obj => {
-    if (Array.isArray(obj)) {
-        return obj.map((item) => deepCopy(item));
-    }
-    else if (typeof obj === 'object' && obj !== null) {
-        const copiedObject = {};
-        for (let key in obj) {
-            copiedObject[key] = deepCopy(obj[key]);
-        }
-        return copiedObject;
-    }
-    return obj;
 }
 
 const setupChart = () => {
@@ -290,7 +273,7 @@ const confirmAttestationDeletion = (attestation) => {
                                 life: 3000,
                             })
                             router.reload({
-                                only: ['attestations',],
+                                only: ['attestations', 'users'],
                             })
                             break;
                         }
