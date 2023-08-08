@@ -275,9 +275,6 @@ const confirmAttestationDeletion = (attestation) => {
                                 detail: `Attestation '${combinedData.value[i].subject_name}' with ID ${combinedData.value[i].id} was deleted`,
                                 life: 3000,
                             })
-                            router.reload({
-                                only: ['attestations', 'users'],
-                            })
                             break;
                         }
                     }
@@ -288,6 +285,11 @@ const confirmAttestationDeletion = (attestation) => {
                         summary: 'Error',
                         detail: error.response.data.message,
                         life: 3000,
+                    })
+                })
+                .then(() => {
+                    router.reload({
+                        only: ['attestations', 'users'],
                     })
                 })
         },

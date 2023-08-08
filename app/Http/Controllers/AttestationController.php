@@ -169,6 +169,8 @@ class AttestationController extends Controller
             'id.*' => 'Invalid subject'
         ]);
 
+        $attestation = Attestation::query()->find($request->input('id'));
+
         if ($handle = fopen($request->file('userfile'), "r")) {
             $firstRowSkipped = false;
 
@@ -202,10 +204,17 @@ class AttestationController extends Controller
 
                 $user = User::query()->where('matriculation_number', '=', $data[0])->first();
 
-                UserHasAttestation::query()->firstOrCreate([
+                $userHasAttestation = UserHasAttestation::query()->firstOrCreate([
                     'user_id' => $user->id,
                     'attestation_id' => $request->input('id')
                 ]);
+
+                $semester = Semester::query()->find($attestation->semester_id)->semester;
+                if ($userHasAttestation->wasRecentlyCreated) {
+                    event(new NotificationEvent($user->id));
+
+                    Redis::command('LPUSH', ["users:{$user->id}:notifications", "INFO|You have been assigned to the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$semester}.|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
+                }
 
                 $tasks = AttestationTasks::query()->where('attestation_id', '=', $request->input('id'))->get();
 
