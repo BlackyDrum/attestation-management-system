@@ -120,7 +120,7 @@ const handleSemesterSelection = (event) => {
                         <div style="font-size: 10rem" class="pi pi-chart-line"></div>
                     </div>
                     <div class="text-gray-500 text-center mt-4">
-                        Please select a semester
+                        Please select a semester to access your dashboard
                     </div>
                 </div>
                 <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -131,7 +131,7 @@ const handleSemesterSelection = (event) => {
 
 
         <Dialog v-model:visible="showSendNotificationDialog" :closable="false" modal header="Send notification"
-                :style="{ width: '90vw' }">
+                class="lg:w-[50%] md:w-[75%] w-[90%]">
             <form @submit.prevent="handleDialogSend">
                 <span class="p-float-label mt-5">
                     <MultiSelect :disabled="notificationForm.processing" :loading="!$props.users"

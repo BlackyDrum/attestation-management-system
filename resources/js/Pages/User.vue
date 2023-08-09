@@ -298,7 +298,7 @@ const handleUserFileUpload = (event) => {
 
     <!-- Create new User -->
     <Dialog v-model:visible="showUserCreateDialog" :closable="false" header="Create new User"
-            class="bg-gray-200 rounded-lg p-2 font-bold" :style="{ width: '90vw' }" :modal="true" :draggable="false">
+            class="bg-gray-200 rounded-lg p-2 font-bold lg:w-[50%] md:w-[75%] w-[90%]" :modal="true" :draggable="false">
         <TabView>
             <TabPanel>
                 <template #header>
