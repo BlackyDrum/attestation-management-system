@@ -44,6 +44,8 @@ const selectedSemester = ref(null);
 const combinedData = ref(null);
 const showSendNotificationDialog = ref(false);
 const userWithMatriculationNumber = ref([]);
+const chartDataBarTotal = ref(null);
+const chartDataPieTotal = ref(null);
 
 const notificationForm = useForm({
     users: null,
@@ -53,8 +55,7 @@ const notificationForm = useForm({
 
 const severities = ref(["info", "error", "warn", "success"]);
 
-const chartData = ref(null);
-const chartOptions = ref({
+const chartOptionsBarTotal = ref({
     scales: {
         y: {
             beginAtZero: true,
@@ -66,6 +67,7 @@ const chartOptions = ref({
     responsive: true,
     maintainAspectRatio: false
 });
+
 
 onMounted(() => {
     notifications.value = page.props.auth.notifications;
@@ -85,7 +87,7 @@ onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
 })
 
-const setupChartData = () => {
+const setupChartDataBar = () => {
     return {
         labels: [],
         datasets: [
@@ -98,6 +100,21 @@ const setupChartData = () => {
             }
         ]
     }
+}
+
+const setupChartDataPie = () => {
+    const documentStyle = getComputedStyle(document.body);
+
+    return {
+        labels: ["Done", "To Do"],
+        datasets: [
+            {
+                data: [0, 0],
+                backgroundColor: [documentStyle.getPropertyValue('--blue-500'), documentStyle.getPropertyValue('--yellow-500'), documentStyle.getPropertyValue('--green-500')],
+                hoverBackgroundColor: [documentStyle.getPropertyValue('--blue-400'), documentStyle.getPropertyValue('--yellow-400'), documentStyle.getPropertyValue('--green-400')]
+            }
+        ]
+    };
 }
 
 const handleDialogSend = () => {
@@ -122,25 +139,30 @@ const handleDialogClose = () => {
 }
 
 const handleSemesterSelection = (event) => {
-    chartData.value = setupChartData();
+    chartDataBarTotal.value = setupChartDataBar();
+    chartDataPieTotal.value = setupChartDataPie();
 
     combinedData.value = combine(page.props.data);
     combinedData.value = combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
 
+    let totalTasks = 0;
+    let totalChecked = 0;
     for (const subject of combinedData.value) {
-        chartData.value.labels.push(subject.subject_name);
+        chartDataBarTotal.value.labels.push(subject.subject_name);
 
         let checkedCount = 0;
         for (const task of subject.tasks[0]) {
+            totalTasks++;
             if (task.checked) {
                 checkedCount++;
+                totalChecked++;
             }
         }
-        chartData.value.datasets[0].data.push(checkedCount);
+        chartDataBarTotal.value.datasets[0].data.push(checkedCount);
     }
 
-
-
+    chartDataPieTotal.value.datasets[0].data[0] = totalChecked;
+    chartDataPieTotal.value.datasets[0].data[1] = totalTasks - totalChecked;
 }
 </script>
 
@@ -179,7 +201,14 @@ const handleSemesterSelection = (event) => {
                     </div>
                 </div>
                 <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <Chart type="bar" class="h-80" :data="chartData" :options="chartOptions" />
+                    <div class="grid grid-cols-[70%,30%]">
+                        <div class="border rounded p-2">
+                            <Chart type="bar" class="h-80" :data="chartDataBarTotal" :options="chartOptionsBarTotal" />
+                        </div>
+                        <div class="place-self-center border rounded p-2">
+                            <Chart type="doughnut" class="h-80" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
