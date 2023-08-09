@@ -107,6 +107,8 @@ onBeforeUpdate(() => {
 })
 
 const handleResize = () => {
+    if (!selectedSemester.value) return;
+
     if (window.innerWidth > SCREEN_WIDTH_RESIZE) {
         chartOptionsPieTotal.value.plugins.legend.display = true;
         chartDataBarTotal.value.labels = subjects.value;
