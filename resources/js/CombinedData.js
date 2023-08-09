@@ -9,7 +9,8 @@ export default function combine(data) {
             entry.subject_name === item.subject_name &&
             entry.subject_number === item.subject_number &&
             entry.creator_id === item.creator_id &&
-            entry.semester === item.semester
+            entry.semester === item.semester &&
+            entry.semester_id === item.semester_id
         ));
 
         // Extract relevant task properties to simplify comparison
@@ -49,6 +50,7 @@ export default function combine(data) {
                 subject_number: item.subject_number,
                 creator_id: item.creator_id,
                 semester: item.semester,
+                semester_id: item.semester_id,
                 tasks: [task],
             });
         }

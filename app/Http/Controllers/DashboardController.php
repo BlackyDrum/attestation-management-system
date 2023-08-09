@@ -17,9 +17,14 @@ class DashboardController extends Controller
 {
     public function show(Request $request)
     {
+        $data = AttestationController::createQuery()
+            ->where('users.id', '=', Auth::id())
+            ->get();
+
         return Inertia::render('Dashboard', [
             'users' => Auth::user()->admin ? User::all() : [],
             'semester' => Semester::all(),
+            'data' => $data,
         ]);
     }
 

@@ -15,6 +15,8 @@ import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 
+import combine from "@/CombinedData.js";
+
 
 defineProps({
     users: {
@@ -25,6 +27,9 @@ defineProps({
     },
     semester: {
         type: Array
+    },
+    data: {
+        type: Array
     }
 })
 
@@ -33,6 +38,7 @@ const page = usePage();
 
 const notifications = ref([]);
 const selectedSemester = ref(null);
+const combinedData = ref(null);
 const showSendNotificationDialog = ref(false);
 const userWithMatriculationNumber = ref([]);
 
@@ -85,7 +91,9 @@ const handleDialogClose = () => {
 }
 
 const handleSemesterSelection = (event) => {
-    console.log(selectedSemester.value.semester)
+    combinedData.value = combine(page.props.data);
+    combinedData.value = combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
+    console.log(combinedData.value)
 }
 </script>
 

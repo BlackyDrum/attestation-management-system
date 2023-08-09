@@ -278,6 +278,7 @@ class AttestationController extends Controller
                 'attestation.subject_number',
                 'attestation.creator_id',
                 'semester.semester',
+                'semester.id AS semester_id',
                 'attestation_tasks.title',
                 'attestation_tasks.description',
                 'user_has_attestation.user_id',
