@@ -61,12 +61,19 @@ const chartOptionsBarTotal = ref({
         y: {
             beginAtZero: true,
             ticks: {
-                stepSize: 5
+                stepSize: 1
             }
         },
     },
 });
 
+const chartOptionsPieTotal = ref({
+    plugins: {
+        legend: {
+            display: true,
+        },
+    }
+})
 
 onMounted(() => {
     notifications.value = page.props.auth.notifications;
@@ -84,6 +91,10 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
+
+    if (selectedSemester.value) {
+        handleSemesterSelection();
+    }
 })
 
 const setupChartDataBar = () => {
@@ -139,6 +150,7 @@ const handleDialogClose = () => {
 
 const handleSemesterSelection = (event) => {
     acronyms.value = [];
+
     chartDataBarTotal.value = setupChartDataBar();
     chartDataPieTotal.value = setupChartDataPie();
 
@@ -219,8 +231,8 @@ const handleSemesterSelection = (event) => {
                         <div class="border rounded p-2">
                             <Chart type="bar" :data="chartDataBarTotal" :options="chartOptionsBarTotal" />
                         </div>
-                        <div class="max-xl:mt-4 max-xl:w-[30%] border rounded p-2">
-                            <Chart type="doughnut" :data="chartDataPieTotal"/>
+                        <div class="max-xl:mt-4 self-center py-10 max-xl:w-[30%] border rounded p-2">
+                            <Chart type="doughnut" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
                         </div>
                     </div>
                 </div>
