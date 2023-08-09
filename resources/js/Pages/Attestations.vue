@@ -436,18 +436,18 @@ const handleUserFileUpload = (attestation) => {
                         <template #footer>
                             <div class="grid grid-cols-2 max-md:grid-cols-1">
                                 <div class="flex flex-wrap gap-2">
-                                    <Button @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit" label="Edit"
+                                    <Button :disabled="userFileForm.processing" @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit" label="Edit"
                                             severity="success"/>
-                                    <Button @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash" label="Delete"
+                                    <Button :disabled="userFileForm.processing" @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash" label="Delete"
                                             severity="danger"/>
-                                    <FileUpload v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion'" :disabled="userFileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
+                                    <FileUpload v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject'" :disabled="userFileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
                                                 :maxFileSize="1e7"
                                                 @uploader="handleUserFileUpload(attestation)"
                                                 @input="userFileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false"
                                                 customUpload chooseLabel="Upload" />
                                 </div>
                                 <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
-                                    <Button @click="router.get(`/attestations/${attestation.id}`)"
+                                    <Button :disabled="userFileForm.processing" @click="router.get(`/attestations/${attestation.id}`)"
                                             icon="pi pi-arrow-right"
                                             label="Make attestations" severity="info"/>
                                 </div>
