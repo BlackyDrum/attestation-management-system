@@ -15,6 +15,7 @@ class Attestation extends Model
       'subject_number',
       'subject_name',
       'semester_id',
-      'creator_id'
+      'creator_id',
+      'acronym',
     ];
 }

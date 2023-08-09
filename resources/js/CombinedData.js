@@ -10,7 +10,8 @@ export default function combine(data) {
             entry.subject_number === item.subject_number &&
             entry.creator_id === item.creator_id &&
             entry.semester === item.semester &&
-            entry.semester_id === item.semester_id
+            entry.semester_id === item.semester_id &&
+            entry.acronym === item.acronym
         ));
 
         // Extract relevant task properties to simplify comparison
@@ -46,6 +47,7 @@ export default function combine(data) {
             // If no matching entry exists, create a new entry in the 'combinedData' array
             acc.push({
                 id: item.id,
+                acronym: item.acronym,
                 subject_name: item.subject_name,
                 subject_number: item.subject_number,
                 creator_id: item.creator_id,

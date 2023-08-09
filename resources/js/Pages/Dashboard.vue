@@ -41,6 +41,7 @@ const page = usePage();
 
 const notifications = ref([]);
 const selectedSemester = ref(null);
+const acronyms = ref([]);
 const combinedData = ref(null);
 const showSendNotificationDialog = ref(false);
 const userWithMatriculationNumber = ref([]);
@@ -137,6 +138,7 @@ const handleDialogClose = () => {
 }
 
 const handleSemesterSelection = (event) => {
+    acronyms.value = [];
     chartDataBarTotal.value = setupChartDataBar();
     chartDataPieTotal.value = setupChartDataPie();
 
@@ -147,6 +149,7 @@ const handleSemesterSelection = (event) => {
     let totalChecked = 0;
     for (const subject of combinedData.value) {
         chartDataBarTotal.value.labels.push(subject.subject_name);
+        acronyms.value.push(subject.acronym ?? subject.subject_name);
 
         let checkedCount = 0;
         for (const task of subject.tasks[0]) {
@@ -161,6 +164,11 @@ const handleSemesterSelection = (event) => {
 
     chartDataPieTotal.value.datasets[0].data[0] = totalChecked;
     chartDataPieTotal.value.datasets[0].data[1] = totalTasks - totalChecked;
+
+    if (window.innerWidth < 768) {
+        console.log("asd")
+        chartDataBarTotal.value.labels = acronyms.value;
+    }
 }
 </script>
 
