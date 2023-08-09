@@ -1,6 +1,6 @@
 <script setup>
 import {Head, router, useForm, usePage} from '@inertiajs/vue3';
-import {onBeforeUpdate, onMounted, ref} from 'vue';
+import {onBeforeUpdate, onMounted, ref, watch} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -17,6 +17,7 @@ import Dropdown from 'primevue/dropdown';
 import Card from 'primevue/card';
 import Chart from 'primevue/chart';
 import Avatar from 'primevue/avatar';
+import ProgressBar from 'primevue/progressbar';
 
 import combine from "@/CombinedData.js";
 
@@ -39,9 +40,13 @@ defineProps({
 
 const page = usePage();
 
+const SCREEN_WIDTH_RESIZE = 768;
 const notifications = ref([]);
 const selectedSemester = ref(null);
 const acronyms = ref([]);
+const subjects = ref([]);
+const totalTaskCount = ref(0);
+const totalCheckedCount = ref(0);
 const combinedData = ref(null);
 const showSendNotificationDialog = ref(false);
 const userWithMatriculationNumber = ref([]);
@@ -65,6 +70,7 @@ const chartOptionsBarTotal = ref({
             }
         },
     },
+    responsive: true,
 });
 
 const chartOptionsPieTotal = ref({
@@ -72,7 +78,8 @@ const chartOptionsPieTotal = ref({
         legend: {
             display: true,
         },
-    }
+    },
+    responsive: true,
 })
 
 onMounted(() => {
@@ -87,6 +94,8 @@ onMounted(() => {
     userWithMatriculationNumber.value.map(user => {
         user.name = `${user.name} (${user.matriculation_number})`;
     })
+
+    window.addEventListener('resize', handleResize);
 })
 
 onBeforeUpdate(() => {
@@ -96,6 +105,16 @@ onBeforeUpdate(() => {
         handleSemesterSelection();
     }
 })
+
+const handleResize = () => {
+    if (window.innerWidth > SCREEN_WIDTH_RESIZE) {
+        chartOptionsPieTotal.value.plugins.legend.display = true;
+        chartDataBarTotal.value.labels = subjects.value;
+        return;
+    }
+    chartDataBarTotal.value.labels = acronyms.value;
+    chartOptionsPieTotal.value.plugins.legend.display = false;
+}
 
 const setupChartDataBar = () => {
     return {
@@ -150,9 +169,12 @@ const handleDialogClose = () => {
 
 const handleSemesterSelection = (event) => {
     acronyms.value = [];
+    subjects.value = [];
 
     chartDataBarTotal.value = setupChartDataBar();
     chartDataPieTotal.value = setupChartDataPie();
+
+    chartOptionsPieTotal.value.plugins.legend.display = window.innerWidth > SCREEN_WIDTH_RESIZE;
 
     combinedData.value = combine(page.props.data);
     combinedData.value = combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
@@ -161,6 +183,7 @@ const handleSemesterSelection = (event) => {
     let totalChecked = 0;
     for (const subject of combinedData.value) {
         chartDataBarTotal.value.labels.push(subject.subject_name);
+        subjects.value.push(subject.subject_name);
         acronyms.value.push(subject.acronym ?? subject.subject_name);
 
         let checkedCount = 0;
@@ -177,8 +200,10 @@ const handleSemesterSelection = (event) => {
     chartDataPieTotal.value.datasets[0].data[0] = totalChecked;
     chartDataPieTotal.value.datasets[0].data[1] = totalTasks - totalChecked;
 
-    if (window.innerWidth < 768) {
-        console.log("asd")
+    totalTaskCount.value = totalTasks;
+    totalCheckedCount.value = totalChecked;
+
+    if (window.innerWidth < SCREEN_WIDTH_RESIZE) {
         chartDataBarTotal.value.labels = acronyms.value;
     }
 }
@@ -231,8 +256,11 @@ const handleSemesterSelection = (event) => {
                         <div class="border rounded p-2">
                             <Chart type="bar" :data="chartDataBarTotal" :options="chartOptionsBarTotal" />
                         </div>
-                        <div class="max-xl:mt-4 self-center py-10 max-xl:w-[30%] border rounded p-2">
+                        <div class="max-xl:mt-4 max-xl:w-[30%]  border rounded p-2">
                             <Chart type="doughnut" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
+                            <div class="mt-6">
+                                <ProgressBar :value="totalCheckedCount / totalTaskCount * 100"></ProgressBar>
+                            </div>
                         </div>
                     </div>
                 </div>
