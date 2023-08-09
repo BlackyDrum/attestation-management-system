@@ -205,6 +205,7 @@ const handleFormSend = () => {
             semester: data.semester ? data.semester.semester : null,
         }))
         .put('/attestations', {
+            preserveScroll: true,
             onSuccess: () => {
                 window.toast.add({
                     severity: 'success',
@@ -356,6 +357,7 @@ const handleAttestationInfo = (attestation, index) => {
 const handleUserFileUpload = (attestation) => {
     userFileForm.id = attestation.id;
     userFileForm.post('/attestations/users',{
+        preserveScroll: true,
         onSuccess : () => {
             window.toast.add({
                 severity: 'success',
@@ -447,7 +449,7 @@ const handleUserFileUpload = (attestation) => {
                                                 customUpload chooseLabel="Upload" />
                                 </div>
                                 <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
-                                    <Button :disabled="userFileForm.processing" @click="router.get(`/attestations/${attestation.id}`)"
+                                    <Button :disabled="userFileForm.processing" @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"
                                             icon="pi pi-arrow-right"
                                             label="Make attestations" severity="info"/>
                                 </div>
