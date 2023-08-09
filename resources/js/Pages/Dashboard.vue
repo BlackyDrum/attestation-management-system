@@ -118,7 +118,8 @@ const handleDialogClose = () => {
                     </h2>
                 </div>
                 <div class="ml-auto">
-                    <primary-button v-if="$page.props.auth.user.admin" @click="showSendNotificationDialog = true">Send Notification
+                    <primary-button v-if="$page.props.auth.user.admin" @click="showSendNotificationDialog = true">Send
+                        Notification
                     </primary-button>
                 </div>
             </div>
@@ -169,7 +170,7 @@ const handleDialogClose = () => {
 
                 <span v-for="(error, key) in errors">
                     <error-message :show="true" v-if="key.includes('users.')">
-                        {{error}}
+                        {{ error }}
                     </error-message>
                 </span>
                 <div class=" mt-6">

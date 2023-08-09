@@ -251,11 +251,13 @@ const handleUserFileUpload = (event) => {
                             </div>
                             <div class="ml-auto mr-5 flex flex-wrap  justify-content-center">
                                 <div class="mr-4 md:hidden">
-                                    <Button v-if="!user.admin" @click="confirmUserDeletion(user.id, user.name)" icon="pi pi-trash"
+                                    <Button v-if="!user.admin" @click="confirmUserDeletion(user.id, user.name)"
+                                            icon="pi pi-trash"
                                             severity="danger"/>
                                 </div>
                                 <div class="mr-4 max-md:hidden">
-                                    <Button v-if="!user.admin" @click="confirmUserDeletion(user.id, user.name)" label="Delete"
+                                    <Button v-if="!user.admin" @click="confirmUserDeletion(user.id, user.name)"
+                                            label="Delete"
                                             icon="pi pi-trash" severity="danger"/>
                                 </div>
                                 <div class="max-md:hidden">
@@ -320,7 +322,8 @@ const handleUserFileUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-user mr-2"></i>
                         </span>
-                        <InputText :disabled="userCreateForm.processing" type="text" required v-model="userCreateForm.name"
+                        <InputText :disabled="userCreateForm.processing" type="text" required
+                                   v-model="userCreateForm.name"
                                    placeholder="Name"
                                    class="border border-black rounded-md p-1"/>
                     </div>
@@ -342,7 +345,8 @@ const handleUserFileUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-lock mr-2"></i>
                         </span>
-                        <InputText :disabled="userCreateForm.processing" type="password" v-model="userCreateForm.password"
+                        <InputText :disabled="userCreateForm.processing" type="password"
+                                   v-model="userCreateForm.password"
                                    placeholder="Password"
                                    class="border border-black rounded-md p-1"/>
                     </div>
@@ -370,8 +374,10 @@ const handleUserFileUpload = (event) => {
                     <span class="max-md:text-xs">Upload</span>
                 </template>
                 <p class="font-bold">
-                    <Message :closable="false">To create multiple users simultaneously, you have the option of uploading a CSV file containing
-                        columns for matriculation number, name, email, and password.</Message>
+                    <Message :closable="false">To create multiple users simultaneously, you have the option of uploading
+                        a CSV file containing
+                        columns for matriculation number, name, email, and password.
+                    </Message>
                 </p>
                 <div class="mt-4">
                     <FileUpload :disabled="userFileForm.processing" mode="basic" name="userfile[]" accept="text/csv"

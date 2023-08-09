@@ -356,9 +356,9 @@ const handleAttestationInfo = (attestation, index) => {
 
 const handleUserFileUpload = (attestation) => {
     userFileForm.id = attestation.id;
-    userFileForm.post('/attestations/users',{
+    userFileForm.post('/attestations/users', {
         preserveScroll: true,
-        onSuccess : () => {
+        onSuccess: () => {
             window.toast.add({
                 severity: 'success',
                 summary: 'Success',
@@ -438,18 +438,27 @@ const handleUserFileUpload = (attestation) => {
                         <template #footer>
                             <div class="grid grid-cols-2 max-md:grid-cols-1">
                                 <div class="flex flex-wrap gap-2">
-                                    <Button :disabled="userFileForm.processing" @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit" label="Edit"
+                                    <Button :disabled="userFileForm.processing"
+                                            @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit"
+                                            label="Edit"
                                             severity="success"/>
-                                    <Button :disabled="userFileForm.processing" @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash" label="Delete"
+                                    <Button :disabled="userFileForm.processing"
+                                            @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash"
+                                            label="Delete"
                                             severity="danger"/>
-                                    <FileUpload v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject'" :disabled="userFileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
-                                                :maxFileSize="1e7"
-                                                @uploader="handleUserFileUpload(attestation)"
-                                                @input="userFileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false"
-                                                customUpload chooseLabel="Upload" />
+                                    <FileUpload
+                                        v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject'"
+                                        :disabled="userFileForm.processing" mode="basic" name="userfile[]"
+                                        accept="text/csv"
+                                        :maxFileSize="1e7"
+                                        @uploader="handleUserFileUpload(attestation)"
+                                        @input="userFileForm.userfile = $event.target.files[0];" :multiple="false"
+                                        :auto="false"
+                                        customUpload chooseLabel="Upload"/>
                                 </div>
                                 <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
-                                    <Button :disabled="userFileForm.processing" @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"
+                                    <Button :disabled="userFileForm.processing"
+                                            @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"
                                             icon="pi pi-arrow-right"
                                             label="Make attestations" severity="info"/>
                                 </div>
@@ -461,7 +470,8 @@ const handleUserFileUpload = (attestation) => {
                      :key="attestation.id"
                      class="mb-10 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="w-full bg-blue-500 h-3"/>
-                    <Dialog v-model:visible="showAttestationInfoDialog" modal :header="subject_name" :style="{ width: '90vw' }">
+                    <Dialog v-model:visible="showAttestationInfoDialog" modal :header="subject_name"
+                            :style="{ width: '90vw' }">
                         <TabView :scrollable="true">
                             <TabPanel>
                                 <template #header>
@@ -559,7 +569,7 @@ const handleUserFileUpload = (attestation) => {
                     </error-message>
                     <span v-for="(error, key) in errors">
                         <error-message :show="true" v-if="key.includes('users.')">
-                            {{error}}
+                            {{ error }}
                         </error-message>
                     </span>
                     <Message v-if="!isEdit" :closable="false">After creating, you'll have the opportunity to upload a CSV file containing the matriculation numbers of users you wish to add to this subject. This way, you won't need to select users at this moment.</Message>
@@ -568,8 +578,8 @@ const handleUserFileUpload = (attestation) => {
                             <span class="p-input-icon-right w-full p-float-label">
                                 <i class="pi pi-hashtag"/>
                                 <input-text :disabled="attestationForm.processing"
-                                              v-model="attestationForm.subjectNumber" :useGrouping="false"
-                                              class="w-full"></input-text>
+                                            v-model="attestationForm.subjectNumber" :useGrouping="false"
+                                            class="w-full"></input-text>
                                 <label for="subject_number">Subject Number</label>
                             </span>
                             <error-message :show="errors.subjectNumber">

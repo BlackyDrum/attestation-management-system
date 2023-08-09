@@ -180,7 +180,8 @@ const exportCSV = () => {
                                 </template>
                                 <template #body="{ index, field, data }">
                                     <div class="flex justify-center items-center h-full">
-                                        <Checkbox v-if="data['user_id']" v-model="data[field]" @change="extractData(data, index)"
+                                        <Checkbox v-if="data['user_id']" v-model="data[field]"
+                                                  @change="extractData(data, index)"
                                                   :binary="true"
                                                   v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
                                     </div>
