@@ -62,10 +62,8 @@ const chartOptionsBarTotal = ref({
             ticks: {
                 stepSize: 5
             }
-        }
+        },
     },
-    responsive: true,
-    maintainAspectRatio: false
 });
 
 
@@ -106,7 +104,7 @@ const setupChartDataPie = () => {
     const documentStyle = getComputedStyle(document.body);
 
     return {
-        labels: ["Done", "To Do"],
+        labels:["Done", "To Do"],
         datasets: [
             {
                 data: [0, 0],
@@ -192,7 +190,7 @@ const handleSemesterSelection = (event) => {
                               :options="semester" optionLabel="semester"
                               class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"/>
                 </div>
-                <div v-if="!selectedSemester">
+                <div v-if="!selectedSemester" class="mt-4">
                     <div class="text-gray-700 text-center">
                         <div style="font-size: 10rem" class="pi pi-chart-line"></div>
                     </div>
@@ -201,12 +199,12 @@ const handleSemesterSelection = (event) => {
                     </div>
                 </div>
                 <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <div class="grid grid-cols-[70%,30%]">
+                    <div class="grid xl:grid-cols-[70%,30%] grid-cols-1 gap-2">
                         <div class="border rounded p-2">
-                            <Chart type="bar" class="h-80" :data="chartDataBarTotal" :options="chartOptionsBarTotal" />
+                            <Chart type="bar" :data="chartDataBarTotal" :options="chartOptionsBarTotal" />
                         </div>
-                        <div class="place-self-center border rounded p-2">
-                            <Chart type="doughnut" class="h-80" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
+                        <div class="max-xl:mt-4 max-xl:w-[30%] border rounded p-2">
+                            <Chart type="doughnut" :data="chartDataPieTotal"/>
                         </div>
                     </div>
                 </div>
