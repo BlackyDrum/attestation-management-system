@@ -149,7 +149,7 @@ const deleteNotification = (index, clear) => {
                                         v-badge="notifications.length !== 0 ? notifications.length : '0'"
                                         class="pi pi-bell p-overlay-badge text-white mr-0.5"
                                         style="font-size: 1.5rem"/>
-                                <OverlayPanel class="w-[30%] max-lg:w-[60%]" ref="notificationOverlayPanel">
+                                <OverlayPanel class="w-[40%] max-lg:w-[60%]" ref="notificationOverlayPanel">
                                     <div class="flex">
                                         <div class="font-bold">
                                             Notifications
@@ -158,8 +158,8 @@ const deleteNotification = (index, clear) => {
                                             Clear all
                                         </div>
                                     </div>
-                                    <div v-for="(notification, index) in notifications" :key="notification">
-                                        <template v-if="index < 5">
+                                    <div v-for="(notification, index) in notifications" :key="notification" class="text-sm">
+                                        <template v-if="index < 4">
                                             <Message :severity="notification.split('|')[0].trim().toLowerCase()"
                                                      @close="deleteNotification(index, false)"
                                             >
