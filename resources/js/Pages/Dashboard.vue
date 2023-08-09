@@ -206,6 +206,14 @@ const handleSemesterSelection = (event) => {
                         Please select a semester to access your dashboard
                     </div>
                 </div>
+                <div v-else-if="combinedData.length === 0">
+                    <div class="text-gray-700 text-center">
+                        <div style="font-size: 10rem" class="pi pi-ban"></div>
+                    </div>
+                    <div class="text-gray-500 text-center mt-4">
+                        No Data available
+                    </div>
+                </div>
                 <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <div class="grid xl:grid-cols-[70%,30%] grid-cols-1 gap-2">
                         <div class="border rounded p-2">
