@@ -164,7 +164,7 @@ class AttestationController extends Controller
     {
         $request->validate([
             'id' => 'required|integer|exists:attestation,id',
-            'userfile' => 'required|mimes:csv,txt|mimetypes:text/csv,text/plain|max:1000000',
+            'userfile' => 'required|mimes:csv,txt|mimetypes:text/csv,text/plain|max:10000', // in kilobytes
         ],[
             'id.*' => 'Invalid subject'
         ]);

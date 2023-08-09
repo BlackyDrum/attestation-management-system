@@ -441,7 +441,7 @@ const handleUserFileUpload = (attestation) => {
                                     <Button @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash" label="Delete"
                                             severity="danger"/>
                                     <FileUpload v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion'" :disabled="userFileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
-                                                :maxFileSize="1000000"
+                                                :maxFileSize="1e7"
                                                 @uploader="handleUserFileUpload(attestation)"
                                                 @input="userFileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false"
                                                 customUpload chooseLabel="Upload" />

@@ -375,7 +375,7 @@ const handleUserFileUpload = (event) => {
                 </p>
                 <div class="mt-4">
                     <FileUpload :disabled="userFileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
-                                :maxFileSize="1000000"
+                                :maxFileSize="1e7"
                                 @uploader="handleUserFileUpload($event)"
                                 @input="userFileForm.userfile = $event.target.files[0];" :multiple="false" :auto="false"
                                 customUpload chooseLabel="Browse">
