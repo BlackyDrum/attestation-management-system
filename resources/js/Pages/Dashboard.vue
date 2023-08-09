@@ -18,9 +18,12 @@ import Dropdown from 'primevue/dropdown';
 
 defineProps({
     users: {
-        type: Array,
+        type: Array
     },
     errors: {
+        type: Array
+    },
+    semester: {
         type: Array
     }
 })
@@ -29,6 +32,7 @@ defineProps({
 const page = usePage();
 
 const notifications = ref([]);
+const selectedSemester = ref(null);
 const showSendNotificationDialog = ref(false);
 const userWithMatriculationNumber = ref([]);
 
@@ -79,6 +83,10 @@ const handleDialogClose = () => {
     notificationForm.reset();
     page.props.errors = {};
 }
+
+const handleSemesterSelection = (event) => {
+    console.log(selectedSemester.value.semester)
+}
 </script>
 
 <template>
@@ -102,13 +110,20 @@ const handleDialogClose = () => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="text-gray-700 text-center">
-                    <div style="font-size: 10rem" class="pi pi-chart-line"></div>
+                <div class="flex">
+                    <Dropdown v-model="selectedSemester" @change="handleSemesterSelection($event)"
+                              :options="semester" optionLabel="semester"
+                              class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"/>
                 </div>
-                <div class="text-gray-500 text-center mt-4">
-                    Seems quite empty here...
+                <div v-if="!selectedSemester">
+                    <div class="text-gray-700 text-center">
+                        <div style="font-size: 10rem" class="pi pi-chart-line"></div>
+                    </div>
+                    <div class="text-gray-500 text-center mt-4">
+                        Please select a semester
+                    </div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
 
                 </div>
             </div>

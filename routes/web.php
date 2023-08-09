@@ -20,8 +20,8 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::get('/dashboard', [\App\Http\Controllers\NotificationController::class, 'show'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::delete('/notifications', [\App\Http\Controllers\NotificationController::class, 'delete'])->middleware(['auth', 'verified']);
+Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'show'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::delete('/notifications', [\App\Http\Controllers\DashboardController::class, 'delete'])->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/users', [\App\Http\Controllers\UserController::class, 'create']);
         Route::post('/users/upload', [\App\Http\Controllers\UserController::class, 'upload']);
 
-        Route::post('/notifications', [\App\Http\Controllers\NotificationController::class, 'send']);
+        Route::post('/notifications', [\App\Http\Controllers\DashboardController::class, 'send']);
     });
 });
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotificationEvent;
+use App\Models\Semester;
 use App\Models\User;
 use App\Rules\NoPipeCharacter;
 use App\Rules\ValidSeverity;
@@ -12,12 +13,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
-class NotificationController extends Controller
+class DashboardController extends Controller
 {
     public function show(Request $request)
     {
         return Inertia::render('Dashboard', [
             'users' => Auth::user()->admin ? User::all() : [],
+            'semester' => Semester::all(),
         ]);
     }
 
