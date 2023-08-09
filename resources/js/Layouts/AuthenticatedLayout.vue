@@ -16,6 +16,7 @@ import Toast from 'primevue/toast';
 import OverlayPanel from 'primevue/overlaypanel';
 import Message from 'primevue/message';
 import Button from 'primevue/button';
+import ScrollTop from 'primevue/scrolltop';
 
 
 const page = usePage();
@@ -94,6 +95,7 @@ const deleteNotification = (index, clear) => {
 
 <template>
     <Toast position="top-left" class="break-words"/>
+    <ScrollTop />
     <div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav class="bg-white dark:bg-gray-800 border-b  border-gray-100 dark:border-gray-700">
