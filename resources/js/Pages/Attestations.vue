@@ -69,7 +69,9 @@ const chartOptions = ref({
                 stepSize: 5
             },
         }
-    }
+    },
+    responsive: true,
+    maintainAspectRatio: false
 });
 
 const attestationForm = useForm({
@@ -77,6 +79,7 @@ const attestationForm = useForm({
     users: [],
     subjectNumber: null,
     subjectName: null,
+    acronym: null,
     semester: null,
     attestations: [],
 })
@@ -310,6 +313,7 @@ const handleAttestationEdit = (attestation) => {
     showAttestationDialog.value = true;
     attestationForm.subjectName = attestation.subject_name;
     attestationForm.subjectNumber = attestation.subject_number;
+    attestationForm.acronym = attestation.acronym;
     for (let i = 0; i < page.props.semester.length; i++) {
         if (page.props.semester[i].semester === attestation.semester)
             attestationForm.semester = page.props.semester[i];
@@ -432,7 +436,7 @@ const handleUserFileUpload = (attestation) => {
                                 </div>
                             </div>
                             <div>
-                                <Chart type="bar" :data="chartData[index]" :options="chartOptions"/>
+                                <Chart type="bar" class="h-80" :data="chartData[index]" :options="chartOptions"/>
                             </div>
                         </template>
                         <template #footer>
@@ -573,7 +577,7 @@ const handleUserFileUpload = (attestation) => {
                         </error-message>
                     </span>
                     <Message v-if="!isEdit" :closable="false">After creating, you'll have the opportunity to upload a CSV file containing the matriculation numbers of users you wish to add to this subject. This way, you won't need to select users at this moment.</Message>
-                    <div class="grid xl:grid-cols-2 xl:gap-4 mt-4">
+                    <div class="grid xl:grid-cols-3 xl:gap-4 mt-4">
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">
                                 <i class="pi pi-hashtag"/>
@@ -595,6 +599,18 @@ const handleUserFileUpload = (attestation) => {
                             </span>
                             <error-message :show="errors.subjectName">
                                 {{ errors.subjectName }}
+                            </error-message>
+                        </div>
+                        <div class="my-4">
+                            <span class="p-input-icon-right w-full p-float-label">
+                                <i class="pi pi-qrcode"/>
+                                <input-text :disabled="attestationForm.processing"
+                                            v-model="attestationForm.acronym" :useGrouping="false"
+                                            class="w-full"></input-text>
+                                <label for="subject_number">Acronym</label>
+                            </span>
+                            <error-message :show="errors.acronym">
+                                {{ errors.acronym }}
                             </error-message>
                         </div>
                     </div>
@@ -697,7 +713,7 @@ const handleUserFileUpload = (attestation) => {
                         </div>
                         <div class="flex justify-end" style="height: 3rem">
                             <primary-button class="mr-5 disabled:cursor-not-allowed"
-                                            :disabled="attestationForm.processing || (!attestationForm.subjectName || !attestationForm.subjectNumber || !attestationForm.semester || attestationForm.attestations.length === 0)">{{
+                                            :disabled="attestationForm.processing || (!attestationForm.subjectName || !attestationForm.subjectNumber || !attestationForm.acronym || !attestationForm.semester || attestationForm.attestations.length === 0)">{{
                                     isEdit ? "Save Changes" :
                                         "Create new subject"
                                 }}</primary-button>

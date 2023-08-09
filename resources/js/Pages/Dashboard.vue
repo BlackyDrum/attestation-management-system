@@ -1,6 +1,6 @@
 <script setup>
 import {Head, router, useForm, usePage} from '@inertiajs/vue3';
-import {onBeforeUpdate, onMounted, ref} from 'vue';
+import {onBeforeUpdate, onMounted, ref, watch} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -14,13 +14,25 @@ import Dialog from 'primevue/dialog';
 import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import Card from 'primevue/card';
+import Chart from 'primevue/chart';
+import Avatar from 'primevue/avatar';
+import ProgressBar from 'primevue/progressbar';
+
+import combine from "@/CombinedData.js";
 
 
 defineProps({
     users: {
-        type: Array,
+        type: Array
     },
     errors: {
+        type: Array
+    },
+    semester: {
+        type: Array
+    },
+    data: {
         type: Array
     }
 })
@@ -28,9 +40,18 @@ defineProps({
 
 const page = usePage();
 
+const SCREEN_WIDTH_RESIZE = 768;
 const notifications = ref([]);
+const selectedSemester = ref(null);
+const acronyms = ref([]);
+const subjects = ref([]);
+const totalTaskCount = ref(0);
+const totalCheckedCount = ref(0);
+const combinedData = ref(null);
 const showSendNotificationDialog = ref(false);
 const userWithMatriculationNumber = ref([]);
+const chartDataBarTotal = ref(null);
+const chartDataPieTotal = ref(null);
 
 const notificationForm = useForm({
     users: null,
@@ -40,6 +61,26 @@ const notificationForm = useForm({
 
 const severities = ref(["info", "error", "warn", "success"]);
 
+const chartOptionsBarTotal = ref({
+    scales: {
+        y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 1
+            }
+        },
+    },
+    responsive: true,
+});
+
+const chartOptionsPieTotal = ref({
+    plugins: {
+        legend: {
+            display: true,
+        },
+    },
+    responsive: true,
+})
 
 onMounted(() => {
     notifications.value = page.props.auth.notifications;
@@ -53,35 +94,56 @@ onMounted(() => {
     userWithMatriculationNumber.value.map(user => {
         user.name = `${user.name} (${user.matriculation_number})`;
     })
+
+    window.addEventListener('resize', handleResize);
 })
 
 onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
+
+    if (selectedSemester.value) {
+        handleSemesterSelection();
+    }
 })
 
-const deleteNotification = (index, clear) => {
-    axios.delete('/notifications', {
-        data: {
-            index: index,
-            clearAll: clear,
-        }
-    })
-        .then(response => {
-            if (clear) {
-                notifications.value = [];
-                router.reload();
-            } else
-                notifications.value.splice(index, 1);
+const handleResize = () => {
+    if (window.innerWidth > SCREEN_WIDTH_RESIZE) {
+        chartOptionsPieTotal.value.plugins.legend.display = true;
+        chartDataBarTotal.value.labels = subjects.value;
+        return;
+    }
+    chartDataBarTotal.value.labels = acronyms.value;
+    chartOptionsPieTotal.value.plugins.legend.display = false;
+}
 
-        })
-        .catch(error => {
-            window.toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error.response.data.message,
-                life: 3000,
-            })
-        })
+const setupChartDataBar = () => {
+    return {
+        labels: [],
+        datasets: [
+            {
+                label: 'Checked Tasks',
+                data: [],
+                backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)'],
+                borderColor: ['rgb(255, 159, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)'],
+                borderWidth: 1
+            }
+        ]
+    }
+}
+
+const setupChartDataPie = () => {
+    const documentStyle = getComputedStyle(document.body);
+
+    return {
+        labels:["Done", "To Do"],
+        datasets: [
+            {
+                data: [0, 0],
+                backgroundColor: [documentStyle.getPropertyValue('--blue-500'), documentStyle.getPropertyValue('--yellow-500'), documentStyle.getPropertyValue('--green-500')],
+                hoverBackgroundColor: [documentStyle.getPropertyValue('--blue-400'), documentStyle.getPropertyValue('--yellow-400'), documentStyle.getPropertyValue('--green-400')]
+            }
+        ]
+    };
 }
 
 const handleDialogSend = () => {
@@ -103,6 +165,47 @@ const handleDialogClose = () => {
     showSendNotificationDialog.value = false;
     notificationForm.reset();
     page.props.errors = {};
+}
+
+const handleSemesterSelection = (event) => {
+    acronyms.value = [];
+    subjects.value = [];
+
+    chartDataBarTotal.value = setupChartDataBar();
+    chartDataPieTotal.value = setupChartDataPie();
+
+    chartOptionsPieTotal.value.plugins.legend.display = window.innerWidth > SCREEN_WIDTH_RESIZE;
+
+    combinedData.value = combine(page.props.data);
+    combinedData.value = combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
+
+    let totalTasks = 0;
+    let totalChecked = 0;
+    for (const subject of combinedData.value) {
+        chartDataBarTotal.value.labels.push(subject.subject_name);
+        subjects.value.push(subject.subject_name);
+        acronyms.value.push(subject.acronym ?? subject.subject_name);
+
+        let checkedCount = 0;
+        for (const task of subject.tasks[0]) {
+            totalTasks++;
+            if (task.checked) {
+                checkedCount++;
+                totalChecked++;
+            }
+        }
+        chartDataBarTotal.value.datasets[0].data.push(checkedCount);
+    }
+
+    chartDataPieTotal.value.datasets[0].data[0] = totalChecked;
+    chartDataPieTotal.value.datasets[0].data[1] = totalTasks - totalChecked;
+
+    totalTaskCount.value = totalTasks;
+    totalCheckedCount.value = totalChecked;
+
+    if (window.innerWidth < SCREEN_WIDTH_RESIZE) {
+        chartDataBarTotal.value.labels = acronyms.value;
+    }
 }
 </script>
 
@@ -127,34 +230,46 @@ const handleDialogClose = () => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="flex justify-end">
-                    <Button icon="pi pi-trash" severity="danger"
-                            v-if="notifications.length !== 0" @click="deleteNotification(-1,true)" label="Clear All"/>
-
+                <div class="flex">
+                    <Dropdown v-model="selectedSemester" @change="handleSemesterSelection($event)"
+                              :options="semester" optionLabel="semester"
+                              class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"/>
                 </div>
-                <Message v-if="notifications.length !== 0" v-for="(notification, index) in notifications"
-                         :key="notification" @close="deleteNotification(index, false)"
-                         :severity="notification.split('|')[0].trim().toLowerCase()">
-                    <h2>
-                        Notification from {{ notification.split('|')[2].trim() }}
-                    </h2>
-                    <p class="font-medium">
-                        {{ notification.split('|')[1].trim() }}
-                    </p>
-                </Message>
+                <div v-if="!selectedSemester" class="mt-4">
+                    <div class="text-gray-700 text-center">
+                        <div style="font-size: 10rem" class="pi pi-chart-line"></div>
+                    </div>
+                    <div class="text-gray-500 text-center mt-4">
+                        Please select a semester to access your dashboard
+                    </div>
+                </div>
+                <div v-else-if="combinedData.length === 0">
+                    <div class="text-gray-700 text-center">
+                        <div style="font-size: 10rem" class="pi pi-ban"></div>
+                    </div>
+                    <div class="text-gray-500 text-center mt-4">
+                        No Data available
+                    </div>
+                </div>
+                <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <div class="grid xl:grid-cols-[70%,30%] grid-cols-1 gap-2">
+                        <div class="border rounded p-2">
+                            <Chart type="bar" :data="chartDataBarTotal" :options="chartOptionsBarTotal" />
+                        </div>
+                        <div class="max-xl:mt-4 max-xl:w-[30%]  border rounded p-2">
+                            <Chart type="doughnut" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
+                            <div class="mt-6">
+                                <ProgressBar :value="totalCheckedCount / totalTaskCount * 100"></ProgressBar>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div v-if="notifications.length === 0">
-            <div class="text-gray-700 text-center">
-                <div style="font-size: 10rem" class="pi pi-bell"></div>
-            </div>
-            <div class="text-gray-500 text-center mt-4">
-                You have no notifications
-            </div>
-        </div>
+
 
         <Dialog v-model:visible="showSendNotificationDialog" :closable="false" modal header="Send notification"
-                :style="{ width: '90vw' }">
+                class="lg:w-[50%] md:w-[75%] w-[90%]">
             <form @submit.prevent="handleDialogSend">
                 <span class="p-float-label mt-5">
                     <MultiSelect :disabled="notificationForm.processing" :loading="!$props.users"
@@ -209,5 +324,6 @@ const handleDialogClose = () => {
                 </div>
             </form>
         </Dialog>
+
     </AuthenticatedLayout>
 </template>

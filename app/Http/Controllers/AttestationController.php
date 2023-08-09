@@ -46,6 +46,7 @@ class AttestationController extends Controller
         $attestation = Attestation::query()->create([
             'subject_number' => $request->input('subjectNumber'),
             'subject_name' => $request->input('subjectName'),
+            'acronym' => $request->input('acronym'),
             'semester_id' => (Semester::query()->where('semester', '=', $request->input('semester'))->first())->id,
             'creator_id' => Auth::id(),
         ]);
@@ -95,6 +96,7 @@ class AttestationController extends Controller
         $attestation = Attestation::query()->find($request->input('id'))->fill([
             'subject_number' => $request->input('subjectNumber'),
             'subject_name' => $request->input('subjectName'),
+            'acronym' => $request->input('acronym'),
             'semester_id' => (Semester::query()->where('semester', '=', $request->input('semester'))->first())->id,
         ]);
 
@@ -241,6 +243,7 @@ class AttestationController extends Controller
             'users.*.id' => 'required|exists:users,id',
             'subjectNumber' => 'required|integer|min:1',
             'subjectName' => 'required|string|max:255',
+            'acronym' => 'required|string|max:8',
             'semester' => 'required|exists:semester,semester',
             'attestations' => ['required', 'array', 'min:1', new NoDuplicateTitle],
             'attestations.*.title' => 'required|string|max:255',
@@ -274,10 +277,12 @@ class AttestationController extends Controller
             ->orderByRaw($order)
             ->select([
                 'attestation.id',
+                'attestation.acronym',
                 'attestation.subject_name',
                 'attestation.subject_number',
                 'attestation.creator_id',
                 'semester.semester',
+                'semester.id AS semester_id',
                 'attestation_tasks.title',
                 'attestation_tasks.description',
                 'user_has_attestation.user_id',
