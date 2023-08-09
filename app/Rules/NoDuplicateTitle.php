@@ -17,7 +17,7 @@ class NoDuplicateTitle implements ValidationRule
         $visited = [];
         foreach ($value as $attestation) {
             if (in_array($attestation['title'],$visited))
-                $fail('The :attribute title\'s have duplicate values');
+                $fail('The :attribute title\'s have duplicate values.');
 
             $visited[] = $attestation['title'];
         }

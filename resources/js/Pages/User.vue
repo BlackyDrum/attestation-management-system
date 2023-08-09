@@ -126,7 +126,7 @@ const sendUserEditForm = () => {
                     severity: 'error',
                     summary: 'Error',
                     detail: page.props.errors.id,
-                    life: 3000
+                    life: 8000
                 })
             }
         }
@@ -152,7 +152,7 @@ const confirmUserDeletion = (userid, username) => {
                             window.toast.add({
                                 severity: 'success',
                                 summary: 'Success',
-                                detail: `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} was deleted`,
+                                detail: `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} deleted`,
                                 life: 3000,
                             })
                             page.props.users.data.splice(i, 1);
@@ -166,7 +166,7 @@ const confirmUserDeletion = (userid, username) => {
                         severity: 'error',
                         summary: 'Error',
                         detail: error.response.data.message,
-                        life: 3000,
+                        life: 8000,
                     })
                 })
         },
@@ -209,7 +209,12 @@ const handleUserFileUpload = (event) => {
         }),
         onError: () => {
             for (const error in page.props.errors) {
-                window.toast.add({severity: 'error', summary: 'Error', detail: page.props.errors[error], life: 5000})
+                window.toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: page.props.errors[error],
+                    life: 8000
+                })
             }
         }
     });
@@ -366,7 +371,7 @@ const handleUserFileUpload = (event) => {
                 </template>
                 <p class="font-bold">
                     <Message :closable="false">To create multiple users simultaneously, you have the option of uploading a CSV file containing
-                        columns for Matriculation Number, Name, Email, and Password.</Message>
+                        columns for matriculation number, name, email, and password.</Message>
                 </p>
                 <div class="mt-4">
                     <FileUpload :disabled="userFileForm.processing" mode="basic" name="userfile[]" accept="text/csv"
@@ -381,9 +386,6 @@ const handleUserFileUpload = (event) => {
                             <span>asd</span>
                         </template>
                     </FileUpload>
-                    <error-message :show="errors.userfile">
-                        {{ errors.userfile }}
-                    </error-message>
                 </div>
                 <div class="mt-2 flex md:justify-end">
                     <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>

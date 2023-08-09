@@ -177,19 +177,23 @@ const handleFormSend = () => {
             }))
             .post('/attestations', {
                 onSuccess: () => {
-                    resetForm();
-                    showAttestationDialog.value = false;
-                    combinedData.value = combine(page.props.attestations);
                     window.toast.add({
                         severity: 'success',
                         summary: 'Success',
-                        detail: 'New Subject for attestation created',
+                        detail: `Subject '${attestationForm.subjectName}' created`,
                         life: 3000,
                     })
+                    resetForm();
+                    showAttestationDialog.value = false;
+                    combinedData.value = combine(page.props.attestations);
                 },
                 onError: (error) => {
                     for (const e in error) {
                         attestationForm.reset(e)
+
+                        if (e.includes('users.')) {
+                            attestationForm.reset('users');
+                        }
                     }
                 }
             })
@@ -219,7 +223,7 @@ const handleFormSend = () => {
                         severity: 'error',
                         summary: 'Error',
                         detail: error.id,
-                        life: 3000,
+                        life: 8000,
                     })
                 }
                 for (const e in error) {
@@ -272,7 +276,7 @@ const confirmAttestationDeletion = (attestation) => {
                             window.toast.add({
                                 severity: 'success',
                                 summary: 'Success',
-                                detail: `Attestation '${combinedData.value[i].subject_name}' with ID ${combinedData.value[i].id} was deleted`,
+                                detail: `Subject '${combinedData.value[i].subject_name}' with ID ${combinedData.value[i].id} deleted`,
                                 life: 3000,
                             })
                             break;
@@ -284,7 +288,7 @@ const confirmAttestationDeletion = (attestation) => {
                         severity: 'error',
                         summary: 'Error',
                         detail: error.response.data.message,
-                        life: 3000,
+                        life: 8000,
                     })
                 })
                 .then(() => {
@@ -366,7 +370,7 @@ const handleUserFileUpload = (attestation) => {
                     severity: 'error',
                     summary: 'Error',
                     detail: errors[error],
-                    life: 5000,
+                    life: 8000,
                 })
             }
         },

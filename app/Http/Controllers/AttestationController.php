@@ -180,7 +180,7 @@ class AttestationController extends Controller
                 if (count($data) !== 1) {
                     DB::rollBack();
                     return to_route('attestations')->withErrors([
-                        'message' => 'Wrong file format. Make sure to only have one column for the matriculation number.',
+                        'message' => 'Incorrect file format. Please ensure there is only one column dedicated to the user\'s matriculation number.',
                     ]);
                 }
 

@@ -38,6 +38,9 @@ class AttestationsMakeController extends Controller
             'tasks.*.user_id' => 'required|integer|exists:users,id',
             'tasks.*.checked' => 'required|boolean',
             'tasks.*.task_id' => 'required|integer|exists:attestation_tasks,id'
+        ], [
+            'tasks.*.user_id.*' => 'The selected user is invalid or does not exist.',
+            'tasks.*.task_id.*' => 'The selected task is invalid or does not exist.',
         ]);
 
         foreach ($request->input('tasks') as $task) {

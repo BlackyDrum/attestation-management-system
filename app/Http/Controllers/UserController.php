@@ -40,6 +40,8 @@ class UserController extends Controller
     {
         $request->validate([
             'user_id' => 'required|integer|exists:users,id',
+        ], [
+            'user_id.*' => 'The selected user is invalid or does not exist.'
         ]);
 
         User::query()->where('id', '=', $request->input('user_id'))->where('admin', '=', 'false')->delete();
@@ -55,6 +57,8 @@ class UserController extends Controller
             'name' => 'required|string|max:50',
             'email' => ['required', 'max:255', 'email', Rule::unique('users')->ignore($request->input('id'))],
             'password' => ['nullable', Rules\Password::defaults()],
+        ], [
+            'id.*' => 'The selected user is invalid or does not exist.'
         ]);
 
         $id = $request->input('id');
@@ -116,7 +120,7 @@ class UserController extends Controller
                 if (count($data) !== 4) {
                     DB::rollBack();
                     return to_route('user')->withErrors([
-                        'message' => 'Wrong file format',
+                        'message' => 'Incorrect file format. Please ensure there are only columns dedicated to the user\'s matriculation number, name, email and password.',
                     ]);
                 }
 

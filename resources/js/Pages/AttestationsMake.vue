@@ -101,7 +101,6 @@ const handleFormSend = () => {
         tasks: formData.value
     })
         .then(response => {
-            console.log(response.data)
             window.toast.add({
                 severity: 'success',
                 summary: 'Success',
@@ -117,8 +116,9 @@ const handleFormSend = () => {
                 severity: 'error',
                 summary: 'Error',
                 detail: error.response.data.message,
-                life: 3000,
+                life: 8000,
             })
+            router.reload();
         })
 }
 
