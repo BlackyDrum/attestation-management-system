@@ -149,14 +149,13 @@ const deleteNotification = (index, clear) => {
                                         v-badge="notifications.length !== 0 ? notifications.length : '0'"
                                         class="pi pi-bell p-overlay-badge text-white mr-0.5"
                                         style="font-size: 1.5rem"/>
-                                <OverlayPanel class="w-[50%] max-lg:w-[60%]" ref="notificationOverlayPanel">
+                                <OverlayPanel class="w-[30%] max-lg:w-[60%]" ref="notificationOverlayPanel">
                                     <div class="flex">
-                                        <div>
-                                            <h2>Notifications</h2>
+                                        <div class="font-bold">
+                                            Notifications
                                         </div>
-                                        <div class="ml-auto">
-                                            <Button icon="pi pi-trash" severity="danger"
-                                                    @click="deleteNotification(-1,true)" label="Clear All"></Button>
+                                        <div @click="deleteNotification(-1,true)" class="ml-auto mr-2 cursor-pointer font-semibold text-blue-700">
+                                            Clear all
                                         </div>
                                     </div>
                                     <div v-for="(notification, index) in notifications" :key="notification">
@@ -164,7 +163,10 @@ const deleteNotification = (index, clear) => {
                                             <Message :severity="notification.split('|')[0].trim().toLowerCase()"
                                                      @close="deleteNotification(index, false)"
                                             >
-                                                {{ notification.split('|')[1].trim() }}
+                                                <div>{{ notification.split('|')[1].trim() }}</div>
+                                                <div class="font-medium text-gray-900/70">
+                                                    {{ notification.split('|')[2].trim() }}
+                                                </div>
                                             </Message>
                                         </template>
                                     </div>

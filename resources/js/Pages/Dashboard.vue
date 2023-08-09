@@ -59,31 +59,6 @@ onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
 })
 
-const deleteNotification = (index, clear) => {
-    axios.delete('/notifications', {
-        data: {
-            index: index,
-            clearAll: clear,
-        }
-    })
-        .then(response => {
-            if (clear) {
-                notifications.value = [];
-                router.reload();
-            } else
-                notifications.value.splice(index, 1);
-
-        })
-        .catch(error => {
-            window.toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error.response.data.message,
-                life: 3000,
-            })
-        })
-}
-
 const handleDialogSend = () => {
     notificationForm.post('/notifications', {
         onSuccess: () => {
@@ -127,31 +102,18 @@ const handleDialogClose = () => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="flex justify-end">
-                    <Button icon="pi pi-trash" severity="danger"
-                            v-if="notifications.length !== 0" @click="deleteNotification(-1,true)" label="Clear All"/>
+                <div class="text-gray-700 text-center">
+                    <div style="font-size: 10rem" class="pi pi-chart-line"></div>
+                </div>
+                <div class="text-gray-500 text-center mt-4">
+                    Seems quite empty here...
+                </div>
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
 
                 </div>
-                <Message v-if="notifications.length !== 0" v-for="(notification, index) in notifications"
-                         :key="notification" @close="deleteNotification(index, false)"
-                         :severity="notification.split('|')[0].trim().toLowerCase()">
-                    <h2>
-                        Notification from {{ notification.split('|')[2].trim() }}
-                    </h2>
-                    <p class="font-medium">
-                        {{ notification.split('|')[1].trim() }}
-                    </p>
-                </Message>
             </div>
         </div>
-        <div v-if="notifications.length === 0">
-            <div class="text-gray-700 text-center">
-                <div style="font-size: 10rem" class="pi pi-bell"></div>
-            </div>
-            <div class="text-gray-500 text-center mt-4">
-                You have no notifications
-            </div>
-        </div>
+
 
         <Dialog v-model:visible="showSendNotificationDialog" :closable="false" modal header="Send notification"
                 :style="{ width: '90vw' }">
@@ -209,5 +171,6 @@ const handleDialogClose = () => {
                 </div>
             </form>
         </Dialog>
+
     </AuthenticatedLayout>
 </template>
