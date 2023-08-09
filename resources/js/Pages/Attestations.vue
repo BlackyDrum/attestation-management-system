@@ -369,7 +369,8 @@ const handleUserFileUpload = (attestation) => {
                     life: 5000,
                 })
             }
-        }
+        },
+        onFinish: () => userFileForm.reset()
     })
 }
 </script>
