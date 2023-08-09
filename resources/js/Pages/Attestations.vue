@@ -69,7 +69,9 @@ const chartOptions = ref({
                 stepSize: 5
             },
         }
-    }
+    },
+    responsive: true,
+    maintainAspectRatio: false
 });
 
 const attestationForm = useForm({
@@ -432,7 +434,7 @@ const handleUserFileUpload = (attestation) => {
                                 </div>
                             </div>
                             <div>
-                                <Chart type="bar" :data="chartData[index]" :options="chartOptions"/>
+                                <Chart type="bar" class="h-80" :data="chartData[index]" :options="chartOptions"/>
                             </div>
                         </template>
                         <template #footer>

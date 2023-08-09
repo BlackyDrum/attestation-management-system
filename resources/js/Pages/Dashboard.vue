@@ -14,6 +14,9 @@ import Dialog from 'primevue/dialog';
 import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import Card from 'primevue/card';
+import Chart from 'primevue/chart';
+import Avatar from 'primevue/avatar';
 
 import combine from "@/CombinedData.js";
 
@@ -50,6 +53,19 @@ const notificationForm = useForm({
 
 const severities = ref(["info", "error", "warn", "success"]);
 
+const chartData = ref(null);
+const chartOptions = ref({
+    scales: {
+        y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 5
+            }
+        }
+    },
+    responsive: true,
+    maintainAspectRatio: false
+});
 
 onMounted(() => {
     notifications.value = page.props.auth.notifications;
@@ -68,6 +84,21 @@ onMounted(() => {
 onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
 })
+
+const setupChartData = () => {
+    return {
+        labels: [],
+        datasets: [
+            {
+                label: 'Checked Tasks',
+                data: [],
+                backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)'],
+                borderColor: ['rgb(255, 159, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)'],
+                borderWidth: 1
+            }
+        ]
+    }
+}
 
 const handleDialogSend = () => {
     notificationForm.post('/notifications', {
@@ -91,9 +122,25 @@ const handleDialogClose = () => {
 }
 
 const handleSemesterSelection = (event) => {
+    chartData.value = setupChartData();
+
     combinedData.value = combine(page.props.data);
     combinedData.value = combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
-    console.log(combinedData.value)
+
+    for (const subject of combinedData.value) {
+        chartData.value.labels.push(subject.subject_name);
+
+        let checkedCount = 0;
+        for (const task of subject.tasks[0]) {
+            if (task.checked) {
+                checkedCount++;
+            }
+        }
+        chartData.value.datasets[0].data.push(checkedCount);
+    }
+
+
+
 }
 </script>
 
@@ -131,8 +178,8 @@ const handleSemesterSelection = (event) => {
                         Please select a semester to access your dashboard
                     </div>
                 </div>
-                <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-
+                <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                    <Chart type="bar" class="h-80" :data="chartData" :options="chartOptions" />
                 </div>
             </div>
         </div>
