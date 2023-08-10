@@ -40,7 +40,7 @@ defineProps({
 
 const page = usePage();
 
-const SCREEN_WIDTH_RESIZE = 768;
+const SCREEN_WIDTH_RESIZE = 1280;
 const notifications = ref([]);
 const selectedSemester = ref(null);
 const acronyms = ref([]);
@@ -80,6 +80,7 @@ const chartOptionsPieTotal = ref({
         },
     },
     responsive: true,
+    aspectRatio: 1,
 })
 
 onMounted(() => {
@@ -110,12 +111,12 @@ const handleResize = () => {
     if (!selectedSemester.value) return;
 
     if (window.innerWidth > SCREEN_WIDTH_RESIZE) {
-        chartOptionsPieTotal.value.plugins.legend.display = true;
+        chartOptionsPieTotal.value.aspectRatio = 1;
         chartDataBarTotal.value.labels = subjects.value;
         return;
     }
     chartDataBarTotal.value.labels = acronyms.value;
-    chartOptionsPieTotal.value.plugins.legend.display = false;
+    chartOptionsPieTotal.value.aspectRatio = 3;
 }
 
 const setupChartDataBar = () => {
@@ -176,7 +177,7 @@ const handleSemesterSelection = (event) => {
     chartDataBarTotal.value = setupChartDataBar();
     chartDataPieTotal.value = setupChartDataPie();
 
-    chartOptionsPieTotal.value.plugins.legend.display = window.innerWidth > SCREEN_WIDTH_RESIZE;
+    chartOptionsPieTotal.value.aspectRatio = window.innerWidth > SCREEN_WIDTH_RESIZE ? 1 : 3;
 
     combinedData.value = combine(page.props.data);
     combinedData.value = combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
@@ -253,12 +254,12 @@ const handleSemesterSelection = (event) => {
                         No Data available
                     </div>
                 </div>
-                <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <div class="grid xl:grid-cols-[70%,30%] grid-cols-1 gap-2">
-                        <div class="border rounded p-2">
+                <div v-else class="">
+                    <div class="grid xl:grid-cols-[67%,30%] grid-cols-1 xl:gap-10">
+                        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <Chart type="bar" :data="chartDataBarTotal" :options="chartOptionsBarTotal" />
                         </div>
-                        <div class="max-xl:mt-4 max-xl:w-[30%]  border rounded p-2">
+                        <div class="max-xl:mt-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <Chart type="doughnut" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
                             <div class="mt-6">
                                 <ProgressBar :value="totalCheckedCount / totalTaskCount * 100"></ProgressBar>
