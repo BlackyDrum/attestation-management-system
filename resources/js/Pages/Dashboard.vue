@@ -44,7 +44,6 @@ const SCREEN_WIDTH_RESIZE = 1280;
 const notifications = ref([]);
 const selectedSemester = ref(null);
 const acronyms = ref([]);
-const subjects = ref([]);
 const totalTaskCount = ref(0);
 const totalCheckedCount = ref(0);
 const combinedData = ref([]);
@@ -119,10 +118,8 @@ const handleResize = () => {
 
     if (window.innerWidth > SCREEN_WIDTH_RESIZE) {
         chartOptionsPieTotal.value.aspectRatio = 1;
-        chartDataBarTotal.value.labels = subjects.value;
         return;
     }
-    chartDataBarTotal.value.labels = acronyms.value;
     chartOptionsPieTotal.value.aspectRatio = 3;
 }
 
@@ -200,7 +197,6 @@ const handleSemesterSelection = (event) => {
 
 const loadSemesterData = () => {
     acronyms.value = [];
-    subjects.value = [];
 
     chartDataBarTotal.value = setupChartDataBar();
     chartDataPieTotal.value = setupChartDataPie();
@@ -213,9 +209,8 @@ const loadSemesterData = () => {
     let totalTasks = 0;
     let totalChecked = 0;
     for (const subject of combinedData.value) {
-        chartDataBarTotal.value.labels.push(subject.subject_name);
-        subjects.value.push(subject.subject_name);
-        acronyms.value.push(subject.acronym ?? subject.subject_name);
+        chartDataBarTotal.value.labels.push(subject.acronym);
+        acronyms.value.push(subject.acronym);
 
         let checkedCount = 0;
         for (const task of subject.tasks[0]) {
