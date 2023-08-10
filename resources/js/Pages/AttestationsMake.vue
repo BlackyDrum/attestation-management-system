@@ -154,7 +154,7 @@ const exportCSV = () => {
                                         <Button icon="pi pi-external-link" label="Export CSV"
                                                 @click="exportCSV($event)"/>
                                     </div>
-                                    <div class="md:ml-auto md:mr-4" style="cursor: not-allowed">
+                                    <div class="cursor-not-allowed md:ml-auto md:mr-4">
                                         <Button icon="pi pi-save"
                                                 severity="success" label="Save changes"
                                                 @click="handleFormSend" :disabled="formData.length === 0"/>

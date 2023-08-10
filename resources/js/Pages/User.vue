@@ -359,7 +359,7 @@ const handleUserFileUpload = (event) => {
                         <div class="justify-center">
                             <CustomProgressSpinner :processing="userCreateForm.processing"></CustomProgressSpinner>
                         </div>
-                        <div class="flex justify-end" style="height: 3rem">
+                        <div class="flex justify-end footer__buttonbar">
                             <primary-button class="max-md:mr-2 mr-5 disabled:cursor-not-allowed"
                                             :disabled="userCreateForm.processing || !userCreateForm.matriculation_number || !userCreateForm.name || !userCreateForm.email || !userCreateForm.password"
                                             @click="sendUserCreateForm">Create User
@@ -459,7 +459,7 @@ const handleUserFileUpload = (event) => {
                 <div class="justify-center">
                     <CustomProgressSpinner :processing="userEditForm.processing"></CustomProgressSpinner>
                 </div>
-                <div class="flex justify-end" style="height: 3rem">
+                <div class="flex justify-end footer__buttonbar">
                     <primary-button class="mr-5 disabled:cursor-not-allowed"
                                     :disabled="userEditForm.processing || (selectedUser.name === userEditForm.name && selectedUser.email === userEditForm.email && selectedUser.matriculation_number === parseInt(userEditForm.matriculation_number) && !userEditForm.password)"
                                     @click="sendUserEditForm">Save Changes
@@ -470,3 +470,9 @@ const handleUserFileUpload = (event) => {
         </form>
     </Dialog>
 </template>
+
+<style scoped>
+.footer__buttonbar {
+    height: 3rem
+}
+</style>

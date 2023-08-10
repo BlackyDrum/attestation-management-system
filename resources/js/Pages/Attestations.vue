@@ -420,7 +420,7 @@ const handleUserFileUpload = (attestation) => {
                                 <div>
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-user"/>
-                                        <InputText class="w-full" style="font-weight: bold" disabled
+                                        <InputText class="w-full custom-input-text" disabled
                                                    placeholder="Search"
                                                    :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`">
                                         </InputText>
@@ -429,7 +429,7 @@ const handleUserFileUpload = (attestation) => {
                                 <div>
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-file"/>
-                                        <InputText class="w-full" style="font-weight: bold" disabled
+                                        <InputText class="w-full custom-input-text" disabled
                                                    placeholder="Search"
                                                    :value="`Tasks: ${attestation.tasks[0].length}`">
                                         </InputText>
@@ -502,7 +502,7 @@ const handleUserFileUpload = (attestation) => {
                             <TabPanel v-for="(header, index1) in headers" :key="header">
                                 <template #header>
                                     <i class="pi pi-file-edit mr-2"></i>
-                                    <span class="font-medium" style="white-space: nowrap">{{ header }}</span>
+                                    <span class="font-medium whitespace-nowrap">{{ header }}</span>
                                 </template>
                                 <Editor class="h-full w-full" readonly
                                         v-if="descriptions[index1]"
@@ -549,7 +549,7 @@ const handleUserFileUpload = (attestation) => {
         <template
             v-if="attestations.length === 0 || ($page.props.auth.user.admin && Array.isArray(combinedData) && combinedData.length === 0)">
             <div class="text-gray-700 text-center">
-                <div class="pi pi-book" style="font-size: 10rem"></div>
+                <div class="pi pi-book custom-icon"></div>
             </div>
             <div class="text-gray-500 text-center mt-4">
                 No Attestations assigned to you
@@ -708,7 +708,7 @@ const handleUserFileUpload = (attestation) => {
                         <div class="justify-center">
                             <CustomProgressSpinner :processing="attestationForm.processing"></CustomProgressSpinner>
                         </div>
-                        <div class="flex justify-end" style="height: 3rem">
+                        <div class="flex justify-end footer__buttonbar">
                             <primary-button class="mr-5 disabled:cursor-not-allowed"
                                             :disabled="attestationForm.processing || (!attestationForm.subjectName || !attestationForm.subjectNumber || !attestationForm.acronym || !attestationForm.semester || attestationForm.attestations.length === 0)">{{
                                     isEdit ? "Save Changes" :
@@ -730,5 +730,14 @@ const handleUserFileUpload = (attestation) => {
 .p-card {
     border-top-left-radius: revert;
     border-top-right-radius: revert;
+}
+.custom-input-text {
+    font-weight: bold
+}
+.custom-icon {
+    font-size: 10rem
+}
+.footer__buttonbar {
+    height: 3rem
 }
 </style>

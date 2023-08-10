@@ -268,7 +268,7 @@ const loadSemesterData = () => {
                 </div>
                 <div class="mt-4" v-if="!selectedSemester">
                     <div class="text-gray-700 text-center">
-                        <div style="font-size: 10rem" class="pi pi-chart-line"></div>
+                        <div class="pi pi-chart-line custom-icon"></div>
                     </div>
                     <div class="text-gray-500 text-center mt-4">
                         Please select a semester to access your dashboard
@@ -281,7 +281,7 @@ const loadSemesterData = () => {
                 </div>
                 <div v-else-if="combinedData.length === 0">
                     <div class="text-gray-700 text-center">
-                        <div style="font-size: 10rem" class="pi pi-ban"></div>
+                        <div class="pi pi-ban custom-icon"></div>
                     </div>
                     <div class="text-gray-500 text-center mt-4">
                         No Data available
@@ -349,7 +349,7 @@ const loadSemesterData = () => {
                     <div class="justify-center">
                         <CustomProgressSpinner :processing="notificationForm.processing"></CustomProgressSpinner>
                     </div>
-                    <div class="flex justify-end" style="height: 3rem">
+                    <div class="flex justify-end footer__buttonbar">
                         <primary-button class="mr-5 disabled:cursor-not-allowed"
                                         :disabled="notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)">
                             Send
@@ -367,6 +367,12 @@ const loadSemesterData = () => {
 .custom-progress-spinner {
     width: 10vw;
     height: 10vw
+}
+.custom-icon {
+    font-size: 10rem
+}
+.footer__buttonbar {
+    height: 3rem
 }
 @media (max-width: 1280px) {
     .custom-progress-spinner {
