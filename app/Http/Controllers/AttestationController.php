@@ -246,7 +246,7 @@ class AttestationController extends Controller
             'acronym' => 'required|string|max:8',
             'semester' => 'required|exists:semester,semester',
             'attestations' => ['required', 'array', 'min:1', new NoDuplicateTitle],
-            'attestations.*.title' => 'required|string|max:255',
+            'attestations.*.title' => 'required|string|max:50',
             'attestations.*.description' => 'nullable|string|max:5000',
         ], [
             'users.*.id.exists' => "The selected user is invalid or does not exist.",

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('attestation_tasks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('attestation_id');
-            $table->string('title',255);
+            $table->string('title',50);
             $table->string('description',5000)->nullable();
             $table->timestamps();
 
