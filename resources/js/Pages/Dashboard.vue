@@ -368,4 +368,10 @@ const loadSemesterData = () => {
     width: 10vw;
     height: 10vw
 }
+@media (max-width: 1280px) {
+    .custom-progress-spinner {
+        width: 25vw;
+        height: 25vw
+    }
+}
 </style>
