@@ -21,10 +21,13 @@ class DashboardController extends Controller
             ->where('users.id', '=', Auth::id())
             ->get();
 
+        $semester = Semester::query()->where('id', '=', User::query()->find(Auth::id())->dashboard_semester)->first();
+
         return Inertia::render('Dashboard', [
             'users' => Auth::user()->admin ? User::all() : [],
             'semester' => Semester::all(),
             'data' => $data,
+            'selected_semester' => $semester,
         ]);
     }
 
@@ -66,5 +69,18 @@ class DashboardController extends Controller
         }
 
         return to_route('dashboard');
+    }
+
+    public function update_semester(Request $request)
+    {
+        $request->validate([
+            'semester' => 'required|integer|exists:semester,id',
+        ], [
+            'semester.*' => 'The selected semester in invalid or does not exist.'
+        ]);
+
+        User::query()->find(Auth::id())->fill([
+            'dashboard_semester' => $request->input('semester')
+        ])->save();
     }
 }

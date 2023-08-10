@@ -22,6 +22,7 @@ class User extends Authenticatable
         'matriculation_number',
         'email',
         'password',
+        'dashboard_semester',
     ];
 
     /**

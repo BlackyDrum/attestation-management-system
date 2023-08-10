@@ -8,15 +8,12 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 
-import Message from 'primevue/message';
-import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import MultiSelect from 'primevue/multiselect';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
-import Card from 'primevue/card';
 import Chart from 'primevue/chart';
-import Avatar from 'primevue/avatar';
+import ProgressSpinner from 'primevue/progressspinner';
 import ProgressBar from 'primevue/progressbar';
 
 import combine from "@/CombinedData.js";
@@ -34,6 +31,9 @@ defineProps({
     },
     data: {
         type: Array
+    },
+    selected_semester: {
+        type: Array
     }
 })
 
@@ -47,11 +47,12 @@ const acronyms = ref([]);
 const subjects = ref([]);
 const totalTaskCount = ref(0);
 const totalCheckedCount = ref(0);
-const combinedData = ref(null);
+const combinedData = ref([]);
 const showSendNotificationDialog = ref(false);
 const userWithMatriculationNumber = ref([]);
 const chartDataBarTotal = ref(null);
 const chartDataPieTotal = ref(null);
+const loadingData = ref(false);
 
 const notificationForm = useForm({
     users: null,
@@ -83,8 +84,14 @@ const chartOptionsPieTotal = ref({
     aspectRatio: 1,
 })
 
+
 onMounted(() => {
     notifications.value = page.props.auth.notifications;
+    selectedSemester.value = page.props.selected_semester;
+
+    if (selectedSemester.value) {
+        loadSemesterData();
+    }
 
     userWithMatriculationNumber.value = page.props.users;
     userWithMatriculationNumber.value = userWithMatriculationNumber.value.slice().sort((a, b) => {
@@ -171,6 +178,27 @@ const handleDialogClose = () => {
 }
 
 const handleSemesterSelection = (event) => {
+    loadingData.value = true;
+    axios.patch('/dashboard',{
+        semester: selectedSemester.value.id,
+    })
+        .then(response => {
+            loadSemesterData();
+        })
+        .catch(error => {
+            window.toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 8000,
+            })
+        })
+        .then(() => {
+            loadingData.value = false;
+        })
+}
+
+const loadSemesterData = () => {
     acronyms.value = [];
     subjects.value = [];
 
@@ -246,6 +274,11 @@ const handleSemesterSelection = (event) => {
                         Please select a semester to access your dashboard
                     </div>
                 </div>
+                <div class="flex" v-else-if="loadingData">
+                    <div class="mx-auto">
+                        <ProgressSpinner class="custom-progress-spinner" />
+                    </div>
+                </div>
                 <div v-else-if="combinedData.length === 0">
                     <div class="text-gray-700 text-center">
                         <div style="font-size: 10rem" class="pi pi-ban"></div>
@@ -269,7 +302,6 @@ const handleSemesterSelection = (event) => {
                 </div>
             </div>
         </div>
-
 
         <Dialog class="lg:w-[50%] md:w-[75%] w-[90%]"
                 v-model:visible="showSendNotificationDialog" :closable="false" modal header="Send notification">
@@ -330,3 +362,10 @@ const handleSemesterSelection = (event) => {
 
     </AuthenticatedLayout>
 </template>
+
+<style scoped>
+.custom-progress-spinner {
+    width: 10vw;
+    height: 10vw
+}
+</style>
