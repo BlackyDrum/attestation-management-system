@@ -235,7 +235,7 @@ const handleUserFileUpload = (event) => {
         </template>
 
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mx-auto sm:px-6 lg:px-8 max-w-7xl">
                 <div class="w-full text-right">
                     <span class="p-input-icon-left">
                         <i class="pi pi-search"/>
@@ -243,50 +243,50 @@ const handleUserFileUpload = (event) => {
                                     @input="handleSearchRequest" v-model="searchValue"></input-text>
                     </span>
                 </div>
-                <div v-for="user in users.data" :key="user.id"
-                     class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3">
+                <div class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3"
+                     v-for="user in users.data" :key="user.id">
                     <div>
-                        <div class="font-bold flex items-center text-white p-2 grid grid-cols-2">
-                            <div class="break-all">{{ user.name }} <span v-if="user.admin" class="pi pi-android"></span>
+                        <div class="grid grid-cols-2 items-center font-bold text-white p-2">
+                            <div class="break-all">{{ user.name }} <span class="pi pi-android" v-if="user.admin"></span>
                             </div>
-                            <div class="ml-auto mr-5 flex flex-wrap  justify-content-center">
+                            <div class="flex flex-wrap justify-content-center ml-auto mr-5">
                                 <div class="mr-4 md:hidden">
-                                    <Button v-if="!user.admin" @click="confirmUserDeletion(user.id, user.name)"
+                                    <Button v-if="!user.admin"
                                             icon="pi pi-trash"
-                                            severity="danger"/>
+                                            severity="danger"
+                                            @click="confirmUserDeletion(user.id, user.name)"/>
                                 </div>
                                 <div class="mr-4 max-md:hidden">
-                                    <Button v-if="!user.admin" @click="confirmUserDeletion(user.id, user.name)"
+                                    <Button v-if="!user.admin"
                                             label="Delete"
-                                            icon="pi pi-trash" severity="danger"/>
+                                            icon="pi pi-trash" severity="danger"
+                                            @click="confirmUserDeletion(user.id, user.name)"/>
                                 </div>
                                 <div class="max-md:hidden">
-                                    <Button @click="handleUserEdit(user)" label="Edit" icon="pi pi-user-edit"
-                                            severity="success"/>
+                                    <Button label="Edit" icon="pi pi-user-edit"
+                                            severity="success" @click="handleUserEdit(user)"/>
                                 </div>
                                 <div class="md:hidden">
-                                    <Button @click="handleUserEdit(user)" icon="pi pi-user-edit" severity="success"/>
+                                    <Button icon="pi pi-user-edit" severity="success" @click="handleUserEdit(user)"/>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <ConfirmDialog ref="confirmDialog"
-                               class="bg-white break-words p-4 custom-confirm-dialog rounded-md gap-8">
-                </ConfirmDialog>
+                <ConfirmDialog class="bg-white break-words p-4 custom-confirm-dialog rounded-md gap-8" ref="confirmDialog"/>
             </div>
         </div>
-        <div v-if="emptyUsers" class="text-white flex">
+        <div class="flex text-white" v-if="emptyUsers">
             <div class="mx-auto text-3xl p-5">
                 User Not Found
             </div>
         </div>
-        <div class="text-white flex pb-5">
+        <div class="flex text-white pb-5">
             <div class="mx-auto">
                 <template v-for="links in users.links">
-                    <Link v-if="links.url" :href="links.url + '&search=' + searchValue"
-                          class="lg:p-3 sm:p-1 md:p-2 max-sm:p-0.5">
+                    <Link class="lg:p-3 sm:p-1 md:p-2 max-sm:p-0.5"
+                          v-if="links.url" :href="links.url + '&search=' + searchValue">
                     <span v-html="links.label"
                           :class="{ 'bg-gray-600 p-2 rounded-xl': links.active }"></span>
                     </Link>
@@ -297,8 +297,9 @@ const handleUserFileUpload = (event) => {
     </AuthenticatedLayout>
 
     <!-- Create new User -->
-    <Dialog v-model:visible="showUserCreateDialog" :closable="false" header="Create new User"
-            class="bg-gray-200 rounded-lg p-2 font-bold lg:w-[50%] md:w-[75%] w-[90%]" :modal="true" :draggable="false">
+    <Dialog class="bg-gray-200 rounded-lg p-2 font-bold lg:w-[50%] md:w-[75%] w-[90%]"
+            v-model:visible="showUserCreateDialog" :closable="false" header="Create new User"
+            :modal="true" :draggable="false">
         <TabView>
             <TabPanel>
                 <template #header>
@@ -322,10 +323,10 @@ const handleUserFileUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-user mr-2"></i>
                         </span>
-                        <InputText :disabled="userCreateForm.processing" type="text" required
+                        <InputText class="border border-black rounded-md p-1"
+                                   :disabled="userCreateForm.processing" type="text" required
                                    v-model="userCreateForm.name"
-                                   placeholder="Name"
-                                   class="border border-black rounded-md p-1"/>
+                                   placeholder="Name"/>
                     </div>
                     <error-message :show="errors.name">
                         {{ errors.name }}
@@ -334,9 +335,9 @@ const handleUserFileUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-at mr-2"></i>
                         </span>
-                        <InputText :disabled="userCreateForm.processing" type="email" required
-                                   v-model="userCreateForm.email" placeholder="E-Mail"
-                                   class="border border-black rounded-md p-1"/>
+                        <InputText class="border border-black rounded-md p-1"
+                                   :disabled="userCreateForm.processing" type="email" required
+                                   v-model="userCreateForm.email" placeholder="E-Mail"/>
                     </div>
                     <error-message :show="errors.email">
                         {{ errors.email }}
@@ -345,16 +346,16 @@ const handleUserFileUpload = (event) => {
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-lock mr-2"></i>
                         </span>
-                        <InputText :disabled="userCreateForm.processing" type="password"
+                        <InputText class="border border-black rounded-md p-1"
+                                   :disabled="userCreateForm.processing" type="password"
                                    v-model="userCreateForm.password"
-                                   placeholder="Password"
-                                   class="border border-black rounded-md p-1"/>
+                                   placeholder="Password"/>
                     </div>
                     <error-message :show="errors.password">
                         {{ errors.password }}
                     </error-message>
 
-                    <div class="mt-4 grid grid-cols-2">
+                    <div class="grid grid-cols-2 mt-4">
                         <div class="justify-center">
                             <CustomProgressSpinner :processing="userCreateForm.processing"></CustomProgressSpinner>
                         </div>
@@ -393,7 +394,7 @@ const handleUserFileUpload = (event) => {
                         </template>
                     </FileUpload>
                 </div>
-                <div class="mt-2 flex md:justify-end">
+                <div class="flex mt-2 md:justify-end">
                     <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
                 </div>
                 <CustomProgressSpinner :processing="userFileForm.processing"></CustomProgressSpinner>
@@ -402,8 +403,10 @@ const handleUserFileUpload = (event) => {
     </Dialog>
 
     <!-- Edit User -->
-    <Dialog v-model:visible="showUserEditDialog" :closable="false" v-if="selectedUser" :header="selectedUser.name"
-            class="bg-gray-200 rounded-lg p-2 font-bold break-all" :style="{ width: '90vw' }" :modal="true"
+    <Dialog class="bg-gray-200 rounded-lg p-2 font-bold break-all"
+            v-model:visible="showUserEditDialog" :closable="false"
+            v-if="selectedUser" :header="selectedUser.name"
+            :style="{ width: '90vw' }" :modal="true"
             :draggable="false">
         <form @submit.prevent>
             <div class="p-inputgroup mt-2">
@@ -452,7 +455,7 @@ const handleUserFileUpload = (event) => {
                 {{ errors.password }}
             </error-message>
 
-            <div class="mt-4 grid grid-cols-2 break-keep">
+            <div class="grid grid-cols-2 mt-4 break-keep">
                 <div class="justify-center">
                     <CustomProgressSpinner :processing="userEditForm.processing"></CustomProgressSpinner>
                 </div>

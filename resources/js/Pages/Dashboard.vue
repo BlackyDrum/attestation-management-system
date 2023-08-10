@@ -234,11 +234,11 @@ const handleSemesterSelection = (event) => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="flex">
-                    <Dropdown v-model="selectedSemester" @change="handleSemesterSelection($event)"
-                              :options="semester" optionLabel="semester"
-                              class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"/>
+                    <Dropdown  class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"
+                               v-model="selectedSemester" @change="handleSemesterSelection($event)"
+                              :options="semester" optionLabel="semester"/>
                 </div>
-                <div v-if="!selectedSemester" class="mt-4">
+                <div class="mt-4" v-if="!selectedSemester">
                     <div class="text-gray-700 text-center">
                         <div style="font-size: 10rem" class="pi pi-chart-line"></div>
                     </div>
@@ -254,12 +254,12 @@ const handleSemesterSelection = (event) => {
                         No Data available
                     </div>
                 </div>
-                <div v-else class="">
-                    <div class="grid xl:grid-cols-[67%,30%] grid-cols-1 xl:gap-10">
-                        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <div v-else>
+                    <div class="grid grid-cols-1 xl:grid-cols-[67%,30%] xl:gap-10">
+                        <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                             <Chart type="bar" :data="chartDataBarTotal" :options="chartOptionsBarTotal" />
                         </div>
-                        <div class="max-xl:mt-4 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-xl:mt-4">
                             <Chart type="doughnut" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
                             <div class="mt-6">
                                 <ProgressBar :value="totalCheckedCount / totalTaskCount * 100"></ProgressBar>
@@ -271,8 +271,8 @@ const handleSemesterSelection = (event) => {
         </div>
 
 
-        <Dialog v-model:visible="showSendNotificationDialog" :closable="false" modal header="Send notification"
-                class="lg:w-[50%] md:w-[75%] w-[90%]">
+        <Dialog class="lg:w-[50%] md:w-[75%] w-[90%]"
+                v-model:visible="showSendNotificationDialog" :closable="false" modal header="Send notification">
             <form @submit.prevent="handleDialogSend">
                 <span class="p-float-label mt-5">
                     <MultiSelect :disabled="notificationForm.processing" :loading="!$props.users"
@@ -293,9 +293,9 @@ const handleSemesterSelection = (event) => {
                 </span>
                 <div class=" mt-6">
                     <span class="p-float-label">
-                        <Dropdown :disabled="notificationForm.processing" v-model="notificationForm.severity"
-                                  :options="severities"
-                                  class="max-md:w-[16rem] w-80"/>
+                        <Dropdown class="max-md:w-[16rem] w-80"
+                                  :disabled="notificationForm.processing" v-model="notificationForm.severity"
+                                  :options="severities"/>
                         <label>Severity</label>
                     </span>
                     <error-message :show="errors.severity">

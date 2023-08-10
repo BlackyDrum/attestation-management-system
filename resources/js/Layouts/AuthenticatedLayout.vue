@@ -98,13 +98,13 @@ const deleteNotification = (index, clear) => {
     <ScrollTop />
     <div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <nav class="bg-white dark:bg-gray-800 border-b  border-gray-100 dark:border-gray-700">
+            <nav class="bg-white border-b border-gray-100 dark:bg-gray-800 dark:border-gray-700">
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
+                            <div class="flex shrink-0 items-center">
                                 <Link :href="route('dashboard')">
                                     <ApplicationLogo
                                         class="block fill-current text-gray-800 dark:text-gray-200"
@@ -113,7 +113,7 @@ const deleteNotification = (index, clear) => {
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-5 sm:-my-px lg:ml-10 md:ml-5 sm:flex">
+                            <div class="hidden space-x-5 sm:-my-px sm:flex lg:ml-10 md:ml-5">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     <span class="pi pi-inbox mr-1"></span>
                                     Dashboard
@@ -145,20 +145,20 @@ const deleteNotification = (index, clear) => {
                                 </div>
                             </NavLink>
                             <div class="ml-4">
-                                <button @click="toggleNotificationOverlayPanel"
+                                <button class="pi pi-bell p-overlay-badge text-white mr-0.5"
+                                        style="font-size: 1.5rem"
                                         v-badge="notifications.length !== 0 ? notifications.length : '0'"
-                                        class="pi pi-bell p-overlay-badge text-white mr-0.5"
-                                        style="font-size: 1.5rem"/>
+                                        @click="toggleNotificationOverlayPanel"/>
                                 <OverlayPanel class="w-[40%] max-lg:w-[60%]" ref="notificationOverlayPanel">
                                     <div class="flex">
                                         <div class="font-bold">
                                             Notifications
                                         </div>
-                                        <div @click="deleteNotification(-1,true)" class="ml-auto mr-2 cursor-pointer font-semibold text-blue-700">
+                                        <div class="ml-auto mr-2 cursor-pointer font-semibold text-blue-700" @click="deleteNotification(-1,true)">
                                             Clear all
                                         </div>
                                     </div>
-                                    <div v-for="(notification, index) in notifications" :key="notification" class="text-sm">
+                                    <div class="text-sm" v-for="(notification, index) in notifications" :key="notification">
                                         <template v-if="index < 4">
                                             <Message :severity="notification.split('|')[0].trim().toLowerCase()"
                                                      @close="deleteNotification(index, false)"
@@ -172,16 +172,16 @@ const deleteNotification = (index, clear) => {
                                     </div>
                                 </OverlayPanel>
                             </div>
-                            <div class="ml-3 relative">
+                            <div class="relative ml-3">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm bg-white leading-4 transition ease-in-out duration-150 font-medium rounded-md text-gray-500 dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none"
                                                 type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
                                             >
                                                 {{ $page.props.auth.user.name }} <span
-                                                v-if="$page.props.auth.user.admin" class=" ml-2 pi pi-android"></span>
+                                                class="pi pi-android ml-2" v-if="$page.props.auth.user.admin"></span>
                                                 <svg
                                                     class="ml-2 -mr-0.5 h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -203,14 +203,14 @@ const deleteNotification = (index, clear) => {
                                             <span class="pi pi-user mr-1"></span>
                                             Profile
                                         </DropdownLink>
-                                        <button @click="showPrivacyStatement = true"
-                                                class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
+                                        <button class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
+                                                @click="showPrivacyStatement = true"
                                         >
                                             <span class="pi pi-flag"></span>
                                             Privacy Statement
                                         </button>
-                                        <button @click="showImprint = true"
-                                                class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
+                                        <button class="lg:hidden block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out"
+                                                @click="showImprint = true"
                                         >
                                             <span class="pi pi-info-circle"></span>
                                             Imprint
@@ -226,10 +226,10 @@ const deleteNotification = (index, clear) => {
                         </div>
 
                         <!-- Hamburger -->
-                        <div class="-mr-2 flex items-center sm:hidden">
+                        <div class="flex items-center -mr-2 sm:hidden">
                             <button
-                                @click="showNavigationDropdown = !showNavigationDropdown"
                                 class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
+                                @click="showNavigationDropdown = !showNavigationDropdown"
                             >
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path
@@ -320,14 +320,14 @@ const deleteNotification = (index, clear) => {
             </header>
 
             <!-- Dialogs -->
-            <Dialog v-model:visible="showImprint" modal header="Imprint"
+            <Dialog modal header="Imprint"
                     class="bg-gray-200 font-bold p-2 rounded-md"
-                    :style="{ width: '90vw' }">
+                    :style="{ width: '90vw' }" v-model:visible="showImprint">
                 <imprint></imprint>
             </Dialog>
-            <Dialog v-model:visible="showPrivacyStatement" modal header="Privacy Statement"
+            <Dialog modal header="Privacy Statement"
                     class="bg-gray-200 font-bold p-2 rounded-md"
-                    :style="{ width: '90vw' }">
+                    :style="{ width: '90vw' }" v-model:visible="showPrivacyStatement">
                 <privacy-statement></privacy-statement>
             </Dialog>
 

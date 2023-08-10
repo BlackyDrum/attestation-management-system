@@ -137,12 +137,12 @@ const exportCSV = () => {
                 '{{ subject_name }}'</h2>
         </template>
         <div class="mt-5 ml-5 text-gray-400 ">
-            <Button @click="router.get('/attestations')" icon="pi pi-arrow-left" class="h-10" severity="secondary"
-                    label="Back"></Button>
+            <Button icon="pi pi-arrow-left" class="h-10" severity="secondary"
+                    label="Back" @click="router.get('/attestations')"></Button>
         </div>
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="mx-auto sm:px-6 lg:px-8 max-w-7xl">
+                <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div>
                         <DataTable showGridlines stripedRows ref="dataTable"
                                    :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ', '_')"
@@ -155,9 +155,9 @@ const exportCSV = () => {
                                                 @click="exportCSV($event)"/>
                                     </div>
                                     <div class="md:ml-auto md:mr-4" style="cursor: not-allowed">
-                                        <Button @click="handleFormSend" :disabled="formData.length === 0"
-                                                icon="pi pi-save"
-                                                severity="success" label="Save changes"/>
+                                        <Button icon="pi pi-save"
+                                                severity="success" label="Save changes"
+                                                @click="handleFormSend" :disabled="formData.length === 0"/>
                                     </div>
                                     <div class="flex justify-content-end">
                                         <span class="p-input-icon-left">
@@ -181,8 +181,8 @@ const exportCSV = () => {
                                 <template #body="{ index, field, data }">
                                     <div class="flex justify-center items-center h-full">
                                         <Checkbox v-if="data['user_id']" v-model="data[field]"
-                                                  @change="extractData(data, index)"
                                                   :binary="true"
+                                                  @change="extractData(data, index)"
                                                   v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
                                     </div>
                                 </template>

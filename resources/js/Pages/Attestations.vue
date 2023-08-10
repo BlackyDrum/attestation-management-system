@@ -392,7 +392,7 @@ const handleUserFileUpload = (attestation) => {
         <template #header>
             <div class="grid grid-cols-2">
                 <div>
-                    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight dark:text-gray-200">
                         <span v-if="$page.props.auth.user.admin">Attestations Admin Panel</span>
                         <span v-else>My Attestations</span>
                     </h2>
@@ -404,9 +404,9 @@ const handleUserFileUpload = (attestation) => {
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div v-if="$page.props.auth.user.admin" v-for="(attestation, index) in combinedData"
-                     :key="attestation.id"
-                     class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-10 rounded-lg">
+                <div class="bg-white mb-10 rounded-lg overflow-hidden shadow-sm sm:rounded-lg dark:bg-gray-800"
+                     v-if="$page.props.auth.user.admin" v-for="(attestation, index) in combinedData"
+                     :key="attestation.id">
                     <div class="w-full bg-blue-500 h-3"/>
                     <Card class="break-words">
                         <template #title>
@@ -416,63 +416,64 @@ const handleUserFileUpload = (attestation) => {
                         </template>
                         <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
                         <template #content>
-                            <div class="grid grid-cols-2 max-md:grid-cols-1 justify-evenly gap-2">
-                                <div class="w-1/2 w-full">
+                            <div class="grid grid-cols-2 justify-evenly gap-2 max-md:grid-cols-1">
+                                <div>
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-user"/>
-                                        <InputText style="font-weight: bold" class="w-full" disabled
-                                                   :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`"
-                                                   placeholder="Search">
+                                        <InputText class="w-full" style="font-weight: bold" disabled
+                                                   placeholder="Search"
+                                                   :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`">
                                         </InputText>
                                     </span>
                                 </div>
-                                <div class="w-1/2 w-full">
+                                <div>
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-file"/>
-                                        <InputText style="font-weight: bold" class="w-full" disabled
-                                                   :value="`Tasks: ${attestation.tasks[0].length}`"
-                                                   placeholder="Search"></InputText>
+                                        <InputText class="w-full" style="font-weight: bold" disabled
+                                                   placeholder="Search"
+                                                   :value="`Tasks: ${attestation.tasks[0].length}`">
+                                        </InputText>
                                     </span>
                                 </div>
                             </div>
                             <div>
-                                <Chart type="bar" class="h-80" :data="chartData[index]" :options="chartOptions"/>
+                                <Chart class="h-80" type="bar" :data="chartData[index]" :options="chartOptions"/>
                             </div>
                         </template>
                         <template #footer>
                             <div class="grid grid-cols-2 max-md:grid-cols-1">
                                 <div class="flex flex-wrap gap-2">
-                                    <Button :disabled="userFileForm.processing"
-                                            @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit"
-                                            label="Edit"
-                                            severity="success"/>
-                                    <Button :disabled="userFileForm.processing"
-                                            @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash"
-                                            label="Delete"
-                                            severity="danger"/>
+                                    <Button label="Edit"
+                                            severity="success"
+                                            :disabled="userFileForm.processing"
+                                            @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit"/>
+                                    <Button label="Delete"
+                                            severity="danger"
+                                            :disabled="userFileForm.processing"
+                                            @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash"/>
                                     <FileUpload
+                                        accept="text/csv"
+                                        customUpload chooseLabel="Upload"
                                         v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject'"
                                         :disabled="userFileForm.processing" mode="basic" name="userfile[]"
-                                        accept="text/csv"
                                         :maxFileSize="1e7"
-                                        @uploader="handleUserFileUpload(attestation)"
-                                        @input="userFileForm.userfile = $event.target.files[0];" :multiple="false"
                                         :auto="false"
-                                        customUpload chooseLabel="Upload"/>
+                                        @uploader="handleUserFileUpload(attestation)"
+                                        @input="userFileForm.userfile = $event.target.files[0];" :multiple="false"/>
                                 </div>
                                 <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
-                                    <Button :disabled="userFileForm.processing"
-                                            @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"
-                                            icon="pi pi-arrow-right"
-                                            label="Make attestations" severity="info"/>
+                                    <Button icon="pi pi-arrow-right"
+                                            label="Make attestations" severity="info"
+                                            :disabled="userFileForm.processing"
+                                            @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"/>
                                 </div>
                             </div>
                         </template>
                     </Card>
                 </div>
-                <div v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData"
-                     :key="attestation.id"
-                     class="mb-10 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="mb-10 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
+                     v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData"
+                     :key="attestation.id">
                     <div class="w-full bg-blue-500 h-3"/>
                     <Dialog v-model:visible="showAttestationInfoDialog" modal :header="subject_name"
                             :style="{ width: '90vw' }">
@@ -503,7 +504,8 @@ const handleUserFileUpload = (attestation) => {
                                     <i class="pi pi-file-edit mr-2"></i>
                                     <span class="font-medium" style="white-space: nowrap">{{ header }}</span>
                                 </template>
-                                <Editor v-if="descriptions[index1]" class="h-full w-full" readonly
+                                <Editor class="h-full w-full" readonly
+                                        v-if="descriptions[index1]"
                                         v-model="descriptions[index1]">
                                     <template #toolbar>
                                         <span></span>
@@ -524,8 +526,8 @@ const handleUserFileUpload = (attestation) => {
                                     <span class="p-input-icon-left w-full">
                                         <i class="pi pi-file"/>
                                         <InputText class="w-full" disabled
-                                                   :value="`Tasks: ${attestation.tasks[0].length}`"
-                                                   placeholder="Search"></InputText>
+                                                   placeholder="Search"
+                                                   :value="`Tasks: ${attestation.tasks[0].length}`"/>
                                     </span>
                                 </div>
                             </div>
@@ -533,8 +535,9 @@ const handleUserFileUpload = (attestation) => {
                         <template #footer>
                             <div class="grid grid-cols-2 max-md:grid-cols-1">
                                 <div>
-                                    <Button @click="handleAttestationInfo(attestation, index)" icon="pi pi-info-circle"
-                                            label="Info" severity="success"/>
+                                    <Button icon="pi pi-info-circle"
+                                            label="Info" severity="success"
+                                            @click="handleAttestationInfo(attestation, index)"/>
                                 </div>
                             </div>
                         </template>
@@ -546,7 +549,7 @@ const handleUserFileUpload = (attestation) => {
         <template
             v-if="attestations.length === 0 || ($page.props.auth.user.admin && Array.isArray(combinedData) && combinedData.length === 0)">
             <div class="text-gray-700 text-center">
-                <div style="font-size: 10rem" class="pi pi-book"></div>
+                <div class="pi pi-book" style="font-size: 10rem"></div>
             </div>
             <div class="text-gray-500 text-center mt-4">
                 No Attestations assigned to you
@@ -554,18 +557,16 @@ const handleUserFileUpload = (attestation) => {
         </template>
 
         <span v-if="$page.props.auth.user.admin">
-            <ConfirmDialog ref="confirmDialog"
-                           class="bg-white p-4 custom-confirm-dialog rounded-md gap-8 break-all"></ConfirmDialog>
+            <ConfirmDialog class="bg-white p-4 custom-confirm-dialog rounded-md gap-8 break-all" ref="confirmDialog"/>
 
             <Dialog v-model:visible="showAttestationDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'"
                     :style="{ width: '90vw' }">
                 <form @submit.prevent="handleFormSend">
                     <span class="p-float-label mt-5">
-                        <MultiSelect :disabled="attestationForm.processing" :loading="!$props.users"
-                                     v-model="attestationForm.users" :options="userWithMatriculationNumber" filter
+                        <MultiSelect class="w-full md:w-20rem" filter :disabled="attestationForm.processing" :loading="!$props.users"
+                                     v-model="attestationForm.users" :options="userWithMatriculationNumber"
                                      optionLabel="name" :maxSelectedLabels="3"
-                                     :virtualScrollerOptions="{ itemSize: 44 }"
-                                     class="w-full md:w-20rem"/>
+                                     :virtualScrollerOptions="{ itemSize: 44 }"/>
                         <label for="users">Users</label>
                     </span>
                     <error-message :show="errors.users">
@@ -576,14 +577,15 @@ const handleUserFileUpload = (attestation) => {
                             {{ error }}
                         </error-message>
                     </span>
-                    <Message v-if="!isEdit" :closable="false">After creating, you'll have the opportunity to upload a CSV file containing the matriculation numbers of users you wish to add to this subject. This way, you won't need to select users at this moment.</Message>
-                    <div class="grid xl:grid-cols-3 xl:gap-4 mt-4">
+                    <Message v-if="!isEdit" :closable="false">
+                        After creating, you'll have the opportunity to upload a CSV file containing the matriculation numbers of users you wish to add to this subject. This way, you won't need to select users at this moment.
+                    </Message>
+                    <div class="grid mt-4 xl:grid-cols-3 xl:gap-4">
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">
                                 <i class="pi pi-hashtag"/>
-                                <input-text :disabled="attestationForm.processing"
-                                            v-model="attestationForm.subjectNumber" :useGrouping="false"
-                                            class="w-full"></input-text>
+                                <input-text class="w-full" :disabled="attestationForm.processing"
+                                            v-model="attestationForm.subjectNumber" :useGrouping="false"/>
                                 <label for="subject_number">Subject Number</label>
                             </span>
                             <error-message :show="errors.subjectNumber">
@@ -593,8 +595,7 @@ const handleUserFileUpload = (attestation) => {
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">
                                 <i class="pi pi-book"/>
-                                <input-text :disabled="attestationForm.processing" v-model="attestationForm.subjectName"
-                                            class="w-full"></input-text>
+                                <input-text class="w-full" :disabled="attestationForm.processing" v-model="attestationForm.subjectName"/>
                                 <label for="subject_name">Subject Name</label>
                             </span>
                             <error-message :show="errors.subjectName">
@@ -604,9 +605,8 @@ const handleUserFileUpload = (attestation) => {
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">
                                 <i class="pi pi-qrcode"/>
-                                <input-text :disabled="attestationForm.processing"
-                                            v-model="attestationForm.acronym" :useGrouping="false"
-                                            class="w-full"></input-text>
+                                <input-text class="w-full" :disabled="attestationForm.processing"
+                                            v-model="attestationForm.acronym" :useGrouping="false"/>
                                 <label for="subject_number">Acronym</label>
                             </span>
                             <error-message :show="errors.acronym">
@@ -616,9 +616,8 @@ const handleUserFileUpload = (attestation) => {
                     </div>
                     <div class="mt-4">
                         <span class="p-float-label">
-                            <Dropdown :disabled="attestationForm.processing" v-model="attestationForm.semester"
-                                      :options="semester" optionLabel="semester"
-                                      class="max-md:w-[16rem] w-80"/>
+                            <Dropdown class="max-md:w-[16rem] w-80" :disabled="attestationForm.processing" v-model="attestationForm.semester"
+                                      :options="semester" optionLabel="semester"/>
                             <label for="semester">Semester</label>
                         </span>
                         <error-message :show="errors.semester">
@@ -626,13 +625,13 @@ const handleUserFileUpload = (attestation) => {
                         </error-message>
                     </div>
                     <div class="mt-4">
-                        <div v-for="task in attestationForm.attestations" :key="task.id" class="my-4 w-full">
+                        <div class="my-4 w-full" v-for="task in attestationForm.attestations" :key="task.id">
                             <div class="mb-1 font-bold">
                                 {{ task.id }}. Attestation
                             </div>
                             <div>
-                                <input-text :disabled="attestationForm.processing"
-                                            v-model="attestationForm.attestations[task.id - 1].title" class="w-full"
+                                <input-text class="w-full" :disabled="attestationForm.processing"
+                                            v-model="attestationForm.attestations[task.id - 1].title"
                                             placeholder="Title"></input-text>
                                 <error-message
                                     :show="Object.keys(errors).some(key => key.startsWith('attestations.' + (task.id - 1) + '.title'))">
@@ -640,9 +639,8 @@ const handleUserFileUpload = (attestation) => {
                                 </error-message>
                             </div>
                             <div class="mt-2">
-                                <Editor v-model="attestationForm.attestations[task.id - 1].description"
-                                        placeholder="Description or further instructions" editorStyle="height:20rem"
-                                        class="w-full">
+                                <Editor class="w-full" v-model="attestationForm.attestations[task.id - 1].description"
+                                        placeholder="Description or further instructions" editorStyle="height:20rem">
                                     <template v-slot:toolbar>
                                         <span class="ql-formats">
                                             <select class="ql-header">
@@ -698,16 +696,15 @@ const handleUserFileUpload = (attestation) => {
                             </div>
                         </div>
                     </div>
-                    <Button @click="addTask" icon="pi pi-plus" aria-label="Filter"/>
-                    <span v-if="!isEdit && attestationForm.attestations.length > 0" class="ml-3"><Button
-                        @click="removeTask"
-                        icon="pi pi-trash" severity="danger" aria-label="Filter"/></span>
-                    <span v-else-if="isEdit && attestationForm.attestations.length > 1" class="ml-3"><Button
-                        @click="removeTask" icon="pi pi-trash" severity="danger" aria-label="Filter"/></span>
+                    <Button icon="pi pi-plus" aria-label="Filter" @click="addTask"/>
+                    <span class="ml-3" v-if="!isEdit && attestationForm.attestations.length > 0"><Button
+                        icon="pi pi-trash" severity="danger" aria-label="Filter" @click="removeTask"/></span>
+                    <span class="ml-3" v-else-if="isEdit && attestationForm.attestations.length > 1"><Button
+                        icon="pi pi-trash" severity="danger" aria-label="Filter" @click="removeTask"/></span>
                     <error-message :show="errors.attestations">
                         {{ errors.attestations }}
                     </error-message>
-                    <div class="my-4 grid grid-cols-2">
+                    <div class="grid grid-cols-2 my-4">
                         <div class="justify-center">
                             <CustomProgressSpinner :processing="attestationForm.processing"></CustomProgressSpinner>
                         </div>
