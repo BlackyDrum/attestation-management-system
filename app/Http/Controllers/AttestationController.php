@@ -188,7 +188,7 @@ class AttestationController extends Controller
                 Redis::command('LPUSH', ["users:{$user['id']}:notifications", "INFO|You have been assigned to the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$semester}.|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
             }
 
-            // Ensure that users assigned to this subject are
+            // Ensure that new users assigned to this subject are
             // provided a reference to the recently generated 'final attestation'.
             UserHasCheckedTask::query()->firstOrCreate([
                 'user_id' => $user['id'],
