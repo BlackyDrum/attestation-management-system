@@ -100,7 +100,7 @@ class AttestationController extends Controller
 
         $request->validate([
             'id' => 'required|integer|exists:attestation,id',
-            'attestations.*.task_id' => 'nullable',
+            'attestations.*.task_id' => 'nullable|integer',
         ],[
             'id.*' => "The selected attestation id is invalid"
         ]);
