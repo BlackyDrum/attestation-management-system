@@ -141,6 +141,7 @@ class AttestationController extends Controller
             'attestation_id' => $attestation['id'],
             'title' => $finalAttestationENV,
         ]);
+        $ids[] = $newFinalAttestation->id;
 
         foreach ($checkedFinalAttestation as $item) {
             UserHasCheckedTask::query()->create([
@@ -156,7 +157,6 @@ class AttestationController extends Controller
 
         AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
             ->whereNotIn('id', $ids)
-            ->whereNot('title', '=', $finalAttestationENV)
             ->delete();
 
         $uids = [];
