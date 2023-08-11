@@ -60,7 +60,9 @@ class AttestationController extends Controller
             ]);
         }
 
-        $endAttestation = AttestationTasks::query()->create([
+        // It's important to create the final attestation after creating all tasks,
+        // ensuring the highest ID for the final attestation
+        $finalAttestation = AttestationTasks::query()->create([
             'attestation_id' => $attestation['id'],
             'title' => str_replace('_',' ',env('FINAL_ATTESTATION_NAME')),
         ]);
@@ -86,7 +88,7 @@ class AttestationController extends Controller
 
             UserHasCheckedTask::query()->create([
                 'user_id' => $user['id'],
-                'task_id' => $endAttestation['id'],
+                'task_id' => $finalAttestation['id'],
                 'editor_id' => null,
             ]);
         }
@@ -118,6 +120,7 @@ class AttestationController extends Controller
 
         $tasks = [];
         foreach ($request->input('attestations') as $task) {
+            // Save all tasks currently assigned to this subject
             $tasks[] = AttestationTasks::query()->findOrNew($task['task_id'])->fill([
                 'attestation_id' => $attestation['id'],
                 'title' => $task['title'],
@@ -127,15 +130,19 @@ class AttestationController extends Controller
 
         $ids = [];
         foreach ($tasks as $item) {
+            // Save all task ID's currently assigned to this subject
             $item->save();
             $ids[] = $item['id'];
         }
 
+        // Get the current 'final attestation' for this subject and save the associated 'user_has_checked_task'-rows
         $checkedFinalAttestation = AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
             ->where('title', '=', $finalAttestationENV)
             ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
             ->get();
 
+        // Create a new 'final attestation' for this subject. We need to do that because we want to
+        // ensure it consistently holds the highest ID among all tasks for a subject.
         $newFinalAttestation = AttestationTasks::query()->create([
             'attestation_id' => $attestation['id'],
             'title' => $finalAttestationENV,
@@ -143,6 +150,10 @@ class AttestationController extends Controller
         $ids[] = $newFinalAttestation->id;
 
         foreach ($checkedFinalAttestation as $item) {
+            // Create the 'user_has_checked_task'-rows using the existing data,
+            // while substituting the 'task_id' with the new 'final attestation' ID.
+            // This way we ensure that no data is lost during the creation of a new
+            // 'final attestation'.
             UserHasCheckedTask::query()->create([
                 'user_id' => $item->user_id,
                 'task_id' => $newFinalAttestation->id,
@@ -150,16 +161,20 @@ class AttestationController extends Controller
             ]);
         }
 
+        // Delete the old 'final attestation'
         AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
             ->where('title', '=', $finalAttestationENV)
             ->first()->delete();
 
+        // Remove any tasks that are unassigned to this subject, often occurring
+        // when a user deletes a task on the client side.
         AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
             ->whereNotIn('id', $ids)
             ->delete();
 
         $uids = [];
         foreach ($request->input('users') as $user) {
+            // Save all user ID's currently assigned to this subject
             $uids[] = $user['id'];
             $userHasAttestation = UserHasAttestation::query()->firstOrCreate([
                 'user_id' => $user['id'],
@@ -173,6 +188,8 @@ class AttestationController extends Controller
                 Redis::command('LPUSH', ["users:{$user['id']}:notifications", "INFO|You have been assigned to the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$semester}.|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
             }
 
+            // Ensure that users assigned to this subject are
+            // provided a reference to the recently generated 'final attestation'.
             UserHasCheckedTask::query()->firstOrCreate([
                 'user_id' => $user['id'],
                 'task_id' => $newFinalAttestation->id,
@@ -186,6 +203,8 @@ class AttestationController extends Controller
             }
         }
 
+        // Remove all user's not assigned to this subject, often occurring
+        // when an admin removes users on client side.
         UserHasAttestation::query()->where('attestation_id', '=', $attestation['id'])->whereNotIn('user_id', $uids)->delete();
 
         UserHasCheckedTask::query()->join('attestation_tasks', 'attestation_tasks.id', '=', 'user_has_checked_task.task_id')
