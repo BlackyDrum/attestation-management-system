@@ -64,7 +64,7 @@ class AttestationController extends Controller
         // ensuring the highest ID for the final attestation
         $finalAttestation = AttestationTasks::query()->create([
             'attestation_id' => $attestation['id'],
-            'title' => str_replace('_',' ',env('FINAL_ATTESTATION_NAME')),
+            'title' => env('FINAL_ATTESTATION_NAME'),
         ]);
 
         foreach ($request->input('users') as $user) {
@@ -107,7 +107,7 @@ class AttestationController extends Controller
             'id.*' => "The selected attestation id is invalid"
         ]);
 
-        $finalAttestationENV = str_replace('_',' ',env('FINAL_ATTESTATION_NAME'));
+        $finalAttestationENV = env('FINAL_ATTESTATION_NAME');
 
         $attestation = Attestation::query()->find($request->input('id'))->fill([
             'subject_number' => $request->input('subjectNumber'),

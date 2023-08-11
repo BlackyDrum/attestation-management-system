@@ -14,7 +14,7 @@ class CheckTitle implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if ($value === str_replace('_',' ',env('FINAL_ATTESTATION_NAME')))
+        if ($value === env('FINAL_ATTESTATION_NAME'))
             $fail('Please choose another title.');
     }
 }
