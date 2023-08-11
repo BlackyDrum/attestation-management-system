@@ -23,6 +23,13 @@ use Inertia\Inertia;
 
 class AttestationController extends Controller
 {
+    private string $finalAttestation;
+
+    public function __construct()
+    {
+        $this->finalAttestation = env('FINAL_ATTESTATION_NAME','Final attestation');
+    }
+
     public function show(Request $request)
     {
         $attestationQuery = AttestationController::createQuery();
@@ -64,7 +71,7 @@ class AttestationController extends Controller
         // ensuring the highest ID for the final attestation
         $finalAttestation = AttestationTasks::query()->create([
             'attestation_id' => $attestation['id'],
-            'title' => env('FINAL_ATTESTATION_NAME'),
+            'title' => $this->finalAttestation,
         ]);
 
         foreach ($request->input('users') as $user) {
@@ -107,8 +114,6 @@ class AttestationController extends Controller
             'id.*' => "The selected attestation id is invalid"
         ]);
 
-        $finalAttestationENV = env('FINAL_ATTESTATION_NAME');
-
         $attestation = Attestation::query()->find($request->input('id'))->fill([
             'subject_number' => $request->input('subjectNumber'),
             'subject_name' => $request->input('subjectName'),
@@ -137,7 +142,7 @@ class AttestationController extends Controller
 
         // Get the current 'final attestation' for this subject and save the associated 'user_has_checked_task'-rows
         $checkedFinalAttestation = AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
-            ->where('title', '=', $finalAttestationENV)
+            ->where('title', '=', $this->finalAttestation)
             ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
             ->get();
 
@@ -145,7 +150,7 @@ class AttestationController extends Controller
         // ensure it consistently holds the highest ID among all tasks for a subject.
         $newFinalAttestation = AttestationTasks::query()->create([
             'attestation_id' => $attestation['id'],
-            'title' => $finalAttestationENV,
+            'title' => $this->finalAttestation,
         ]);
         $ids[] = $newFinalAttestation->id;
 
@@ -163,7 +168,7 @@ class AttestationController extends Controller
 
         // Delete the old 'final attestation'
         AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
-            ->where('title', '=', $finalAttestationENV)
+            ->where('title', '=', $this->finalAttestation)
             ->first()->delete();
 
         // Remove any tasks that are unassigned to this subject, often occurring
