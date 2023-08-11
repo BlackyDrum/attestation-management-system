@@ -136,7 +136,6 @@ class AttestationController extends Controller
             ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
             ->get();
 
-
         $newFinalAttestation = AttestationTasks::query()->create([
             'attestation_id' => $attestation['id'],
             'title' => $finalAttestationENV,
@@ -169,16 +168,15 @@ class AttestationController extends Controller
 
             $semester = Semester::query()->find($attestation->semester_id)->semester;
             if ($userHasAttestation->wasRecentlyCreated) {
-                UserHasCheckedTask::query()->create([
-                    'user_id' => $user['id'],
-                    'task_id' => $newFinalAttestation->id,
-                ]);
-
                 event(new NotificationEvent($user['id']));
 
                 Redis::command('LPUSH', ["users:{$user['id']}:notifications", "INFO|You have been assigned to the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$semester}.|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
             }
 
+            UserHasCheckedTask::query()->firstOrCreate([
+                'user_id' => $user['id'],
+                'task_id' => $newFinalAttestation->id,
+            ]);
 
             foreach ($tasks as $item) {
                 UserHasCheckedTask::query()->firstOrCreate([
