@@ -9,6 +9,7 @@ use App\Models\Semester;
 use App\Models\User;
 use App\Models\UserHasAttestation;
 use App\Models\UserHasCheckedTask;
+use App\Rules\CheckTitle;
 use App\Rules\NoDuplicateTitle;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\JoinClause;
@@ -59,6 +60,11 @@ class AttestationController extends Controller
             ]);
         }
 
+        $endAttestation = AttestationTasks::query()->create([
+            'attestation_id' => $attestation['id'],
+            'title' => str_replace('_',' ',env('FINAL_ATTESTATION_NAME')),
+        ]);
+
         foreach ($request->input('users') as $user) {
             UserHasAttestation::query()->create([
                 'user_id' => $user['id'],
@@ -77,6 +83,12 @@ class AttestationController extends Controller
                     'editor_id' => null,
                 ]);
             }
+
+            UserHasCheckedTask::query()->create([
+                'user_id' => $user['id'],
+                'task_id' => $endAttestation['id'],
+                'editor_id' => null,
+            ]);
         }
 
         return to_route('attestations');
@@ -92,6 +104,8 @@ class AttestationController extends Controller
         ],[
             'id.*' => "The selected attestation id is invalid"
         ]);
+
+        $finalAttestationENV = str_replace('_',' ',env('FINAL_ATTESTATION_NAME'));
 
         $attestation = Attestation::query()->find($request->input('id'))->fill([
             'subject_number' => $request->input('subjectNumber'),
@@ -117,7 +131,33 @@ class AttestationController extends Controller
             $ids[] = $item['id'];
         }
 
-        AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])->whereNotIn('id', $ids)->delete();
+        $checkedFinalAttestation = AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
+            ->where('title', '=', $finalAttestationENV)
+            ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
+            ->get();
+
+
+        $newFinalAttestation = AttestationTasks::query()->create([
+            'attestation_id' => $attestation['id'],
+            'title' => $finalAttestationENV,
+        ]);
+
+        foreach ($checkedFinalAttestation as $item) {
+            UserHasCheckedTask::query()->create([
+                'user_id' => $item->user_id,
+                'task_id' => $newFinalAttestation->id,
+                'checked' => $item->checked
+            ]);
+        }
+
+        AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
+            ->where('title', '=', $finalAttestationENV)
+            ->first()->delete();
+
+        AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
+            ->whereNotIn('id', $ids)
+            ->whereNot('title', '=', $finalAttestationENV)
+            ->delete();
 
         $uids = [];
         foreach ($request->input('users') as $user) {
@@ -129,6 +169,11 @@ class AttestationController extends Controller
 
             $semester = Semester::query()->find($attestation->semester_id)->semester;
             if ($userHasAttestation->wasRecentlyCreated) {
+                UserHasCheckedTask::query()->create([
+                    'user_id' => $user['id'],
+                    'task_id' => $newFinalAttestation->id,
+                ]);
+
                 event(new NotificationEvent($user['id']));
 
                 Redis::command('LPUSH', ["users:{$user['id']}:notifications", "INFO|You have been assigned to the subject '{$attestation->subject_name}'({$attestation->subject_number}) for the {$semester}.|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
@@ -246,7 +291,7 @@ class AttestationController extends Controller
             'acronym' => 'required|string|max:8',
             'semester' => 'required|exists:semester,semester',
             'attestations' => ['required', 'array', 'min:1', new NoDuplicateTitle],
-            'attestations.*.title' => 'required|string|max:50',
+            'attestations.*.title' => ['required', 'string', 'max:50', new CheckTitle],
             'attestations.*.description' => 'nullable|string|max:5000',
         ], [
             'users.*.id.exists' => "The selected user is invalid or does not exist.",

@@ -331,6 +331,7 @@ const handleAttestationEdit = (attestation) => {
 
     let count = 1
     for (const task of attestation.tasks[0]) {
+        if (task.title === import.meta.env.VITE_FINAL_ATTESTATION_NAME.replace('_',' ')) continue;
         attestationForm.attestations.push({
             id: count++,
             task_id: task.task_id,
