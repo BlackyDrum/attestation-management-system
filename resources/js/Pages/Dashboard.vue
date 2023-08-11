@@ -290,7 +290,7 @@ const loadSemesterData = () => {
                         <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-xl:mt-4">
                             <Chart type="doughnut" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
                             <div class="mt-6">
-                                <ProgressBar :value="totalCheckedCount / totalTaskCount * 100"></ProgressBar>
+                                <ProgressBar :value="Math.round(totalCheckedCount / totalTaskCount * 100)"></ProgressBar>
                             </div>
                         </div>
                     </div>
