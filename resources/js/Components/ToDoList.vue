@@ -97,14 +97,16 @@ const handleTaskDeletion = (task, index) => {
     <InputText class="w-full" placeholder="Enter Your Todo..." v-model="taskInput" @keydown.enter="handleNewTask"/>
     </span>
     <div class="w-full px-3 py-5 text-lg text-white font-semibold border-b border-gray-700" v-for="(task, index) in tasks" :key="task.id">
-        <div class="grid grid-cols-[10%,80%,10%] break-words">
+        <div class="grid grid-cols-[10%,80%,10%] break-words group">
             <div class="self-center">
                 <Checkbox :value="task.id" v-model="task.checked" :binary="true" @change="handleTaskChecking(task)"/>
             </div>
             <div class="self-center decoration-2 decoration-black" :class="{'line-through': task.checked}">
                 {{task.text}}
             </div>
-            <div class="pi pi-trash self-center mx-auto text-red-600 cursor-pointer" @click="handleTaskDeletion(task, index)"/>
+            <div class="hidden group-hover:block">
+                <div class="pi pi-trash self-center mx-auto text-red-600 cursor-pointer" @click="handleTaskDeletion(task, index)"/>
+            </div>
         </div>
     </div>
 </template>
