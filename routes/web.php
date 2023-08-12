@@ -26,7 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'show'])->name('dashboard');
     Route::patch('/dashboard/current_semester', [\App\Http\Controllers\DashboardController::class, 'update_semester']);
     Route::post('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'create_to_do']);
-    Route::patch('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'check_to_to']);
+    Route::patch('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'check_to_do']);
+    Route::delete('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'delete_to_do']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

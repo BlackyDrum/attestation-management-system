@@ -109,7 +109,7 @@ class DashboardController extends Controller
         return \response($item);
     }
 
-    public function check_to_to(Request $request)
+    public function check_to_do(Request $request)
     {
         $request->validate([
             'id' => ['required', 'integer', 'exists:todos,id', new ValidateToDoCreator],
@@ -119,5 +119,14 @@ class DashboardController extends Controller
         ToDoList::query()->find($request->input('id'))->update([
             'checked' => $request->input('checked'),
         ]);
+    }
+
+    public function delete_to_do(Request $request)
+    {
+        $request->validate([
+            'id' => ['required', 'integer', 'exists:todos,id', new ValidateToDoCreator],
+        ]);
+
+        ToDoList::query()->find($request->input('id'))->delete();
     }
 }

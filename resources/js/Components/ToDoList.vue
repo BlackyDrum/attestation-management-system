@@ -70,6 +70,25 @@ const handleTaskChecking = (task) => {
         })
 
 }
+
+const handleTaskDeletion = (task, index) => {
+    window.axios.delete('/dashboard/todo', {
+        data: {
+            id: task.id
+        }
+    })
+        .then(() => {
+            tasks.value.splice(index, 1);
+        })
+        .catch(error => {
+            window.toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 8000,
+            })
+        })
+}
 </script>
 
 <template>
@@ -77,7 +96,7 @@ const handleTaskChecking = (task) => {
     <i class="pi pi-plus" />
     <InputText class="w-full" placeholder="Enter Your Todo..." v-model="taskInput" @keydown.enter="handleNewTask"/>
     </span>
-    <div class="w-full px-3 py-5 text-lg text-white font-semibold border-b border-gray-700" v-for="task in tasks">
+    <div class="w-full px-3 py-5 text-lg text-white font-semibold border-b border-gray-700" v-for="(task, index) in tasks" :key="task.id">
         <div class="grid grid-cols-[10%,80%,10%] break-words">
             <div class="self-center">
                 <Checkbox :value="task.id" v-model="task.checked" :binary="true" @change="handleTaskChecking(task)"/>
@@ -85,8 +104,7 @@ const handleTaskChecking = (task) => {
             <div class="self-center decoration-2 decoration-black" :class="{'line-through': task.checked}">
                 {{task.text}}
             </div>
-            <div class="pi pi-trash self-center mx-auto text-red-600 cursor-pointer">
-            </div>
+            <div class="pi pi-trash self-center mx-auto text-red-600 cursor-pointer" @click="handleTaskDeletion(task, index)"/>
         </div>
     </div>
 </template>

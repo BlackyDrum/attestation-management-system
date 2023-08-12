@@ -17,6 +17,6 @@ class ValidateToDoCreator implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (ToDoList::query()->find($value)->creator_id !== Auth::id())
-            $fail('You don\'t have the rights to read this task.');
+            $fail('You don\'t have the rights to access this todo.');
     }
 }
