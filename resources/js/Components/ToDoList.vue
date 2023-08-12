@@ -27,6 +27,8 @@ onMounted(() => {
             text: todo.task,
             checked: todo.checked
         })
+        if (todo.checked)
+            checked.value.push(todo)
     }
 })
 
@@ -60,6 +62,12 @@ const handleTaskChecking = (task) => {
         id: task.id,
         checked: task.checked
     })
+        .then(() => {
+            if (task.checked)
+                checked.value.push(task);
+            else
+                checked.value.splice(checked.value.findIndex((item) => item.id === task.id),1)
+        })
         .catch(error => {
             window.toast.add({
                 severity: 'error',
@@ -92,6 +100,7 @@ const handleTaskDeletion = (task, index) => {
 </script>
 
 <template>
+    {{checked}}
     <span class="p-input-icon-left w-full">
     <i class="pi pi-plus" />
     <InputText class="w-full" placeholder="Enter Your Todo..." v-model="taskInput" @keydown.enter="handleNewTask"/>
@@ -108,5 +117,8 @@ const handleTaskDeletion = (task, index) => {
                 <div class="pi pi-trash self-center mx-auto text-red-600 cursor-pointer" @click="handleTaskDeletion(task, index)"/>
             </div>
         </div>
+    </div>
+    <div class="text-white">
+        {{tasks.length - checked.length}} tasks left
     </div>
 </template>
