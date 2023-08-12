@@ -87,7 +87,7 @@ const deleteNotification = (index, clear) => {
                 severity: 'error',
                 summary: 'Error',
                 detail: error.response.data.message,
-                life: 3000,
+                life: 8000,
             })
         })
 }
