@@ -18,6 +18,7 @@ const page = usePage();
 const tasks = ref([]);
 const taskInput = ref(null);
 const checked = ref([]);
+const processing = ref(false);
 
 
 onMounted(() => {
@@ -33,6 +34,10 @@ onMounted(() => {
 })
 
 const handleNewTask = () => {
+    if (processing.value)
+        return;
+    processing.value = true;
+
     if (taskInput.value)
         window.axios.post('/dashboard/todo', {
             task: taskInput.value
@@ -54,10 +59,15 @@ const handleNewTask = () => {
             })
             .then(() => {
                 taskInput.value = null;
+                processing.value = false;
             })
 }
 
 const handleTaskChecking = (task) => {
+    if (processing.value)
+        return;
+    processing.value = true;
+
     window.axios.patch('/dashboard/todo', {
         id: task.id,
         checked: task.checked
@@ -76,10 +86,17 @@ const handleTaskChecking = (task) => {
                 life: 8000,
             })
         })
+        .then(() => {
+            processing.value = false;
+        })
 
 }
 
 const handleTaskDeletion = (task, index) => {
+    if (processing.value)
+        return;
+    processing.value = true;
+
     window.axios.delete('/dashboard/todo', {
         data: {
             id: task.id
@@ -96,25 +113,27 @@ const handleTaskDeletion = (task, index) => {
                 life: 8000,
             })
         })
+        .then(() => {
+            processing.value = false;
+        })
 }
 </script>
 
 <template>
-    {{checked}}
     <span class="p-input-icon-left w-full">
     <i class="pi pi-plus" />
-    <InputText class="w-full" placeholder="Enter Your Todo..." v-model="taskInput" @keydown.enter="handleNewTask"/>
+    <InputText class="w-full" placeholder="Enter Your Todo..." v-model="taskInput" :disabled="processing" @keydown.enter="handleNewTask"/>
     </span>
     <div class="group w-full px-3 py-5 text-lg text-white font-semibold border-b border-gray-700" v-for="(task, index) in tasks" :key="task.id">
         <div class="grid grid-cols-[10%,80%,10%] break-words">
             <div class="self-center">
-                <Checkbox :value="task.id" v-model="task.checked" :binary="true" @change="handleTaskChecking(task)"/>
+                <Checkbox :value="task.id" v-model="task.checked" :binary="true" :disabled="processing" @change="handleTaskChecking(task)"/>
             </div>
             <div class="self-center decoration-2 decoration-black" :class="{'line-through': task.checked}">
                 {{task.text}}
             </div>
             <div class="hidden group-hover:block">
-                <div class="pi pi-trash self-center mx-auto text-red-600 cursor-pointer" @click="handleTaskDeletion(task, index)"/>
+                <button class="pi pi-trash self-center mx-auto text-red-600 cursor-pointer" :disabled="processing" @click="handleTaskDeletion(task, index)"/>
             </div>
         </div>
     </div>
