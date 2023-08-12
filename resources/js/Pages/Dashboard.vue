@@ -7,6 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
+import ToDoList from '@/Components/ToDoList.vue';
 
 import Dialog from 'primevue/dialog';
 import MultiSelect from 'primevue/multiselect';
@@ -293,6 +294,12 @@ const loadSemesterData = () => {
                                 <ProgressBar :value="Math.round(totalCheckedCount / totalTaskCount * 100)"></ProgressBar>
                             </div>
                         </div>
+                    </div>
+                    <div class="grid grid-cols-1 mt-4 xl:grid-cols-[40%,50%] xl:gap-10">
+                        <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                            <ToDoList/>
+                        </div>
+                        <div></div>
                     </div>
                 </div>
             </div>

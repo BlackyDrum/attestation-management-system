@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\NotificationEvent;
 use App\Models\Semester;
+use App\Models\ToDoList;
 use App\Models\User;
 use App\Rules\NoPipeCharacter;
 use App\Rules\ValidSeverity;
@@ -21,13 +22,22 @@ class DashboardController extends Controller
             ->where('users.id', '=', Auth::id())
             ->get();
 
-        $semester = Semester::query()->where('id', '=', User::query()->find(Auth::id())->dashboard_semester)->first();
+        $semester = Semester::query()
+            ->where('id', '=', User::query()->find(Auth::id())->dashboard_semester)
+            ->first();
+
+        $todos = ToDoList::query()
+            ->where('creator_id', '=', Auth::id())
+            ->orderBy('checked')
+            ->orderBy('id')
+            ->get();
 
         return Inertia::render('Dashboard', [
             'users' => Auth::user()->admin ? User::all() : [],
             'semester' => Semester::all(),
             'data' => $data,
             'selected_semester' => $semester,
+            'todos' => $todos,
         ]);
     }
 
@@ -82,5 +92,19 @@ class DashboardController extends Controller
         User::query()->find(Auth::id())->fill([
             'dashboard_semester' => $request->input('semester')
         ])->save();
+    }
+
+    public function create_to_do(Request $request)
+    {
+        $request->validate([
+            'task' => 'required|string|max:255'
+        ]);
+
+        $item = ToDoList::query()->create([
+            'task' => $request->input('task'),
+            'creator_id' => Auth::id(),
+        ]);
+
+        return \response($item);
     }
 }
