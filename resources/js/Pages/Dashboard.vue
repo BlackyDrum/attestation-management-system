@@ -177,7 +177,7 @@ const handleDialogClose = () => {
 
 const handleSemesterSelection = (event) => {
     loadingData.value = true;
-    axios.patch('/dashboard',{
+    axios.patch('/dashboard/current_semester',{
         semester: selectedSemester.value.id,
     })
         .then(response => {

@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref} from 'vue';
-import {usePage} from "@inertiajs/vue3";
+import {router, usePage} from "@inertiajs/vue3";
 
 import InputText from 'primevue/inputtext';
 import Checkbox from 'primevue/checkbox';
@@ -56,7 +56,19 @@ const handleNewTask = () => {
 }
 
 const handleTaskChecking = (task) => {
-    console.log(task)
+    window.axios.patch('/dashboard/todo', {
+        id: task.id,
+        checked: task.checked
+    })
+        .catch(error => {
+            window.toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 8000,
+            })
+        })
+
 }
 </script>
 

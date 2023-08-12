@@ -7,6 +7,7 @@ use App\Models\Semester;
 use App\Models\ToDoList;
 use App\Models\User;
 use App\Rules\NoPipeCharacter;
+use App\Rules\ValidateToDoCreator;
 use App\Rules\ValidSeverity;
 use http\Env\Response;
 use Illuminate\Http\Request;
@@ -106,5 +107,17 @@ class DashboardController extends Controller
         ]);
 
         return \response($item);
+    }
+
+    public function check_to_to(Request $request)
+    {
+        $request->validate([
+            'id' => ['required', 'integer', 'exists:todos,id', new ValidateToDoCreator],
+            'checked' => ['required', 'boolean'],
+        ]);
+
+        ToDoList::query()->find($request->input('id'))->update([
+            'checked' => $request->input('checked'),
+        ]);
     }
 }
