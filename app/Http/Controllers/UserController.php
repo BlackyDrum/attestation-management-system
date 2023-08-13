@@ -18,21 +18,14 @@ class UserController extends Controller
 {
     public function show(Request $request)
     {
-        $search = $request->input('search') ?? "";
-
         $order = config('database.default') === 'pgsql' ?
             "SPLIT_PART(users.name,' ', -1)" :
             "SUBSTRING_INDEX(users.name, ' ', -1)";
 
-        $user = User::query()->where('name', 'ILIKE', '%' . $search . '%')->orderByRaw($order)->get();
-
-        if (!empty($request->input('response')) && $request->input('response')) {
-            return response()->json($user);
-        }
+        $user = User::query()->orderByRaw($order)->get();
 
         return Inertia::render('User', [
             'users' => $user,
-            'search' => $search
         ]);
     }
 
@@ -44,11 +37,13 @@ class UserController extends Controller
             'user_id.*' => 'The selected user is invalid or does not exist.'
         ]);
 
-        if (User::query()->find($request->input('user_id'))->admin) {
+        $user = User::query()->find($request->input('user_id'));
+
+        if ($user->admin) {
             return response()->json(['success' => false, 'message' => 'You cannot delete an admin account.'],403);
         }
 
-        User::query()->where('id', '=', $request->input('user_id'))->where('admin', '=', 'false')->delete();
+        $user->delete();
 
         return response()->json(['success' => true, 'user_id' => $request->input('user_id')]);
     }

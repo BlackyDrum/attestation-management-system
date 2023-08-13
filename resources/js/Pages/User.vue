@@ -28,9 +28,6 @@ defineProps({
     users: {
         type: Object
     },
-    search: {
-        type: String
-    },
     errors: {
         type: Object
     }
@@ -39,7 +36,6 @@ defineProps({
 const page = usePage();
 const confirm = useConfirm();
 
-const searchValue = ref("");
 const emptyUsers = ref(false);
 const showUserEditDialog = ref(false);
 const selectedUser = ref(null);
@@ -75,7 +71,6 @@ const filters = ref({
 
 
 onMounted(() => {
-    searchValue.value = page.props.search;
     emptyUsers.value = page.props.users.length === 0;
 })
 
