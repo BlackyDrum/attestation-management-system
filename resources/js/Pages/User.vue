@@ -243,10 +243,10 @@ const handleUserFileUpload = (event) => {
                                     @input="handleSearchRequest" v-model="searchValue"></input-text>
                     </span>
                 </div>
-                <div class="bg-white text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3"
+                <div class="bg-white dark:text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3"
                      v-for="user in users.data" :key="user.id">
                     <div>
-                        <div class="grid grid-cols-2 items-center font-bold text-white p-2">
+                        <div class="grid grid-cols-2 items-center font-bold dark:text-white p-2">
                             <div class="break-all">{{ user.name }} <span class="pi pi-android" v-if="user.admin"></span>
                             </div>
                             <div class="flex flex-wrap justify-content-center ml-auto mr-5">
@@ -277,12 +277,12 @@ const handleUserFileUpload = (event) => {
                 <ConfirmDialog class="bg-white break-words p-4 custom-confirm-dialog rounded-md gap-8" ref="confirmDialog"/>
             </div>
         </div>
-        <div class="flex text-white" v-if="emptyUsers">
+        <div class="flex dark:text-white" v-if="emptyUsers">
             <div class="mx-auto text-3xl p-5">
                 User Not Found
             </div>
         </div>
-        <div class="flex text-white pb-5">
+        <div class="flex dark:text-white pb-5">
             <div class="mx-auto">
                 <template v-for="links in users.links">
                     <Link class="lg:p-3 sm:p-1 md:p-2 max-sm:p-0.5"

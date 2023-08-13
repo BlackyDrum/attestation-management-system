@@ -133,7 +133,7 @@ const handleTaskDeletion = (task, index) => {
     <InputText class="w-full" placeholder="Enter Your Todo..." v-model="taskInput" :disabled="processing" @keydown.enter="handleNewTask"/>
     </span>
     <ScrollPanel class="custom-scroll-panel">
-        <div class="group w-full px-3 py-5 text-lg text-white font-semibold border-b border-gray-700" v-if="tasks.length !== 0" v-for="(task, index) in tasks" :key="task.id">
+        <div class="group w-full px-3 py-5 text-lg dark:text-white font-semibold border-b border-gray-700" v-if="tasks.length !== 0" v-for="(task, index) in tasks" :key="task.id">
             <div class="grid grid-cols-[10%,80%,10%] break-words">
                 <div class="self-center">
                     <Checkbox :value="task.id" v-model="task.checked" :binary="true" :disabled="processing" @change="handleTaskChecking(task)"/>
@@ -157,7 +157,7 @@ const handleTaskDeletion = (task, index) => {
             </div>
         </div>
     </ScrollPanel>
-    <div class="text-white">
+    <div class="dark:text-white">
         {{tasks.length - checked.length}} tasks left
     </div>
 </template>

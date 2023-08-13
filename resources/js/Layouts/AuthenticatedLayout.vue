@@ -133,19 +133,19 @@ const deleteNotification = (index, clear) => {
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
                             <!-- Settings Dropdown -->
                             <NavLink class="max-lg:hidden" :no-link="true" @click="showPrivacyStatement = true">
-                                <div class="text-white mx-4 max-lg:hidden">
+                                <div class="dark:text-white mx-4 max-lg:hidden">
                                     <span class="pi pi-flag"></span>
                                     Privacy Statement
                                 </div>
                             </NavLink>
                             <NavLink class="max-lg:hidden" :no-link="true" @click="showImprint = true">
-                                <div class="text-white mx-4">
+                                <div class="dark:text-white mx-4">
                                     <span class="pi pi-info-circle"></span>
                                     Imprint
                                 </div>
                             </NavLink>
                             <div class="ml-4">
-                                <button class="pi pi-bell p-overlay-badge text-white mr-0.5"
+                                <button class="pi pi-bell p-overlay-badge dark:text-white text-gray-500 mr-0.5"
                                         style="font-size: 1.5rem"
                                         v-badge="notifications.length !== 0 ? notifications.length : '0'"
                                         @click="toggleNotificationOverlayPanel"/>
@@ -278,12 +278,12 @@ const deleteNotification = (index, clear) => {
                             Users
                         </ResponsiveNavLink>
                         <NavLink :no-link="true" @click="showPrivacyStatement = true">
-                            <div class="text-white mx-4">
+                            <div class="dark:text-white mx-4">
                                 Privacy Statement
                             </div>
                         </NavLink>
                         <NavLink :no-link="true" @click="showImprint = true">
-                            <div class="text-white mx-4">
+                            <div class="dark:text-white mx-4">
                                 Imprint
                             </div>
                         </NavLink>
