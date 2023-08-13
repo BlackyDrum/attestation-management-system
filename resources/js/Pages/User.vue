@@ -8,6 +8,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 
+import { FilterMatchMode } from 'primevue/api';
 import {useConfirm} from 'primevue/useconfirm';
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -18,6 +19,8 @@ import TabPanel from 'primevue/tabpanel';
 import FileUpload from 'primevue/fileupload';
 import Message from 'primevue/message';
 import Avatar from 'primevue/avatar';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 
 
 defineProps({
@@ -60,27 +63,20 @@ const userFileForm = useForm({
     userfile: null
 })
 
+const filters = ref({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    'country.name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    representative: { value: null, matchMode: FilterMatchMode.IN },
+    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    verified: { value: null, matchMode: FilterMatchMode.EQUALS }
+});
+
 
 onMounted(() => {
     searchValue.value = page.props.search;
-    emptyUsers.value = page.props.users.data.length === 0;
+    emptyUsers.value = page.props.users.length === 0;
 })
-
-const handleSearchRequest = () => {
-    axios.get(`/users/?search=${searchValue.value}&response=true`)
-        .then(response => {
-            page.props.users = response.data;
-            emptyUsers.value = page.props.users.data.length === 0;
-        })
-        .catch(error => {
-            window.toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error.response.data.message,
-                life: 3000,
-            })
-        })
-}
 
 const handleUserEdit = (user) => {
     showUserEditDialog.value = true;
@@ -148,16 +144,16 @@ const confirmUserDeletion = (userid, username) => {
                 }
             })
                 .then(response => {
-                    for (let i = 0; i < page.props.users.data.length; i++) {
-                        if (page.props.users.data[i].id === response.data.user_id) {
+                    for (let i = 0; i < page.props.users.length; i++) {
+                        if (page.props.users[i].id === response.data.user_id) {
                             window.toast.add({
                                 severity: 'success',
                                 summary: 'Success',
-                                detail: `User '${page.props.users.data[i].name}' with ID ${response.data.user_id} deleted`,
+                                detail: `User '${page.props.users[i].name}' with ID ${response.data.user_id} deleted`,
                                 life: 3000,
                             })
-                            page.props.users.data.splice(i, 1);
-                            emptyUsers.value = page.props.users.data.length === 0;
+                            page.props.users.splice(i, 1);
+                            emptyUsers.value = page.props.users.length === 0;
                             break;
                         }
                     }
@@ -237,55 +233,48 @@ const handleUserFileUpload = (event) => {
 
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8 max-w-7xl">
-                <div class="w-full text-right">
-                    <span class="p-input-icon-left">
-                        <i class="pi pi-search"/>
-                        <input-text type="text" class="rounded-xl text-black" placeholder="Search user"
-                                    @input="handleSearchRequest" v-model="searchValue"></input-text>
-                    </span>
-                </div>
-                <div class="bg-white dark:text-white p-2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg my-3"
-                     v-for="user in users.data" :key="user.id">
-                    <div>
-                        <div class="grid grid-cols-2 items-center font-bold dark:text-white p-2">
-                            <div class="flex">
-                                <Avatar icon="pi pi-user" class="mr-2" size="xlarge" />
-                                <div class="break-words self-center">{{ user.name }} <span class="pi pi-android" v-if="user.admin"></span>
-                            </div>
-                            </div>
+                <DataTable editMode="cell" stripedRows paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"  v-model:filters="filters" :value="users">
+                    <template #header>
+                        <div class="flex">
+                            <span class="p-input-icon-left ml-auto">
+                                <i class="pi pi-search"/>
+                                <InputText v-model="filters['global'].value" placeholder="Search"/>
+                            </span>
+                        </div>
+                    </template>
+                    <Column>
+                        <template #body>
+                            <Avatar icon="pi pi-user" class="mr-2" size="xlarge" />
+                        </template>
+                    </Column>
+                    <Column class="font-bold" field="name" header="Name"></Column>
+                    <Column class="font-semibold" field="email" header="Email"></Column>
+                    <Column class="font-semibold" field="matriculation_number" header="Matriculation Number"></Column>
+                    <Column>
+                        <template #body="{data}">
                             <div class="flex flex-wrap justify-content-center ml-auto mr-5">
                                 <div class="mr-4">
                                     <Button icon="pi pi-user-edit"
-                                            severity="info" @click="handleUserEdit(user)"/>
+                                            severity="info" @click="handleUserEdit(data)"/>
                                 </div>
                                 <div>
                                     <Button icon="pi pi-trash"
                                             severity="danger"
-                                            @click="confirmUserDeletion(user.id, user.name)"/>
+                                            @click="confirmUserDeletion(data.id, data.name)"/>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </template>
+                    </Column>
+                    <Column>
 
+                    </Column>
+                </DataTable>
                 <ConfirmDialog class="bg-white break-words p-4 custom-confirm-dialog rounded-md gap-8" ref="confirmDialog"/>
             </div>
         </div>
         <div class="flex dark:text-white" v-if="emptyUsers">
             <div class="mx-auto text-3xl p-5">
                 User Not Found
-            </div>
-        </div>
-        <div class="flex dark:text-white pb-5">
-            <div class="mx-auto">
-                <template v-for="links in users.links">
-                    <Link class="lg:p-3 sm:p-1 md:p-2 max-sm:p-0.5"
-                          v-if="links.url" :href="links.url + '&search=' + searchValue">
-                    <span v-html="links.label"
-                          :class="{ 'bg-gray-600 p-2 rounded-xl': links.active }"></span>
-                    </Link>
-                    <span v-else v-html="links.label"></span>
-                </template>
             </div>
         </div>
     </AuthenticatedLayout>
@@ -397,10 +386,9 @@ const handleUserFileUpload = (event) => {
     </Dialog>
 
     <!-- Edit User -->
-    <Dialog class="bg-gray-200 rounded-lg p-2 font-bold break-all"
+    <Dialog class="bg-gray-200 rounded-lg p-2 font-bold break-all lg:w-[50%] md:w-[75%] w-[90%]"
             v-model:visible="showUserEditDialog" :closable="false"
-            v-if="selectedUser" :header="selectedUser.name"
-            :style="{ width: '90vw' }" :modal="true"
+            v-if="selectedUser" :header="selectedUser.name" :modal="true"
             :draggable="false">
         <form @submit.prevent>
             <div class="p-inputgroup mt-2">

@@ -146,7 +146,7 @@ const exportCSV = () => {
                     <div>
                         <DataTable showGridlines stripedRows ref="dataTable"
                                    :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ', '_')"
-                                   v-model:filters="filters" filterDisplay="row" :value="userData" :paginator="true"
+                                   v-model:filters="filters" :value="userData" :paginator="true"
                                    :rows="10">
                             <template #header>
                                 <div class="flex flex-wrap align-items-center justify-content-between gap-2">

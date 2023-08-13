@@ -24,7 +24,7 @@ class UserController extends Controller
             "SPLIT_PART(users.name,' ', -1)" :
             "SUBSTRING_INDEX(users.name, ' ', -1)";
 
-        $user = User::query()->where('name', 'ILIKE', '%' . $search . '%')->orderByRaw($order)->paginate(20);
+        $user = User::query()->where('name', 'ILIKE', '%' . $search . '%')->orderByRaw($order)->get();
 
         if (!empty($request->input('response')) && $request->input('response')) {
             return response()->json($user);
