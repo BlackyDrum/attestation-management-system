@@ -149,7 +149,7 @@ const handleTaskDeletion = (task, index) => {
         <div v-else class="flex h-full">
             <div class="mx-auto my-auto">
                 <div class="text-gray-700 text-center">
-                    <div class="pi pi-book custom-icon" style="font-size: 5rem"></div>
+                    <div class="pi pi-book custom-icon"></div>
                 </div>
                 <div class="text-gray-500 text-center mt-4">
                     Everything done!
@@ -165,5 +165,8 @@ const handleTaskDeletion = (task, index) => {
 <style scoped>
 .custom-scroll-panel {
     height: 20rem;
+}
+.custom-icon {
+    font-size: 10rem
 }
 </style>
