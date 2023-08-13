@@ -234,7 +234,7 @@ const handleUserFileUpload = (event) => {
 
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8 max-w-7xl">
-                <DataTable stateStorage="session" stateKey="dt-state-demo-session" stripedRows paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"  v-model:filters="filters" :value="users">
+                <DataTable stateStorage="local" stateKey="dt-state-demo-session" stripedRows paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"  v-model:filters="filters" :value="users">
                     <template #header>
                         <div class="flex">
                             <span class="p-input-icon-left ml-auto">
