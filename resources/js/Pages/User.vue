@@ -261,11 +261,15 @@ const handleUserFileUpload = (event) => {
                         <template #body="{data}">
                             <div class="flex flex-wrap justify-content-center ml-autog gap-2">
                                 <div>
-                                    <Button icon="pi pi-user-edit"
+                                    <Button class="custom-button" icon="pi pi-user-edit"
                                             severity="info" @click="handleUserEdit(data)"/>
                                 </div>
                                 <div>
-                                    <Button icon="pi pi-trash"
+                                    <Button class="custom-button" icon="pi pi-envelope"
+                                            severity="info" />
+                                </div>
+                                <div>
+                                    <Button class="custom-button" icon="pi pi-trash"
                                             severity="danger"
                                             @click="confirmUserDeletion(data.id, data.name)"/>
                                 </div>
@@ -460,5 +464,10 @@ const handleUserFileUpload = (event) => {
 <style scoped>
 .footer__buttonbar {
     height: 3rem
+}
+.custom-button {
+    padding: 0.5rem;
+    width: 2rem;
+    font-size: 0.5rem;
 }
 </style>
