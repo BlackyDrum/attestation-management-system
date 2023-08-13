@@ -250,24 +250,14 @@ const handleUserFileUpload = (event) => {
                             <div class="break-all">{{ user.name }} <span class="pi pi-android" v-if="user.admin"></span>
                             </div>
                             <div class="flex flex-wrap justify-content-center ml-auto mr-5">
-                                <div class="mr-4 md:hidden">
-                                    <Button v-if="!user.admin"
-                                            icon="pi pi-trash"
+                                <div class="mr-4">
+                                    <Button icon="pi pi-user-edit"
+                                            severity="info" @click="handleUserEdit(user)"/>
+                                </div>
+                                <div>
+                                    <Button icon="pi pi-trash"
                                             severity="danger"
                                             @click="confirmUserDeletion(user.id, user.name)"/>
-                                </div>
-                                <div class="mr-4 max-md:hidden">
-                                    <Button v-if="!user.admin"
-                                            label="Delete"
-                                            icon="pi pi-trash" severity="danger"
-                                            @click="confirmUserDeletion(user.id, user.name)"/>
-                                </div>
-                                <div class="max-md:hidden">
-                                    <Button label="Edit" icon="pi pi-user-edit"
-                                            severity="success" @click="handleUserEdit(user)"/>
-                                </div>
-                                <div class="md:hidden">
-                                    <Button icon="pi pi-user-edit" severity="success" @click="handleUserEdit(user)"/>
                                 </div>
                             </div>
                         </div>
