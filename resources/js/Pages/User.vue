@@ -17,6 +17,7 @@ import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import FileUpload from 'primevue/fileupload';
 import Message from 'primevue/message';
+import Avatar from 'primevue/avatar';
 
 
 defineProps({
@@ -247,7 +248,10 @@ const handleUserFileUpload = (event) => {
                      v-for="user in users.data" :key="user.id">
                     <div>
                         <div class="grid grid-cols-2 items-center font-bold dark:text-white p-2">
-                            <div class="break-all">{{ user.name }} <span class="pi pi-android" v-if="user.admin"></span>
+                            <div class="flex">
+                                <Avatar icon="pi pi-user" class="mr-2" size="xlarge" />
+                                <div class="break-words self-center">{{ user.name }} <span class="pi pi-android" v-if="user.admin"></span>
+                            </div>
                             </div>
                             <div class="flex flex-wrap justify-content-center ml-auto mr-5">
                                 <div class="mr-4">
