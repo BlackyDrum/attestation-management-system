@@ -21,6 +21,7 @@ import Message from 'primevue/message';
 import Avatar from 'primevue/avatar';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import Tag from 'primevue/tag';
 
 
 defineProps({
@@ -233,7 +234,7 @@ const handleUserFileUpload = (event) => {
 
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8 max-w-7xl">
-                <DataTable editMode="cell" stripedRows paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"  v-model:filters="filters" :value="users">
+                <DataTable stripedRows paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"  v-model:filters="filters" :value="users">
                     <template #header>
                         <div class="flex">
                             <span class="p-input-icon-left ml-auto">
@@ -250,10 +251,16 @@ const handleUserFileUpload = (event) => {
                     <Column class="font-bold" field="name" header="Name"></Column>
                     <Column class="font-semibold" field="email" header="Email"></Column>
                     <Column class="font-semibold" field="matriculation_number" header="Matriculation Number"></Column>
+                    <Column header="Role">
+                        <template #body="{data}">
+                            <Tag v-if="data.admin" severity="danger" value="Admin"></Tag>
+                            <Tag v-else value="Student"></Tag>
+                        </template>
+                    </Column>
                     <Column>
                         <template #body="{data}">
-                            <div class="flex flex-wrap justify-content-center ml-auto mr-5">
-                                <div class="mr-4">
+                            <div class="flex flex-wrap justify-content-center ml-autog gap-2">
+                                <div>
                                     <Button icon="pi pi-user-edit"
                                             severity="info" @click="handleUserEdit(data)"/>
                                 </div>
@@ -264,9 +271,6 @@ const handleUserFileUpload = (event) => {
                                 </div>
                             </div>
                         </template>
-                    </Column>
-                    <Column>
-
                     </Column>
                 </DataTable>
                 <ConfirmDialog class="bg-white break-words p-4 custom-confirm-dialog rounded-md gap-8" ref="confirmDialog"/>
