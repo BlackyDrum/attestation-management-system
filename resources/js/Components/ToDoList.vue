@@ -104,6 +104,7 @@ const handleTaskDeletion = (task, index) => {
     })
         .then(() => {
             tasks.value.splice(index, 1);
+            checked.value.splice(checked.value.findIndex((item) => item.id === task.id),1);
         })
         .catch(error => {
             window.toast.add({
@@ -120,6 +121,7 @@ const handleTaskDeletion = (task, index) => {
 </script>
 
 <template>
+    {{checked}}
     <span class="p-input-icon-left w-full">
     <i class="pi pi-plus" />
     <InputText class="w-full" placeholder="Enter Your Todo..." v-model="taskInput" :disabled="processing" @keydown.enter="handleNewTask"/>
