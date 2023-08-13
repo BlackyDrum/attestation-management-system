@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
+use Predis\Command\Argument\Server\To;
 
 class DashboardController extends Controller
 {
@@ -100,6 +101,13 @@ class DashboardController extends Controller
         $request->validate([
             'task' => 'required|string|max:255'
         ]);
+
+        $maxToDo = 20;
+        $todos = ToDoList::query()->where('creator_id', '=', Auth::id())->get();
+
+        if (count($todos) >= $maxToDo) {
+            return \response(['message' => "You cannot have more than {$maxToDo} tasks."],422);
+        }
 
         $item = ToDoList::query()->create([
             'task' => $request->input('task'),
