@@ -221,17 +221,20 @@ const handleUserFileUpload = (event) => {
         <template #header>
             <div class="grid grid-cols-2">
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Users</h2>
-                <div class="ml-auto">
+                <div class="ml-auto md:hidden">
                     <primary-button @click="handleCreateUserOpen">Create new User</primary-button>
                 </div>
             </div>
         </template>
 
         <div class="py-12">
-            <div class="mx-auto sm:px-6 lg:px-8 max-w-7xl">
+            <div class="mx-auto sm:px-6 lg:px-8 ">
                 <DataTable stateStorage="local" stateKey="dt-state-demo-session" stripedRows paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"  v-model:filters="filters" :value="users">
                     <template #header>
                         <div class="flex">
+                            <div class="self-center max-md:hidden">
+                                <secondary-button @click="handleCreateUserOpen">Create new User</secondary-button>
+                            </div>
                             <span class="p-input-icon-left ml-auto">
                                 <i class="pi pi-search"/>
                                 <InputText v-model="filters['global'].value" placeholder="Search"/>
