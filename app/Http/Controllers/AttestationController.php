@@ -102,7 +102,7 @@ class AttestationController extends Controller
             ]);
         }
 
-        DB::rollBack();
+        DB::commit();
 
         return to_route('attestations');
     }

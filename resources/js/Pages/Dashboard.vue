@@ -323,7 +323,7 @@ const deleteNotification = (index, clear) => {
                             <ToDoList/>
                         </div>
                         <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-xl:mt-4">
-                            <ScrollPanel class="custom-scroll-panel">
+                            <ScrollPanel class="custom-scroll-panel" v-if="notifications.length !== 0">
                                 <div class="text-sm" v-for="(notification, index) in notifications" :key="notification">
                                     <Message :severity="notification.split('|')[0].trim().toLowerCase()"
                                              @close="deleteNotification(index, false)"
@@ -335,6 +335,16 @@ const deleteNotification = (index, clear) => {
                                     </Message>
                                 </div>
                             </ScrollPanel>
+                            <div v-else class="flex h-full">
+                                <div class="mx-auto my-auto">
+                                    <div class="text-gray-700 text-center">
+                                        <div class="pi pi-envelope custom-icon"></div>
+                                    </div>
+                                    <div class="text-gray-500 text-center mt-4">
+                                        No messages
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
