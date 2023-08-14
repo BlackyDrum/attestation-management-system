@@ -80,7 +80,7 @@ class DashboardController extends Controller
             Redis::command('LPUSH', ["users:{$user['id']}:notifications", "{$request->input('severity')}|{$request->input('message')}|" . date('Y-m-d') . ' ' . date('h:i:sa')]);
         }
 
-        return to_route('dashboard');
+        return redirect()->back();
     }
 
     public function update_semester(Request $request)

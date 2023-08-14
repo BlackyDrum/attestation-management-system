@@ -22,6 +22,7 @@ import Avatar from 'primevue/avatar';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Tag from 'primevue/tag';
+import Dropdown from 'primevue/dropdown';
 
 
 defineProps({
@@ -40,6 +41,8 @@ const emptyUsers = ref(false);
 const showUserEditDialog = ref(false);
 const selectedUser = ref(null);
 const showUserCreateDialog = ref(false);
+const showSendNotificationDialog = ref(false);
+const receiver = ref(null);
 
 const userEditForm = useForm({
     id: null,
@@ -60,6 +63,12 @@ const userFileForm = useForm({
     userfile: null
 })
 
+const notificationForm = useForm({
+    users: [],
+    message: null,
+    severity: null,
+})
+
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -68,6 +77,8 @@ const filters = ref({
     status: { value: null, matchMode: FilterMatchMode.EQUALS },
     verified: { value: null, matchMode: FilterMatchMode.EQUALS }
 });
+
+const severities = ref(["info", "error", "warn", "success"]);
 
 
 onMounted(() => {
@@ -212,6 +223,45 @@ const handleUserFileUpload = (event) => {
         }
     });
 }
+
+const handleDialogOpen = (user) => {
+    receiver.value = user.name;
+    showSendNotificationDialog.value = true;
+    notificationForm.users.push(user);
+}
+
+const handleDialogSend = () => {
+    notificationForm.post('/notifications', {
+        onSuccess: () => {
+            notificationForm.reset();
+            showSendNotificationDialog.value = false;
+            window.toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: `Message sent to '${receiver.value}'`,
+                life: 3000,
+            })
+        },
+        onError: (error) => {
+            for (const e in error) {
+                if (e.includes('users.')) {
+                    window.toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error[e],
+                        life: 8000,
+                    })
+                }
+            }
+        }
+    })
+}
+
+const handleDialogClose = () => {
+    showSendNotificationDialog.value = false;
+    notificationForm.reset();
+    page.props.errors = {};
+}
 </script>
 
 <template>
@@ -264,7 +314,7 @@ const handleUserFileUpload = (event) => {
                                 </div>
                                 <div>
                                     <Button class="custom-button" icon="pi pi-envelope"
-                                            severity="info" />
+                                            severity="info" @click="handleDialogOpen(data)"/>
                                 </div>
                                 <div>
                                     <Button class="custom-button" icon="pi pi-trash"
@@ -453,6 +503,46 @@ const handleUserFileUpload = (event) => {
                                     @click="sendUserEditForm">Save Changes
                     </primary-button>
                     <secondary-button @click="handleUserEditClose">Cancel</secondary-button>
+                </div>
+            </div>
+        </form>
+    </Dialog>
+
+    <Dialog class="lg:w-[50%] md:w-[75%] w-[90%]"
+            v-model:visible="showSendNotificationDialog" :closable="false" modal :header="`Send message to ${receiver}`">
+        <form @submit.prevent="handleDialogSend">
+            <div>
+                <span class="p-float-label">
+                    <Dropdown class="max-md:w-[16rem] w-80"
+                              :disabled="notificationForm.processing" v-model="notificationForm.severity"
+                              :options="severities"/>
+                    <label>Severity</label>
+                </span>
+                <error-message :show="errors.severity">
+                    {{ errors.severity }}
+                </error-message>
+            </div>
+            <div class="mt-6">
+                    <span class="p-float-label">
+                        <InputText class="w-full" :disabled="notificationForm.processing"
+                                   v-model="notificationForm.message" autoresize/>
+                        <label>Message</label>
+                    </span>
+                <error-message :show="errors.message">
+                    {{ errors.message }}
+                </error-message>
+            </div>
+
+            <div class="my-4 grid grid-cols-2">
+                <div class="justify-center">
+                    <CustomProgressSpinner :processing="notificationForm.processing"></CustomProgressSpinner>
+                </div>
+                <div class="flex justify-end footer__buttonbar">
+                    <primary-button class="mr-5 disabled:cursor-not-allowed"
+                                    :disabled="notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)">
+                        Send
+                    </primary-button>
+                    <secondary-button @click="handleDialogClose">Cancel</secondary-button>
                 </div>
             </div>
         </form>
