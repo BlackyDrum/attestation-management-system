@@ -1,6 +1,6 @@
 <script setup>
 import {Head, useForm, usePage, router} from '@inertiajs/vue3';
-import {onBeforeUpdate, onMounted, ref} from 'vue';
+import {computed, onBeforeUpdate, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -116,6 +116,19 @@ onBeforeUpdate(() => {
     createNameWithMatNumber();
     chartData.value = [];
     setupChart();
+})
+
+const noAttestations = computed(() => {
+    return page.props.attestations.length === 0 || (page.props.auth.user.admin && Array.isArray(combinedData.value) && combinedData.value.length === 0)
+})
+
+const disableFormSend = computed(() => {
+    return attestationForm.processing || (!attestationForm.subjectName || !attestationForm.subjectNumber || !attestationForm.acronym || !attestationForm.semester || attestationForm.attestations.length === 0)
+})
+
+const buttonLabel = computed(() => {
+    return isEdit.value ? "Save Changes" : "Create new subject"
+
 })
 
 const createNameWithMatNumber = () => {
@@ -548,7 +561,7 @@ const handleUserFileUpload = (attestation) => {
         </div>
 
         <template
-            v-if="attestations.length === 0 || ($page.props.auth.user.admin && Array.isArray(combinedData) && combinedData.length === 0)">
+            v-if="noAttestations">
             <div class="text-gray-700 text-center">
                 <div class="pi pi-book custom-icon"></div>
             </div>
@@ -564,7 +577,8 @@ const handleUserFileUpload = (attestation) => {
                     :style="{ width: '90vw' }">
                 <form @submit.prevent="handleFormSend">
                     <span class="p-float-label mt-5">
-                        <MultiSelect class="w-full md:w-20rem" filter :disabled="attestationForm.processing" :loading="!$props.users"
+                        <MultiSelect class="w-full md:w-20rem" filter :disabled="attestationForm.processing"
+                                     :loading="!$props.users"
                                      v-model="attestationForm.users" :options="userWithMatriculationNumber"
                                      optionLabel="name" :maxSelectedLabels="3"
                                      :virtualScrollerOptions="{ itemSize: 44 }"/>
@@ -596,7 +610,8 @@ const handleUserFileUpload = (attestation) => {
                         <div class="my-4">
                             <span class="p-input-icon-right w-full p-float-label">
                                 <i class="pi pi-book"/>
-                                <input-text class="w-full" :disabled="attestationForm.processing" v-model="attestationForm.subjectName"/>
+                                <input-text class="w-full" :disabled="attestationForm.processing"
+                                            v-model="attestationForm.subjectName"/>
                                 <label for="subject_name">Subject Name</label>
                             </span>
                             <error-message :show="errors.subjectName">
@@ -617,7 +632,8 @@ const handleUserFileUpload = (attestation) => {
                     </div>
                     <div class="mt-4">
                         <span class="p-float-label">
-                            <Dropdown class="max-md:w-[16rem] w-80" :disabled="attestationForm.processing" v-model="attestationForm.semester"
+                            <Dropdown class="max-md:w-[16rem] w-80" :disabled="attestationForm.processing"
+                                      v-model="attestationForm.semester"
                                       :options="semester" optionLabel="semester"/>
                             <label for="semester">Semester</label>
                         </span>
@@ -711,10 +727,7 @@ const handleUserFileUpload = (attestation) => {
                         </div>
                         <div class="flex justify-end footer__buttonbar">
                             <primary-button class="mr-5 disabled:cursor-not-allowed"
-                                            :disabled="attestationForm.processing || (!attestationForm.subjectName || !attestationForm.subjectNumber || !attestationForm.acronym || !attestationForm.semester || attestationForm.attestations.length === 0)">{{
-                                    isEdit ? "Save Changes" :
-                                        "Create new subject"
-                                }}</primary-button>
+                                            :disabled="disableFormSend">{{buttonLabel}}</primary-button>
                             <secondary-button @click="handleDialogClose">Cancel</secondary-button>
                             <span v-if="!isEdit" class="ml-10 max-md:hidden">
                                 <Button severity="danger" aria-label="Cancel" @click="resetForm">Reset</Button>
@@ -732,12 +745,15 @@ const handleUserFileUpload = (attestation) => {
     border-top-left-radius: revert;
     border-top-right-radius: revert;
 }
+
 .custom-input-text {
     font-weight: bold
 }
+
 .custom-icon {
     font-size: 10rem
 }
+
 .footer__buttonbar {
     height: 3rem
 }

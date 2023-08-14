@@ -145,7 +145,7 @@ const setupChartDataPie = () => {
     const documentStyle = getComputedStyle(document.body);
 
     return {
-        labels:["Done", "To Do"],
+        labels: ["Done", "To Do"],
         datasets: [
             {
                 data: [0, 0],
@@ -179,7 +179,7 @@ const handleDialogClose = () => {
 
 const handleSemesterSelection = (event) => {
     loadingData.value = true;
-    axios.patch('/dashboard/current_semester',{
+    axios.patch('/dashboard/current_semester', {
         semester: selectedSemester.value.id,
     })
         .then(response => {
@@ -281,8 +281,8 @@ const deleteNotification = (index, clear) => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="flex">
-                    <Dropdown  class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"
-                               v-model="selectedSemester" @change="handleSemesterSelection($event)"
+                    <Dropdown class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"
+                              v-model="selectedSemester" @change="handleSemesterSelection($event)"
                               :options="semester" optionLabel="semester"/>
                 </div>
                 <div class="mt-4" v-if="!selectedSemester">
@@ -295,7 +295,7 @@ const deleteNotification = (index, clear) => {
                 </div>
                 <div class="flex" v-else-if="loadingData">
                     <div class="mx-auto">
-                        <ProgressSpinner class="custom-progress-spinner" />
+                        <ProgressSpinner class="custom-progress-spinner"/>
                     </div>
                 </div>
                 <div v-else-if="combinedData.length === 0">
@@ -308,21 +308,22 @@ const deleteNotification = (index, clear) => {
                 </div>
                 <div v-else>
                     <div class="grid grid-cols-1 xl:grid-cols-[67%,30%] xl:gap-10">
-                        <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                            <Chart type="bar" :data="chartDataBarTotal" :options="chartOptionsBarTotal" />
+                        <div class="dashboard__item">
+                            <Chart type="bar" :data="chartDataBarTotal" :options="chartOptionsBarTotal"/>
                         </div>
-                        <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-xl:mt-4">
+                        <div class="dashboard__item max-xl:mt-4">
                             <Chart type="doughnut" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
                             <div class="mt-6">
-                                <ProgressBar :value="Math.round(totalCheckedCount / totalTaskCount * 100)"></ProgressBar>
+                                <ProgressBar
+                                    :value="Math.round(totalCheckedCount / totalTaskCount * 100)"></ProgressBar>
                             </div>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 mt-4 xl:grid-cols-[40%,57%] xl:gap-10">
-                        <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="dashboard__item">
                             <ToDoList/>
                         </div>
-                        <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-xl:mt-4">
+                        <div class="dashboard__item max-xl:mt-4">
                             <ScrollPanel class="custom-scroll-panel" v-if="notifications.length !== 0">
                                 <div class="text-sm" v-for="(notification, index) in notifications" :key="notification">
                                     <Message :severity="notification.split('|')[0].trim().toLowerCase()"
@@ -416,19 +417,27 @@ const deleteNotification = (index, clear) => {
     width: 10vw;
     height: 10vw
 }
+
 .custom-icon {
     font-size: 10rem
 }
+
+.custom-scroll-panel {
+    height: 24rem;
+}
+
 .footer__buttonbar {
     height: 3rem
 }
+
+.dashboard__item {
+    @apply bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg
+}
+
 @media (max-width: 1280px) {
     .custom-progress-spinner {
         width: 25vw;
         height: 25vw
     }
-}
-.custom-scroll-panel {
-    height: 24rem;
 }
 </style>

@@ -8,7 +8,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 
-import { FilterMatchMode } from 'primevue/api';
+import {FilterMatchMode} from 'primevue/api';
 import {useConfirm} from 'primevue/useconfirm';
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -70,12 +70,12 @@ const notificationForm = useForm({
 })
 
 const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    'country.name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    representative: { value: null, matchMode: FilterMatchMode.IN },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS },
-    verified: { value: null, matchMode: FilterMatchMode.EQUALS }
+    global: {value: null, matchMode: FilterMatchMode.CONTAINS},
+    name: {value: null, matchMode: FilterMatchMode.STARTS_WITH},
+    'country.name': {value: null, matchMode: FilterMatchMode.STARTS_WITH},
+    representative: {value: null, matchMode: FilterMatchMode.IN},
+    status: {value: null, matchMode: FilterMatchMode.EQUALS},
+    verified: {value: null, matchMode: FilterMatchMode.EQUALS}
 });
 
 const severities = ref(["info", "error", "warn", "success"]);
@@ -279,7 +279,8 @@ const handleDialogClose = () => {
 
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8 ">
-                <DataTable stateStorage="local" stateKey="dt-state-demo-session" stripedRows paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]"  v-model:filters="filters" :value="users">
+                <DataTable stateStorage="local" stateKey="dt-state-demo-session" stripedRows paginator :rows="10"
+                           :rowsPerPageOptions="[5, 10, 20, 50]" v-model:filters="filters" :value="users">
                     <template #header>
                         <div class="flex">
                             <div class="self-center max-md:hidden">
@@ -293,7 +294,7 @@ const handleDialogClose = () => {
                     </template>
                     <Column>
                         <template #body>
-                            <Avatar icon="pi pi-user" class="mr-2" size="xlarge" />
+                            <Avatar icon="pi pi-user" class="mr-2" size="xlarge"/>
                         </template>
                     </Column>
                     <Column class="font-bold" field="name" header="Name"></Column>
@@ -325,7 +326,8 @@ const handleDialogClose = () => {
                         </template>
                     </Column>
                 </DataTable>
-                <ConfirmDialog class="bg-white break-words p-4 custom-confirm-dialog rounded-md gap-8" ref="confirmDialog"/>
+                <ConfirmDialog class="bg-white break-words p-4 custom-confirm-dialog rounded-md gap-8"
+                               ref="confirmDialog"/>
             </div>
         </div>
         <div class="flex dark:text-white" v-if="emptyUsers">
@@ -509,7 +511,8 @@ const handleDialogClose = () => {
     </Dialog>
 
     <Dialog class="lg:w-[50%] md:w-[75%] w-[90%]"
-            v-model:visible="showSendNotificationDialog" :closable="false" modal :header="`Send message to ${receiver}`">
+            v-model:visible="showSendNotificationDialog" :closable="false" modal
+            :header="`Send message to ${receiver}`">
         <form @submit.prevent="handleDialogSend">
             <div>
                 <span class="p-float-label">
@@ -553,6 +556,7 @@ const handleDialogClose = () => {
 .footer__buttonbar {
     height: 3rem
 }
+
 .custom-button {
     padding: 0.5rem;
     width: 2rem;
