@@ -16,6 +16,8 @@ import Dropdown from 'primevue/dropdown';
 import Chart from 'primevue/chart';
 import ProgressSpinner from 'primevue/progressspinner';
 import ProgressBar from 'primevue/progressbar';
+import Message from 'primevue/message';
+import ScrollPanel from 'primevue/scrollpanel';
 
 import combine from "@/CombinedData.js";
 
@@ -234,6 +236,27 @@ const loadSemesterData = () => {
         chartDataBarTotal.value.labels = acronyms.value;
     }
 }
+
+const deleteNotification = (index, clear) => {
+    axios.delete('/notifications', {
+        data: {
+            index: index,
+            clearAll: clear,
+        }
+    })
+        .then(response => {
+            notifications.value.splice(index, 1);
+            //router.reload();
+        })
+        .catch(error => {
+            window.toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 8000,
+            })
+        })
+}
 </script>
 
 <template>
@@ -295,11 +318,24 @@ const loadSemesterData = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 mt-4 xl:grid-cols-[40%,50%] xl:gap-10">
+                    <div class="grid grid-cols-1 mt-4 xl:grid-cols-[40%,57%] xl:gap-10">
                         <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                             <ToDoList/>
                         </div>
-                        <div></div>
+                        <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg max-xl:mt-4">
+                            <ScrollPanel class="custom-scroll-panel">
+                                <div class="text-sm" v-for="(notification, index) in notifications" :key="notification">
+                                    <Message :severity="notification.split('|')[0].trim().toLowerCase()"
+                                             @close="deleteNotification(index, false)"
+                                    >
+                                        <div>{{ notification.split('|')[1].trim() }}</div>
+                                        <div class="font-medium text-gray-900/70">
+                                            {{ notification.split('|')[2].trim() }}
+                                        </div>
+                                    </Message>
+                                </div>
+                            </ScrollPanel>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -381,5 +417,8 @@ const loadSemesterData = () => {
         width: 25vw;
         height: 25vw
     }
+}
+.custom-scroll-panel {
+    height: 24rem;
 }
 </style>
