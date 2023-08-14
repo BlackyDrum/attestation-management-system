@@ -59,6 +59,8 @@ class AttestationController extends Controller
             'creator_id' => Auth::id(),
         ]);
 
+        DB::beginTransaction();
+
         foreach ($request->input('attestations') as $task) {
             $f[] = AttestationTasks::query()->create([
                 'attestation_id' => $attestation['id'],
@@ -100,6 +102,8 @@ class AttestationController extends Controller
             ]);
         }
 
+        DB::rollBack();
+
         return to_route('attestations');
     }
 
@@ -113,6 +117,8 @@ class AttestationController extends Controller
         ],[
             'id.*' => "The selected attestation id is invalid"
         ]);
+
+        DB::beginTransaction();
 
         $attestation = Attestation::query()->find($request->input('id'))->fill([
             'subject_number' => $request->input('subjectNumber'),
@@ -214,6 +220,8 @@ class AttestationController extends Controller
 
         UserHasCheckedTask::query()->join('attestation_tasks', 'attestation_tasks.id', '=', 'user_has_checked_task.task_id')
             ->where('attestation_tasks.attestation_id', '=', $attestation['id'])->whereNotIn('user_id', $uids)->delete();
+
+        DB::commit();
 
         return to_route('attestations');
     }
