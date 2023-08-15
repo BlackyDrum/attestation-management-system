@@ -422,8 +422,7 @@ const handleUserFileUpload = (attestation) => {
                                  v-if="$page.props.auth.user.admin && s.id === attestation.semester_id">
                                 <Accordion>
                                     <AccordionTab :header="`${attestation.subject_name} (${attestation.subject_number})`">
-                                        <div class="w-full bg-blue-800 h-3"/>
-                                        <Card class="break-words border border-gray-800">
+                                        <Card class="break-words border">
                                             <template #title>
                                                 <div>
                                                     {{ attestation.subject_name }} ({{ attestation.semester }})
