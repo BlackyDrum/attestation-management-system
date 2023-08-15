@@ -275,12 +275,12 @@ const handleDialogClose = () => {
 }
 
 const getSeverity = data => {
-    switch (data.role) {
-        case 'Admin': return 'danger';
-        case 'Tutor': return 'warning';
-        case 'Professor': return 'success';
-        case 'Student': return 'primary';
-        case 'User': return 'info'
+    switch (data.role.toLowerCase()) {
+        case 'admin': return 'danger';
+        case 'tutor': return 'warning';
+        case 'professor': return 'success';
+        case 'student': return 'primary';
+        case 'user': return 'info'
     }
 
     return 'primary';
