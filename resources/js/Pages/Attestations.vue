@@ -418,7 +418,7 @@ const handleUserFileUpload = (attestation) => {
                             <span>{{s.semester}}</span>
                         </template>
                         <template v-for="(attestation, index) in combinedData" :key="attestation.id">
-                            <div class="bg-white mb-10 rounded-lg overflow-hidden shadow-sm sm:rounded-lg dark:bg-gray-800"
+                            <div class="shadow-xl mb-4"
                                  v-if="$page.props.auth.user.admin && s.id === attestation.semester_id">
                                 <Accordion>
                                     <AccordionTab :header="`${attestation.subject_name} (${attestation.subject_number})`">
