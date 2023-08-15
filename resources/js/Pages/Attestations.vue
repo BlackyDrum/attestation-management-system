@@ -492,76 +492,37 @@ const handleUserFileUpload = (attestation) => {
                                     </AccordionTab>
                                 </Accordion>
                             </div>
-                            <div class="mb-10 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
+                            <div class="shadow-xl mb-4"
                                  v-else-if="!$page.props.auth.user.admin && s.id === attestation.semester_id">
-                                <div class="w-full bg-blue-800 h-3"/>
-                                <Dialog v-model:visible="showAttestationInfoDialog" modal :header="subject_name"
-                                        :style="{ width: '90vw' }">
-                                    <TabView :scrollable="true">
-                                        <TabPanel>
-                                            <template #header>
-                                                <i class="pi pi-calendar mr-2"></i>
-                                                <span>Attestation</span>
+                                <Accordion>
+                                    <AccordionTab :header="`${attestation.subject_name} (${attestation.subject_number})`">
+                                        <Card class="rounded-lg border">
+                                            <template #title> {{ attestation.subject_name }} ({{ attestation.semester }})</template>
+                                            <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
+                                            <template #content>
+                                                <div class="flex flex-wrap justify-evenly gap-2">
+                                                    <div class="w-1/2 max-md:w-full">
+                                                        <span class="p-input-icon-left w-full">
+                                                            <i class="pi pi-file"/>
+                                                            <InputText class="w-full" disabled
+                                                                       placeholder="Search"
+                                                                       :value="`Tasks: ${attestation.tasks[0].length}`"/>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </template>
-                                            <DataTable showGridlines stripedRows :value="userData">
-                                                <Column field="Name" header="Name"></Column>
-                                                <Column v-for="header in headers" :field="header" :key="header">
-                                                    <template #header="{ index }">
-                                                        <div class="mx-auto">
-                                                            <div>{{ header }}</div>
-                                                        </div>
-                                                    </template>
-                                                    <template #body="{ index, field, data }">
-                                                        <div class="flex justify-center items-center h-full">
-                                                            <Checkbox disabled v-model="data[field]" :binary="true"/>
-                                                        </div>
-                                                    </template>
-                                                </Column>
-                                            </DataTable>
-                                        </TabPanel>
-                                        <TabPanel v-for="(header, index1) in headers" :key="header">
-                                            <template #header>
-                                                <i class="pi pi-file-edit mr-2"></i>
-                                                <span class="font-medium whitespace-nowrap">{{ header }}</span>
+                                            <template #footer>
+                                                <div class="grid grid-cols-2 max-md:grid-cols-1">
+                                                    <div>
+                                                        <Button icon="pi pi-info-circle"
+                                                                label="Info" severity="success"
+                                                                @click="handleAttestationInfo(attestation, index)"/>
+                                                    </div>
+                                                </div>
                                             </template>
-                                            <Editor class="h-full w-full" readonly
-                                                    v-if="descriptions[index1]"
-                                                    v-model="descriptions[index1]">
-                                                <template #toolbar>
-                                                    <span></span>
-                                                </template>
-                                            </Editor>
-                                            <span v-else>
-                                    <em>No Description available.</em>
-                                </span>
-                                        </TabPanel>
-                                    </TabView>
-                                </Dialog>
-                                <Card class="rounded-lg border border-gray-800">
-                                    <template #title> {{ attestation.subject_name }} ({{ attestation.semester }})</template>
-                                    <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
-                                    <template #content>
-                                        <div class="flex flex-wrap justify-evenly gap-2">
-                                            <div class="w-1/2 max-md:w-full">
-                                    <span class="p-input-icon-left w-full">
-                                        <i class="pi pi-file"/>
-                                        <InputText class="w-full" disabled
-                                                   placeholder="Search"
-                                                   :value="`Tasks: ${attestation.tasks[0].length}`"/>
-                                    </span>
-                                            </div>
-                                        </div>
-                                    </template>
-                                    <template #footer>
-                                        <div class="grid grid-cols-2 max-md:grid-cols-1">
-                                            <div>
-                                                <Button icon="pi pi-info-circle"
-                                                        label="Info" severity="success"
-                                                        @click="handleAttestationInfo(attestation, index)"/>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </Card>
+                                        </Card>
+                                    </AccordionTab>
+                                </Accordion>
                             </div>
                         </template>
                     </AccordionTab>
@@ -747,6 +708,49 @@ const handleUserFileUpload = (attestation) => {
             </Dialog>
         </span>
     </AuthenticatedLayout>
+
+    <Dialog v-model:visible="showAttestationInfoDialog" modal :header="subject_name"
+            :style="{ width: '90vw' }">
+        <TabView :scrollable="true">
+            <TabPanel>
+                <template #header>
+                    <i class="pi pi-calendar mr-2"></i>
+                    <span>Attestation</span>
+                </template>
+                <DataTable showGridlines stripedRows :value="userData">
+                    <Column field="Name" header="Name"></Column>
+                    <Column v-for="header in headers" :field="header" :key="header">
+                        <template #header="{ index }">
+                            <div class="mx-auto">
+                                <div>{{ header }}</div>
+                            </div>
+                        </template>
+                        <template #body="{ index, field, data }">
+                            <div class="flex justify-center items-center h-full">
+                                <Checkbox disabled v-model="data[field]" :binary="true"/>
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
+            </TabPanel>
+            <TabPanel v-for="(header, index1) in headers" :key="header">
+                <template #header>
+                    <i class="pi pi-file-edit mr-2"></i>
+                    <span class="font-medium whitespace-nowrap">{{ header }}</span>
+                </template>
+                <Editor class="h-full w-full" readonly
+                        v-if="descriptions[index1]"
+                        v-model="descriptions[index1]">
+                    <template #toolbar>
+                        <span></span>
+                    </template>
+                </Editor>
+                <span v-else>
+                    <em>No Description available.</em>
+                </span>
+            </TabPanel>
+        </TabView>
+    </Dialog>
 </template>
 
 <style>
