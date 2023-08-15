@@ -410,7 +410,7 @@ const handleUserFileUpload = (attestation) => {
             </div>
         </template>
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div v-if="!noAttestations" class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <Accordion :activeIndex="0">
                     <AccordionTab v-for="s in semester">
                         <template #header>

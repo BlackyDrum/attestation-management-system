@@ -181,7 +181,7 @@ const deleteNotification = (index, clear) => {
                                                 type="button"
                                             >
                                                 {{ $page.props.auth.user.name }} <span
-                                                class="pi pi-android ml-2" v-if="$page.props.auth.user.admin"></span>
+                                                class="pi pi-wrench ml-2" v-if="$page.props.auth.user.admin"></span>
                                                 <svg
                                                     class="ml-2 -mr-0.5 h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"

@@ -31,6 +31,9 @@ defineProps({
     },
     errors: {
         type: Object
+    },
+    roles: {
+        type: Array,
     }
 })
 
@@ -48,6 +51,7 @@ const userEditForm = useForm({
     id: null,
     matriculation_number: null,
     name: null,
+    role: null,
     email: null,
     password: null,
 })
@@ -55,6 +59,7 @@ const userEditForm = useForm({
 const userCreateForm = useForm({
     matriculation_number: null,
     name: null,
+    role: null,
     email: null,
     password: null,
 })
@@ -71,18 +76,22 @@ const notificationForm = useForm({
 
 const filters = ref({
     global: {value: null, matchMode: FilterMatchMode.CONTAINS},
-    name: {value: null, matchMode: FilterMatchMode.STARTS_WITH},
-    'country.name': {value: null, matchMode: FilterMatchMode.STARTS_WITH},
-    representative: {value: null, matchMode: FilterMatchMode.IN},
-    status: {value: null, matchMode: FilterMatchMode.EQUALS},
-    verified: {value: null, matchMode: FilterMatchMode.EQUALS}
 });
 
 const severities = ref(["info", "error", "warn", "success"]);
 
+const roles = ref([]);
+
 
 onMounted(() => {
     emptyUsers.value = page.props.users.length === 0;
+
+    for (const role of page.props.roles) {
+        roles.value.push({
+            role: role.role,
+            id: role.id
+        });
+    }
 })
 
 const handleUserEdit = (user) => {
@@ -93,6 +102,7 @@ const handleUserEdit = (user) => {
     userEditForm.id = user.id;
     userEditForm.matriculation_number = user.matriculation_number;
     userEditForm.name = user.name;
+    userEditForm.role = {role: user.role, id: user.role_id}
     userEditForm.email = user.email;
 }
 
@@ -104,7 +114,7 @@ const handleUserEditClose = () => {
 }
 
 const sendUserEditForm = () => {
-    if ((selectedUser.value.name === userEditForm.name && selectedUser.value.email === userEditForm.email && selectedUser.value.matriculation_number === userEditForm.matriculation_number) && !userEditForm.password)
+    if ((selectedUser.value.name === userEditForm.name && selectedUser.value.email === userEditForm.email && selectedUser.value.role_id === userEditForm.role.id && selectedUser.value.matriculation_number === userEditForm.matriculation_number) && !userEditForm.password)
         return;
 
     userEditForm.put('/users', {
@@ -116,6 +126,7 @@ const sendUserEditForm = () => {
             selectedUser.value.id = userEditForm.id;
             selectedUser.value.matriculation_number = parseInt(userEditForm.matriculation_number);
             selectedUser.value.name = userEditForm.name;
+            selectedUser.value.role_id = userEditForm.role.id;
             selectedUser.value.email = userEditForm.email;
             window.toast.add({
                 severity: 'success',
@@ -262,6 +273,18 @@ const handleDialogClose = () => {
     notificationForm.reset();
     page.props.errors = {};
 }
+
+const getSeverity = data => {
+    switch (data.role) {
+        case 'Admin': return 'danger';
+        case 'Tutor': return 'warning';
+        case 'Professor': return 'success';
+        case 'Student': return 'primary';
+        case 'User': return 'info'
+    }
+
+    return 'primary';
+}
 </script>
 
 <template>
@@ -302,8 +325,7 @@ const handleDialogClose = () => {
                     <Column class="font-semibold" field="matriculation_number" header="Matriculation Number"></Column>
                     <Column header="Role">
                         <template #body="{data}">
-                            <Tag v-if="data.admin" severity="danger" value="Admin"></Tag>
-                            <Tag v-else value="Student"></Tag>
+                            <Tag :severity="getSeverity(data)" :value="data.role"></Tag>
                         </template>
                     </Column>
                     <Column>
@@ -362,6 +384,20 @@ const handleDialogClose = () => {
                     </error-message>
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
+                            <i class="pi pi-paperclip mr-2"></i>
+                        </span>
+                        <Dropdown class="max-md:w-[16rem] w-80" placeholder="Role"
+                                  :disabled="userCreateForm.processing" v-model="userCreateForm.role"
+                                  :options="roles" optionLabel="role"/>
+                    </div>
+                    <error-message :show="errors.role">
+                        {{ errors.role }}
+                    </error-message>
+                    <error-message v-if="!errors.role" :show="errors['role.id']">
+                        {{ errors['role.id'] }}
+                    </error-message>
+                    <div class="p-inputgroup mt-2">
+                        <span class="p-inputgroup-addon">
                             <i class="pi pi-user mr-2"></i>
                         </span>
                         <InputText class="border border-black rounded-md p-1"
@@ -402,7 +438,7 @@ const handleDialogClose = () => {
                         </div>
                         <div class="flex justify-end footer__buttonbar">
                             <primary-button class="max-md:mr-2 mr-5 disabled:cursor-not-allowed"
-                                            :disabled="userCreateForm.processing || !userCreateForm.matriculation_number || !userCreateForm.name || !userCreateForm.email || !userCreateForm.password"
+                                            :disabled="userCreateForm.processing || !userCreateForm.matriculation_number || !userCreateForm.role || !userCreateForm.name || !userCreateForm.email || !userCreateForm.password"
                                             @click="sendUserCreateForm">Create User
                             </primary-button>
                             <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
@@ -463,6 +499,20 @@ const handleDialogClose = () => {
             </error-message>
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
+                    <i class="pi pi-paperclip mr-2"></i>
+                </span>
+                <Dropdown class="max-md:w-[16rem] w-80" placeholder="Role"
+                          :disabled="userEditForm.processing" v-model="userEditForm.role"
+                          :options="roles" optionLabel="role"/>
+            </div>
+            <error-message :show="errors.role">
+                {{ errors.role }}
+            </error-message>
+            <error-message v-if="!errors.role" :show="errors['role.id']">
+                {{ errors['role.id'] }}
+            </error-message>
+            <div class="p-inputgroup mt-2">
+                <span class="p-inputgroup-addon">
                     <i class="pi pi-user mr-2"></i>
                 </span>
                 <InputText :disabled="userEditForm.processing" type="text" required v-model="userEditForm.name"
@@ -501,7 +551,7 @@ const handleDialogClose = () => {
                 </div>
                 <div class="flex justify-end footer__buttonbar">
                     <primary-button class="mr-5 disabled:cursor-not-allowed"
-                                    :disabled="userEditForm.processing || (selectedUser.name === userEditForm.name && selectedUser.email === userEditForm.email && selectedUser.matriculation_number === parseInt(userEditForm.matriculation_number) && !userEditForm.password)"
+                                    :disabled="userEditForm.processing || (selectedUser.name === userEditForm.name && selectedUser.role_id === userEditForm.role.id && selectedUser.email === userEditForm.email && selectedUser.matriculation_number === parseInt(userEditForm.matriculation_number) && !userEditForm.password)"
                                     @click="sendUserEditForm">Save Changes
                     </primary-button>
                     <secondary-button @click="handleUserEditClose">Cancel</secondary-button>

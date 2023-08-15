@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('attestation', function (Blueprint $table) {
-            $table->string('acronym', 8);
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('role',255);
+            $table->timestamps();
         });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('attestation', function (Blueprint $table) {
-            $table->dropColumn('acronym');
-        });
+        Schema::dropIfExists('roles');
     }
 };

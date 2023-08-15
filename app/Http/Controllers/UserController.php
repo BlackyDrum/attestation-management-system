@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotificationEvent;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,10 +23,18 @@ class UserController extends Controller
             "SPLIT_PART(users.name,' ', -1)" :
             "SUBSTRING_INDEX(users.name, ' ', -1)";
 
-        $user = User::query()->orderByRaw($order)->get();
+        $user = User::query()->orderByRaw($order)
+            ->join('roles', 'users.role_id', '=', 'roles.id')
+            ->select([
+                'users.*',
+                'roles.role',
+            ])
+            ->get();
+
 
         return Inertia::render('User', [
             'users' => $user,
+            'roles' => Role::all(),
         ]);
     }
 
@@ -54,26 +63,26 @@ class UserController extends Controller
             'id' => 'required|integer|exists:users,id',
             'matriculation_number' => ['required', 'integer', Rule::unique('users')->ignore($request->input('id'))],
             'name' => 'required|string|max:50',
+            'role' => 'required|array|min:1',
+            'role.id' => 'required|integer|exists:roles,id',
             'email' => ['required', 'max:255', 'email', Rule::unique('users')->ignore($request->input('id'))],
             'password' => ['nullable', Rules\Password::defaults()],
         ], [
-            'id.*' => 'The selected user is invalid or does not exist.'
+            'id.*' => 'The selected user is invalid or does not exist.',
+            'role.id' => 'The selected role in invalid.'
         ]);
 
         $id = $request->input('id');
-        $matriculation_number = $request->input('matriculation_number');
-        $name = $request->input('name');
-        $email = $request->input('email');
-        $password = $request->input('password');
 
         $user = User::query()->find($id)->fill([
-            'name' => $name,
-            'matriculation_number' => $matriculation_number,
-            'email' => $email,
+            'name' => $request->input('name'),
+            'role_id' => $request->input('role.id'),
+            'matriculation_number' => $request->input('matriculation_number'),
+            'email' => $request->input('email'),
         ]);
 
         if ($request->filled('password')) {
-            $user->password = Hash::make($password);
+            $user->password = Hash::make($request->input('password'));
         }
 
         $user->save();
@@ -90,13 +99,18 @@ class UserController extends Controller
         $request->validate([
             'matriculation_number' => 'required|integer|unique:users,matriculation_number',
             'name' => 'required|string|max:50,',
+            'role' => 'required|array|min:1',
+            'role.id' => 'required|integer|exists:roles,id',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => ['required', Rules\Password::defaults()],
+        ],[
+            'role.id' => 'The selected role in invalid.'
         ]);
 
         User::query()->create([
             'matriculation_number' => $request->input('matriculation_number'),
             'name' => $request->input('name'),
+            'role_id' => $request->input('role.id'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
         ]);
@@ -153,6 +167,7 @@ class UserController extends Controller
                     'name' => $data[1],
                     'email' => $data[2],
                     'password' => Hash::make($data[3]),
+                    'role_id' => Role::query()->where('role', 'ILIKE', 'User')->first()->id,
                 ]);
             }
 

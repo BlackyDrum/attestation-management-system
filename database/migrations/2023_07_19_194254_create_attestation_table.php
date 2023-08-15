@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('subject_number');
             $table->string('subject_name',255);
+            $table->string('acronym', 8);
             $table->unsignedBigInteger('semester_id');
             $table->unsignedBigInteger('creator_id');
             $table->timestamps();
