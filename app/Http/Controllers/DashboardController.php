@@ -36,7 +36,7 @@ class DashboardController extends Controller
 
         return Inertia::render('Dashboard', [
             'users' => Auth::user()->admin ? User::all() : [],
-            'semester' => Semester::all(),
+            'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
             'data' => $data,
             'selected_semester' => $semester,
             'todos' => $todos,

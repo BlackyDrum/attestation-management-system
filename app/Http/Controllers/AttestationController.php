@@ -42,7 +42,7 @@ class AttestationController extends Controller
 
         return Inertia::render('Attestations', [
             'users' => Auth::user()->admin ? User::all() : [],
-            'semester' => Semester::query()->orderBy('id', 'DESC')->get(),
+            'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
             'attestations' => $attestations,
         ]);
     }
