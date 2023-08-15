@@ -27,6 +27,7 @@ import Chart from 'primevue/chart';
 import FileUpload from 'primevue/fileupload';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
+import SelectButton from 'primevue/selectbutton';
 
 import combine from '@/CombinedData.js';
 import reduce_tasks from '@/ReduceTasks.js';
@@ -63,18 +64,8 @@ const userWithMatriculationNumber = ref([]);
 const headers = ref(null);
 const descriptions = ref([]);
 const chartData = ref([]);
-const chartOptions = ref({
-    scales: {
-        y: {
-            beginAtZero: true,
-            ticks: {
-                stepSize: 5
-            },
-        }
-    },
-    responsive: true,
-    maintainAspectRatio: false
-});
+const chart = ref("Polar");
+const chartSelect = ref(["Pie", "Polar", "Bar"])
 
 const attestationForm = useForm({
     id: null,
@@ -153,8 +144,8 @@ const setupChart = () => {
                 {
                     label: 'Checked',
                     data: [],
-                    backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)'],
-                    borderColor: ['rgb(255, 159, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)'],
+                    backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 0, 0, 0.2)', 'rgba(0, 204, 153, 0.2)', 'rgba(51, 102, 204, 0.2)'],
+                    borderColor: ['rgb(255, 159, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)', 'rgba(255, 0, 0, 0.2)', 'rgba(0, 204, 153, 0.2)', 'rgba(51, 102, 204, 0.2)'],
                     borderWidth: 1
                 }
             ]
@@ -429,69 +420,78 @@ const handleUserFileUpload = (attestation) => {
                         <template v-for="(attestation, index) in combinedData" :key="attestation.id">
                             <div class="bg-white mb-10 rounded-lg overflow-hidden shadow-sm sm:rounded-lg dark:bg-gray-800"
                                  v-if="$page.props.auth.user.admin && s.id === attestation.semester_id">
-                                <div class="w-full bg-blue-800 h-3"/>
-                                <Card class="break-words border border-gray-800">
-                                    <template #title>
-                                        <div>
-                                            {{ attestation.subject_name }} ({{ attestation.semester }})
-                                        </div>
-                                    </template>
-                                    <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
-                                    <template #content>
-                                        <div class="grid grid-cols-2 justify-evenly gap-2 max-md:grid-cols-1">
-                                            <div>
-                                    <span class="p-input-icon-left w-full">
-                                        <i class="pi pi-user"/>
-                                        <InputText class="w-full custom-input-text" disabled
-                                                   placeholder="Search"
-                                                   :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`">
-                                        </InputText>
-                                    </span>
-                                            </div>
-                                            <div>
-                                    <span class="p-input-icon-left w-full">
-                                        <i class="pi pi-file"/>
-                                        <InputText class="w-full custom-input-text" disabled
-                                                   placeholder="Search"
-                                                   :value="`Tasks: ${attestation.tasks[0].length}`">
-                                        </InputText>
-                                    </span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <Chart class="h-80" type="bar" :data="chartData[index]" :options="chartOptions"/>
-                                        </div>
-                                    </template>
-                                    <template #footer>
-                                        <div class="grid grid-cols-2 max-md:grid-cols-1">
-                                            <div class="flex flex-wrap gap-2">
-                                                <Button label="Edit"
-                                                        severity="success"
-                                                        :disabled="userFileForm.processing"
-                                                        @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit"/>
-                                                <Button label="Delete"
-                                                        severity="danger"
-                                                        :disabled="userFileForm.processing"
-                                                        @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash"/>
-                                                <FileUpload
-                                                    accept="text/csv"
-                                                    customUpload chooseLabel="Upload"
-                                                    v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject'"
-                                                    :disabled="userFileForm.processing" mode="basic" name="userfile[]"
-                                                    :maxFileSize="1e7"
-                                                    :auto="false"
-                                                    @uploader="handleUserFileUpload(attestation)"
-                                                    @input="userFileForm.userfile = $event.target.files[0];" :multiple="false"/>
-                                            </div>
-                                            <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
-                                                <Button icon="pi pi-arrow-right"
-                                                        label="Make attestations" severity="info"
-                                                        :disabled="userFileForm.processing"
-                                                        @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"/>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </Card>
+                                <Accordion>
+                                    <AccordionTab :header="`${attestation.subject_name} (${attestation.subject_number})`">
+                                        <div class="w-full bg-blue-800 h-3"/>
+                                        <Card class="break-words border border-gray-800">
+                                            <template #title>
+                                                <div>
+                                                    {{ attestation.subject_name }} ({{ attestation.semester }})
+                                                </div>
+                                            </template>
+                                            <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
+                                            <template #content>
+                                                <div class="grid grid-cols-2 justify-evenly gap-2 max-md:grid-cols-1">
+                                                    <div>
+                                                <span class="p-input-icon-left w-full">
+                                                    <i class="pi pi-user"/>
+                                                    <InputText class="w-full custom-input-text" disabled
+                                                               placeholder="Search"
+                                                               :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`">
+                                                    </InputText>
+                                                </span>
+                                                    </div>
+                                                    <div>
+                                                <span class="p-input-icon-left w-full">
+                                                    <i class="pi pi-file"/>
+                                                    <InputText class="w-full custom-input-text" disabled
+                                                               placeholder="Search"
+                                                               :value="`Tasks: ${attestation.tasks[0].length}`">
+                                                    </InputText>
+                                                </span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex">
+                                                    <SelectButton class="mx-auto my-2" v-model="chart" :options="chartSelect"/>
+                                                </div>
+                                                <div>
+                                                    <Chart class="md:w-1/2 mx-auto" v-if="chart === 'Pie'" type="pie" :data="chartData[index]"/>
+                                                    <Chart class="md:w-1/2 mx-auto" v-else-if="chart === 'Polar'" type="polarArea" :data="chartData[index]"/>
+                                                    <Chart v-else-if="chart === 'Bar'" type="bar" :data="chartData[index]"/>
+                                                </div>
+                                            </template>
+                                            <template #footer>
+                                                <div class="grid grid-cols-2 max-md:grid-cols-1">
+                                                    <div class="flex flex-wrap gap-2">
+                                                        <Button label="Edit"
+                                                                severity="success"
+                                                                :disabled="userFileForm.processing"
+                                                                @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit"/>
+                                                        <Button label="Delete"
+                                                                severity="danger"
+                                                                :disabled="userFileForm.processing"
+                                                                @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash"/>
+                                                        <FileUpload
+                                                            accept="text/csv"
+                                                            customUpload chooseLabel="Upload"
+                                                            v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject'"
+                                                            :disabled="userFileForm.processing" mode="basic" name="userfile[]"
+                                                            :maxFileSize="1e7"
+                                                            :auto="false"
+                                                            @uploader="handleUserFileUpload(attestation)"
+                                                            @input="userFileForm.userfile = $event.target.files[0];" :multiple="false"/>
+                                                    </div>
+                                                    <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
+                                                        <Button icon="pi pi-arrow-right"
+                                                                label="Make attestations" severity="info"
+                                                                :disabled="userFileForm.processing"
+                                                                @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"/>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </Card>
+                                    </AccordionTab>
+                                </Accordion>
                             </div>
                             <div class="mb-10 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
                                  v-else-if="!$page.props.auth.user.admin && s.id === attestation.semester_id">
