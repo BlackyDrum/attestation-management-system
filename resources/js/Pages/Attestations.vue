@@ -432,22 +432,22 @@ const handleUserFileUpload = (attestation) => {
                                             <template #content>
                                                 <div class="grid grid-cols-2 justify-evenly gap-2 max-md:grid-cols-1">
                                                     <div>
-                                                <span class="p-input-icon-left w-full">
-                                                    <i class="pi pi-user"/>
-                                                    <InputText class="w-full custom-input-text" disabled
-                                                               placeholder="Search"
-                                                               :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`">
-                                                    </InputText>
-                                                </span>
+                                                        <span class="p-input-icon-left w-full">
+                                                            <i class="pi pi-user"/>
+                                                            <InputText class="w-full custom-input-text" disabled
+                                                                       placeholder="Search"
+                                                                       :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`">
+                                                            </InputText>
+                                                        </span>
                                                     </div>
                                                     <div>
-                                                <span class="p-input-icon-left w-full">
-                                                    <i class="pi pi-file"/>
-                                                    <InputText class="w-full custom-input-text" disabled
-                                                               placeholder="Search"
-                                                               :value="`Tasks: ${attestation.tasks[0].length}`">
-                                                    </InputText>
-                                                </span>
+                                                        <span class="p-input-icon-left w-full">
+                                                            <i class="pi pi-file"/>
+                                                            <InputText class="w-full custom-input-text" disabled
+                                                                       placeholder="Search"
+                                                                       :value="`Tasks: ${attestation.tasks[0].length}`">
+                                                            </InputText>
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <div class="flex">
@@ -510,6 +510,7 @@ const handleUserFileUpload = (attestation) => {
                                                         </span>
                                                     </div>
                                                 </div>
+                                                <Chart type="bar" :data="chartData[index]"/>
                                             </template>
                                             <template #footer>
                                                 <div class="grid grid-cols-2 max-md:grid-cols-1">
