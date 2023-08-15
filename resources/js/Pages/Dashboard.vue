@@ -298,14 +298,6 @@ const deleteNotification = (index, clear) => {
                         <ProgressSpinner class="custom-progress-spinner"/>
                     </div>
                 </div>
-                <div v-else-if="combinedData.length === 0">
-                    <div class="text-gray-700 text-center">
-                        <div class="pi pi-ban custom-icon"></div>
-                    </div>
-                    <div class="text-gray-500 text-center mt-4">
-                        No Data available
-                    </div>
-                </div>
                 <div v-else>
                     <div class="grid grid-cols-1 xl:grid-cols-[67%,30%] xl:gap-10">
                         <div class="dashboard__item">
