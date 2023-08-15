@@ -162,7 +162,7 @@ const exportCSV = () => {
                                     <div class="flex justify-content-end">
                                         <span class="p-input-icon-left">
                                             <i class="pi pi-search"/>
-                                            <InputText v-model="filters['Name'].value" placeholder="Keyword Search"/>
+                                            <InputText v-model="filters['Name'].value" placeholder="Search"/>
                                         </span>
                                     </div>
                                 </div>
