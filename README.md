@@ -57,19 +57,23 @@ $ npm install
 ```
 $ npm run dev
 ```
-9. **Seed the database with data (such as user roles). You can customize the seeder located in '/database/seeders/ImportantDataSeeder':**
+9. **Seed the database with important data. You can customize the seeder located in '/database/seeders/ImportantDataSeeder':**
 ```
 $ php artisan db:seed --class=ImportantDataSeeder
 ```
-10. **Start the development server:**
+10. **(Optional) You can seed the application with initial users:**
+```
+$ php artisan db:seed --class=UserSeeder
+```
+11. **Start the development server:**
 ```
 $ php artisan serve
 ```
-11. **Start the websocket server:**
+12. **Start the websocket server:**
 ```
 $ php artisan websockets:serve
 ```
-12. **Visit http://localhost:8000 in your web browser to access the application.**
+13. **Visit http://localhost:8000 in your web browser to access the application.**
 
 <br>
 
