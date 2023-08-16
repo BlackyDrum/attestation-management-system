@@ -1,6 +1,6 @@
 <script setup>
 import {Head, router, useForm, usePage} from '@inertiajs/vue3';
-import {onBeforeUpdate, onMounted, ref, watch} from 'vue';
+import {computed, onBeforeUpdate, onMounted, ref, watch} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -19,6 +19,7 @@ import ProgressSpinner from 'primevue/progressspinner';
 import ProgressBar from 'primevue/progressbar';
 import Message from 'primevue/message';
 import ScrollPanel from 'primevue/scrollpanel';
+import Textarea from 'primevue/textarea';
 
 import combine from "@/CombinedData.js";
 
@@ -115,6 +116,10 @@ onBeforeUpdate(() => {
     if (selectedSemester.value) {
         handleSemesterSelection();
     }
+})
+
+const disableNotificationFormButton = computed(() => {
+    return notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)
 })
 
 const handleResize = () => {
@@ -348,73 +353,67 @@ const deleteNotification = (index, clear) => {
         <Dialog class="lg:w-[50%] md:w-[75%] w-[90%]"
                 v-model:visible="showSendNotificationDialog" :closable="false" modal header="Send notification">
             <form @submit.prevent="handleDialogSend">
-                <span class="p-float-label mt-5">
-                    <MultiSelect :disabled="notificationForm.processing" :loading="!$props.users"
+                <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-user mr-2"></i>
+                        </span>
+                    <MultiSelect class="w-full md:w-20rem" placeholder="Users" :disabled="notificationForm.processing" :loading="!$props.users"
                                  v-model="notificationForm.users" :options="userWithMatriculationNumber" filter
                                  optionLabel="name" :maxSelectedLabels="3"
-                                 :virtualScrollerOptions="{ itemSize: 44 }"
-                                 class="w-full md:w-20rem"/>
-                    <label for="users">Users</label>
-                </span>
+                                 :virtualScrollerOptions="{ itemSize: 44 }"/>
+                </div>
                 <error-message :show="errors.users">
                     {{ errors.users }}
                 </error-message>
-
                 <span v-for="(error, key) in errors">
                     <error-message :show="true" v-if="key.includes('users.')">
                         {{ error }}
                     </error-message>
                 </span>
                 <div class=" mt-6">
-                    <span class="p-float-label">
-                        <Dropdown class="max-md:w-[16rem] w-80"
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-tag mr-2"></i>
+                        </span>
+                        <Dropdown class="max-md:w-[16rem] w-80" placeholder="Severity"
                                   :disabled="notificationForm.processing" v-model="notificationForm.severity"
                                   :options="severities"/>
-                        <label>Severity</label>
-                    </span>
+                    </div>
                     <error-message :show="errors.severity">
                         {{ errors.severity }}
                     </error-message>
                 </div>
                 <div class="mt-6">
-                    <span class="p-float-label">
-                        <InputText class="w-full" :disabled="notificationForm.processing"
-                                   v-model="notificationForm.message" autoresize/>
-                        <label>Message</label>
-                    </span>
+                    <Textarea class="w-full" placeholder="Write your message" :disabled="notificationForm.processing"
+                              v-model="notificationForm.message" autoresize/>
                     <error-message :show="errors.message">
                         {{ errors.message }}
                     </error-message>
                 </div>
-
-                <ButtonBar @handle-close="handleDialogClose" :processing="notificationForm.processing" :disable_primary="notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)">
+                <ButtonBar @handle-close="handleDialogClose" :processing="notificationForm.processing" :disable_primary="disableNotificationFormButton">
                     <template #primary>
                         Send
                     </template>
                 </ButtonBar>
             </form>
         </Dialog>
-
     </AuthenticatedLayout>
 </template>
 
 <style scoped>
+.dashboard__item {
+    @apply bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg
+}
+.custom-icon {
+    font-size: 10rem
+}
+.custom-scroll-panel {
+    height: 24rem;
+}
 .custom-progress-spinner {
     width: 10vw;
     height: 10vw
 }
-
-.custom-icon {
-    font-size: 10rem
-}
-
-.custom-scroll-panel {
-    height: 24rem;
-}
-.dashboard__item {
-    @apply bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg
-}
-
 @media (max-width: 1280px) {
     .custom-progress-spinner {
         width: 25vw;
