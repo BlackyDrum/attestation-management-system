@@ -405,7 +405,7 @@ const handleUserFileUpload = (attestation) => {
                     </h2>
                 </div>
                 <div class="ml-auto" v-if="$page.props.auth.user.admin">
-                    <primary-button @click="handleDialogOpen">Create new Attestation</primary-button>
+                    <primary-button @click="handleDialogOpen">Create new Subject</primary-button>
                 </div>
             </div>
         </template>
@@ -544,7 +544,7 @@ const handleUserFileUpload = (attestation) => {
         <span v-if="$page.props.auth.user.admin">
             <ConfirmDialog class="bg-white p-4 custom-confirm-dialog rounded-md gap-8 break-all" ref="confirmDialog"/>
 
-            <Dialog v-model:visible="showAttestationDialog" modal :header="isEdit ? 'Edit' : 'Create new Attestation'"
+            <Dialog v-model:visible="showAttestationDialog" modal :header="isEdit ? 'Edit' : 'Create new Subject'"
                     :style="{ width: '90vw' }">
                 <form @submit.prevent="handleFormSend">
                     <span class="p-float-label mt-5">
@@ -684,7 +684,7 @@ const handleUserFileUpload = (attestation) => {
                             </div>
                         </div>
                     </div>
-                    <Button icon="pi pi-plus" aria-label="Filter" @click="addTask"/>
+                    <Button icon="pi pi-plus" label="Add task" aria-label="Filter" @click="addTask"/>
                     <span class="ml-3" v-if="!isEdit && attestationForm.attestations.length > 0"><Button
                         icon="pi pi-trash" severity="danger" aria-label="Filter" @click="removeTask"/></span>
                     <span class="ml-3" v-else-if="isEdit && attestationForm.attestations.length > 1"><Button
