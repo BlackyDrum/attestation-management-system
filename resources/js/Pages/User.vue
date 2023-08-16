@@ -24,6 +24,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Tag from 'primevue/tag';
 import Dropdown from 'primevue/dropdown';
+import Textarea from 'primevue/textarea';
 
 
 defineProps({
@@ -559,22 +560,21 @@ const getSeverity = data => {
             :header="`Send message to ${receiver}`">
         <form @submit.prevent="handleDialogSend">
             <div>
-                <span class="p-float-label">
-                    <Dropdown class="max-md:w-[16rem] w-80"
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-tag mr-2"></i>
+                    </span>
+                    <Dropdown class="max-md:w-[16rem] w-80" placeholder="Severity"
                               :disabled="notificationForm.processing" v-model="notificationForm.severity"
                               :options="severities"/>
-                    <label>Severity</label>
-                </span>
+                </div>
                 <error-message :show="errors.severity">
                     {{ errors.severity }}
                 </error-message>
             </div>
             <div class="mt-6">
-                    <span class="p-float-label">
-                        <InputText class="w-full" :disabled="notificationForm.processing"
-                                   v-model="notificationForm.message" autoresize/>
-                        <label>Message</label>
-                    </span>
+                    <Textarea class="w-full" placeholder="Write your message" :disabled="notificationForm.processing"
+                              v-model="notificationForm.message" autoresize />
                 <error-message :show="errors.message">
                     {{ errors.message }}
                 </error-message>
