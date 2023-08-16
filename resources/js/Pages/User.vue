@@ -278,7 +278,7 @@ const handleDialogSend = () => {
     })
 }
 
-const handleDialogClose = () => {
+const handleSendNotificationDialogClose = () => {
     showSendNotificationDialog.value = false;
     notificationForm.reset();
     page.props.errors = {};
@@ -579,7 +579,7 @@ const getSeverity = data => {
                     {{ errors.message }}
                 </error-message>
             </div>
-            <ButtonBar @handle-close="handleDialogClose" :processing="notificationForm.processing" :disable_primary="disableNotificationFormButton">
+            <ButtonBar @handle-close="handleSendNotificationDialogClose" :processing="notificationForm.processing" :disable_primary="disableNotificationFormButton">
                 <template #primary>
                     Send
                 </template>
