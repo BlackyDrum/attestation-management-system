@@ -14,9 +14,9 @@ class ImportantDataSeeder extends Seeder
      */
     public function run(): void
     {
-        // NOTE: IT IS IMPORTANT TO HAVE A 'user' ROLE IN THIS ARRAY
+        // NOTE: IT IS IMPORTANT TO HAVE A 'student' ROLE IN THIS ARRAY
         // THIS ROLE HAS THE LOWEST PRIVILEGES WITHIN THE APPLICATION
-        $roles = ['User', 'Admin', 'Student', 'Tutor', 'Professor'];
+        $roles = ['Admin', 'Student', 'Tutor', 'Professor'];
 
         foreach ($roles as $role) {
             Role::query()->create([

@@ -167,7 +167,7 @@ class UserController extends Controller
                     'name' => $data[1],
                     'email' => $data[2],
                     'password' => Hash::make($data[3]),
-                    'role_id' => Role::query()->where('role', 'ILIKE', 'User')->first()->id,
+                    'role_id' => Role::query()->where('role', 'ILIKE', 'Student')->first()->id,
                 ]);
             }
 
