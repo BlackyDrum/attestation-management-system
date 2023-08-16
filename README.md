@@ -57,7 +57,7 @@ $ npm install
 ```
 $ npm run dev
 ```
-9. **Seed the database with data (such as user roles). You can customize the seeder located in /database/seeders/ImportantDataSeeder:**
+9. **Seed the database with data (such as user roles). You can customize the seeder located in '/database/seeders/ImportantDataSeeder':**
 ```
 $ php artisan db:seed --class=ImportantDataSeeder
 ```
