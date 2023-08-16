@@ -71,7 +71,7 @@ const deleteNotification = (index, clear) => {
     })
         .then(response => {
             if (clear)
-                notifications.value = [];
+                notifications.value.splice(0,notifications.value.length);
             else
                 notifications.value.splice(index, 1);
 
