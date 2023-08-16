@@ -7,6 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
+import ButtonBar from '@/Components/ButtonBar.vue';
 
 import {useConfirm} from 'primevue/useconfirm';
 import Dialog from 'primevue/dialog';
@@ -692,19 +693,16 @@ const handleUserFileUpload = (attestation) => {
                     <error-message :show="errors.attestations">
                         {{ errors.attestations }}
                     </error-message>
-                    <div class="grid grid-cols-2 my-4">
-                        <div class="justify-center">
-                            <CustomProgressSpinner :processing="attestationForm.processing"></CustomProgressSpinner>
-                        </div>
-                        <div class="flex justify-end footer__buttonbar">
-                            <primary-button class="mr-5 disabled:cursor-not-allowed"
-                                            :disabled="disableFormSend">{{buttonLabel}}</primary-button>
-                            <secondary-button @click="handleDialogClose">Cancel</secondary-button>
+                    <ButtonBar @handle-close="handleDialogClose" :processing="attestationForm.processing" :disable_primary="disableFormSend">
+                        <template #primary>
+                            {{buttonLabel}}
+                        </template>
+                        <template #additional>
                             <span v-if="!isEdit" class="ml-10 max-md:hidden">
                                 <Button severity="danger" aria-label="Cancel" @click="resetForm">Reset</Button>
                             </span>
-                        </div>
-                    </div>
+                        </template>
+                    </ButtonBar>
                 </form>
             </Dialog>
         </span>
@@ -766,9 +764,5 @@ const handleUserFileUpload = (attestation) => {
 
 .custom-icon {
     font-size: 10rem
-}
-
-.footer__buttonbar {
-    height: 3rem
 }
 </style>

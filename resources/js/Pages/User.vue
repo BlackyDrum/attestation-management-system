@@ -1,12 +1,13 @@
 <script setup>
 import {Head, Link, usePage, useForm} from '@inertiajs/vue3';
-import {onMounted, ref} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
+import ButtonBar from '@/Components/ButtonBar.vue';
 
 import {FilterMatchMode} from 'primevue/api';
 import {useConfirm} from 'primevue/useconfirm';
@@ -92,6 +93,15 @@ onMounted(() => {
             id: role.id
         });
     }
+})
+
+const disableNotificationFormButton = computed(() => {
+    return notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)
+})
+
+const disableUserEditFormButton = computed(() => {
+    return userEditForm.processing || (selectedUser.value.name === userEditForm.name && selectedUser.value.role_id === userEditForm.role.id && selectedUser.value.email === userEditForm.email && selectedUser.value.matriculation_number === parseInt(userEditForm.matriculation_number) && !userEditForm.password)
+
 })
 
 const handleUserEdit = (user) => {
@@ -369,7 +379,7 @@ const getSeverity = data => {
                     <i class="pi pi-user mr-2 max-md:mr-1"></i>
                     <span class="max-md:text-xs">User</span>
                 </template>
-                <form @submit.prevent>
+                <form @submit.prevent="sendUserCreateForm">
                     <div class="p-inputgroup mt-2">
                         <span class="p-inputgroup-addon">
                             <i class="pi pi-hashtag mr-2"></i>
@@ -432,18 +442,11 @@ const getSeverity = data => {
                         {{ errors.password }}
                     </error-message>
 
-                    <div class="grid grid-cols-2 mt-4">
-                        <div class="justify-center">
-                            <CustomProgressSpinner :processing="userCreateForm.processing"></CustomProgressSpinner>
-                        </div>
-                        <div class="flex justify-end footer__buttonbar">
-                            <primary-button class="max-md:mr-2 mr-5 disabled:cursor-not-allowed"
-                                            :disabled="userCreateForm.processing || !userCreateForm.matriculation_number || !userCreateForm.role || !userCreateForm.name || !userCreateForm.email || !userCreateForm.password"
-                                            @click="sendUserCreateForm">Create User
-                            </primary-button>
-                            <secondary-button @click="handleCreateUserClose">Cancel</secondary-button>
-                        </div>
-                    </div>
+                    <ButtonBar @handle-close="handleCreateUserClose" :processing="userCreateForm.processing" :disable_primary="userCreateForm.processing || !userCreateForm.matriculation_number || !userCreateForm.role || !userCreateForm.name || !userCreateForm.email || !userCreateForm.password">
+                        <template #primary>
+                            Create User
+                        </template>
+                    </ButtonBar>
                 </form>
             </TabPanel>
             <TabPanel>
@@ -484,7 +487,7 @@ const getSeverity = data => {
             v-model:visible="showUserEditDialog" :closable="false"
             v-if="selectedUser" :header="selectedUser.name" :modal="true"
             :draggable="false">
-        <form @submit.prevent>
+        <form @submit.prevent="sendUserEditForm">
             <div class="p-inputgroup mt-2">
                 <span class="p-inputgroup-addon">
                     <i class="pi pi-hashtag mr-2"></i>
@@ -527,8 +530,7 @@ const getSeverity = data => {
                     <i class="pi pi-at mr-2"></i>
                 </span>
                 <InputText :disabled="userEditForm.processing" type="email" required v-model="userEditForm.email"
-                           placeholder="E-Mail"
-                           c/>
+                           placeholder="E-Mail"/>
             </div>
             <error-message :show="errors.email">
                 {{ errors.email }}
@@ -544,19 +546,11 @@ const getSeverity = data => {
             <error-message :show="errors.password">
                 {{ errors.password }}
             </error-message>
-
-            <div class="grid grid-cols-2 mt-4 break-keep">
-                <div class="justify-center">
-                    <CustomProgressSpinner :processing="userEditForm.processing"></CustomProgressSpinner>
-                </div>
-                <div class="flex justify-end footer__buttonbar">
-                    <primary-button class="mr-5 disabled:cursor-not-allowed"
-                                    :disabled="userEditForm.processing || (selectedUser.name === userEditForm.name && selectedUser.role_id === userEditForm.role.id && selectedUser.email === userEditForm.email && selectedUser.matriculation_number === parseInt(userEditForm.matriculation_number) && !userEditForm.password)"
-                                    @click="sendUserEditForm">Save Changes
-                    </primary-button>
-                    <secondary-button @click="handleUserEditClose">Cancel</secondary-button>
-                </div>
-            </div>
+            <ButtonBar @handle-close="handleUserEditClose" :processing="userEditForm.processing" :disable_primary="disableUserEditFormButton">
+                <template #primary>
+                    Save Changes
+                </template>
+            </ButtonBar>
         </form>
     </Dialog>
 
@@ -585,28 +579,16 @@ const getSeverity = data => {
                     {{ errors.message }}
                 </error-message>
             </div>
-
-            <div class="my-4 grid grid-cols-2">
-                <div class="justify-center">
-                    <CustomProgressSpinner :processing="notificationForm.processing"></CustomProgressSpinner>
-                </div>
-                <div class="flex justify-end footer__buttonbar">
-                    <primary-button class="mr-5 disabled:cursor-not-allowed"
-                                    :disabled="notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)">
-                        Send
-                    </primary-button>
-                    <secondary-button @click="handleDialogClose">Cancel</secondary-button>
-                </div>
-            </div>
+            <ButtonBar @handle-close="handleDialogClose" :processing="notificationForm.processing" :disable_primary="disableNotificationFormButton">
+                <template #primary>
+                    Send
+                </template>
+            </ButtonBar>
         </form>
     </Dialog>
 </template>
 
 <style scoped>
-.footer__buttonbar {
-    height: 3rem
-}
-
 .custom-button {
     padding: 0.5rem;
     width: 2rem;

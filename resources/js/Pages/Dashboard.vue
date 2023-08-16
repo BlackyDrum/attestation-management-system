@@ -8,6 +8,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 import ToDoList from '@/Components/ToDoList.vue';
+import ButtonBar from '@/Components/ButtonBar.vue';
 
 import Dialog from 'primevue/dialog';
 import MultiSelect from 'primevue/multiselect';
@@ -386,18 +387,11 @@ const deleteNotification = (index, clear) => {
                     </error-message>
                 </div>
 
-                <div class="my-4 grid grid-cols-2">
-                    <div class="justify-center">
-                        <CustomProgressSpinner :processing="notificationForm.processing"></CustomProgressSpinner>
-                    </div>
-                    <div class="flex justify-end footer__buttonbar">
-                        <primary-button class="mr-5 disabled:cursor-not-allowed"
-                                        :disabled="notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)">
-                            Send
-                        </primary-button>
-                        <secondary-button @click="handleDialogClose">Cancel</secondary-button>
-                    </div>
-                </div>
+                <ButtonBar @handle-close="handleDialogClose" :processing="notificationForm.processing" :disable_primary="notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)">
+                    <template #primary>
+                        Send
+                    </template>
+                </ButtonBar>
             </form>
         </Dialog>
 
@@ -417,11 +411,6 @@ const deleteNotification = (index, clear) => {
 .custom-scroll-panel {
     height: 24rem;
 }
-
-.footer__buttonbar {
-    height: 3rem
-}
-
 .dashboard__item {
     @apply bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg
 }
