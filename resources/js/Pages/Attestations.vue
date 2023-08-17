@@ -413,16 +413,17 @@ const handleUserFileUpload = (attestation) => {
         <div class="py-12">
             <div v-if="!noAttestations" class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <Accordion :activeIndex="0">
-                    <AccordionTab v-for="s in semester">
+                    <AccordionTab v-for="(s, index1) in semester" :key="Math.random()">
                         <template #header>
                             <i class="pi pi-calendar mr-2"></i>
                             <span>{{s.semester}}</span>
                         </template>
-                        <template v-for="(attestation, index) in combinedData" :key="attestation.id">
-                            <div class="shadow-xl mb-4"
-                                 v-if="$page.props.auth.user.admin && s.id === attestation.semester_id">
-                                <Accordion>
-                                    <AccordionTab :header="`${attestation.subject_name} (${attestation.subject_number})`">
+
+
+                        <Accordion class="shadow-xl" v-if="$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="`${s.id}_${index1}_${attestation.id}_${index}`">
+                            <AccordionTab v-if="s.id === attestation.semester_id" :header="`${attestation.subject_name} (${attestation.subject_number})`">
+                                <div>
+                                    <div class="shadow-xl">
                                         <Card class="break-words border">
                                             <template #title>
                                                 <div>
@@ -490,13 +491,16 @@ const handleUserFileUpload = (attestation) => {
                                                 </div>
                                             </template>
                                         </Card>
-                                    </AccordionTab>
-                                </Accordion>
-                            </div>
-                            <div class="shadow-xl mb-4"
-                                 v-else-if="!$page.props.auth.user.admin && s.id === attestation.semester_id">
-                                <Accordion>
-                                    <AccordionTab :header="`${attestation.subject_name} (${attestation.subject_number})`">
+                                    </div>
+                                </div>
+                            </AccordionTab>
+                        </Accordion>
+
+
+                        <Accordion v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="`${s.id}_${index1}_${attestation.id}_${index}`">
+                            <AccordionTab v-if="s.id === attestation.semester_id" :header="`${attestation.subject_name} (${attestation.subject_number})`">
+                                <div>
+                                    <div class="shadow-xl mb-4">
                                         <Card class="rounded-lg border">
                                             <template #title> {{ attestation.subject_name }} ({{ attestation.semester }})</template>
                                             <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
@@ -523,10 +527,10 @@ const handleUserFileUpload = (attestation) => {
                                                 </div>
                                             </template>
                                         </Card>
-                                    </AccordionTab>
-                                </Accordion>
-                            </div>
-                        </template>
+                                    </div>
+                                </div>
+                            </AccordionTab>
+                        </Accordion>
                     </AccordionTab>
                 </Accordion>
             </div>
