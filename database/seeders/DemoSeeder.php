@@ -65,6 +65,14 @@ class DemoSeeder extends Seeder
             }
         }
 
+        foreach ($subjects as $subject) {
+            AttestationTasks::query()->create([
+                'attestation_id' => $subject->id,
+                'title' => env('FINAL_ATTESTATION_NAME'),
+                'description' => null,
+            ]);
+        }
+
         $tasks = AttestationTasks::all();
 
         foreach ($tasks as $task) {
