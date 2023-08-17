@@ -137,60 +137,56 @@ const exportCSV = () => {
                 Attestation for
                 '{{ subject_name }}'</h2>
         </template>
-        <div class="mt-5 ml-5 text-gray-400 ">
+        <div class="mt-5 sm:ml-8 text-gray-400 ">
             <Button icon="pi pi-arrow-left" class="h-10" severity="secondary"
                     label="Back" @click="router.get('/attestations')"></Button>
         </div>
         <div class="py-12">
-            <div class="mx-auto sm:px-6 lg:px-8 max-w-7xl">
-                <div class="bg-white p-6 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div>
-                        <DataTable showGridlines stripedRows ref="dataTable"
-                                   :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ', '_')"
-                                   v-model:filters="filters" :value="userData" :paginator="true"
-                                   :rows="10">
-                            <template #header>
-                                <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-                                    <div>
-                                        <Button icon="pi pi-external-link" label="Export CSV"
-                                                @click="exportCSV($event)"/>
-                                    </div>
-                                    <div class="cursor-not-allowed md:ml-auto md:mr-4">
-                                        <Button icon="pi pi-save"
-                                                severity="success" label="Save changes"
-                                                @click="handleFormSend" :disabled="formData.length === 0"/>
-                                    </div>
-                                    <div class="flex justify-content-end">
+            <div class="mx-auto sm:px-6 lg:px-8">
+                <DataTable showGridlines stripedRows ref="dataTable"
+                           :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ', '_')"
+                           v-model:filters="filters" :value="userData" :paginator="true"
+                           :rows="10">
+                    <template #header>
+                        <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div>
+                                <Button icon="pi pi-external-link" label="Export CSV"
+                                        @click="exportCSV($event)"/>
+                            </div>
+                            <div class="cursor-not-allowed md:ml-auto md:mr-4">
+                                <Button icon="pi pi-save"
+                                        severity="success" label="Save changes"
+                                        @click="handleFormSend" :disabled="formData.length === 0"/>
+                            </div>
+                            <div class="flex justify-content-end">
                                         <span class="p-input-icon-left">
                                             <i class="pi pi-search"/>
                                             <InputText v-model="filters['Name'].value" placeholder="Search"/>
                                         </span>
-                                    </div>
+                            </div>
+                        </div>
+                    </template>
+                    <Column style="font-weight: bold" field="Name" header="Name"/>
+                    <Column v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
+                        <template #header>
+                            <div class="mx-auto break-all">
+                                <div>
+                                    {{ header }}
+                                    <span v-tooltip.left="`Checked: ${checkedCount[header]}`"
+                                          class="pi pi-info-circle"></span>
                                 </div>
-                            </template>
-                            <Column style="font-weight: bold" field="Name" header="Name"/>
-                            <Column v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
-                                <template #header>
-                                    <div class="mx-auto break-all">
-                                        <div>
-                                            {{ header }}
-                                            <span v-tooltip.left="`Checked: ${checkedCount[header]}`"
-                                                  class="pi pi-info-circle"></span>
-                                        </div>
-                                    </div>
-                                </template>
-                                <template #body="{ index, field, data }">
-                                    <div class="flex justify-center items-center h-full">
-                                        <Checkbox v-if="data['user_id']" v-model="data[field]"
-                                                  :binary="true"
-                                                  @change="extractData(data, index)"
-                                                  v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
-                                    </div>
-                                </template>
-                            </Column>
-                        </DataTable>
-                    </div>
-                </div>
+                            </div>
+                        </template>
+                        <template #body="{ index, field, data }">
+                            <div class="flex justify-center items-center h-full">
+                                <Checkbox v-if="data['user_id']" v-model="data[field]"
+                                          :binary="true"
+                                          @change="extractData(data, index)"
+                                          v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
             </div>
         </div>
     </AuthenticatedLayout>
