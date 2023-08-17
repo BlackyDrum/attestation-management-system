@@ -66,6 +66,7 @@ function updateData() {
     let index = 0;
     for (const user of userData.value) {
         for (const header of headers.value) {
+            user[header] = !!user[header]; // Convert '1' to 'true' and '0' to 'false'
             if (user[header])
                 checkedCount.value[header]++;
         }
