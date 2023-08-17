@@ -66,19 +66,20 @@ $ npm run dev
 ```
 $ php artisan db:seed --class=ImportantDataSeeder
 ```
-10. **(Optional) You can seed the application with initial users:**
-```
-$ php artisan db:seed --class=UserSeeder
-```
-11. **Start the development server:**
+10. **Start the development server:**
 ```
 $ php artisan serve
 ```
-12. **Start the websocket server:**
+11. **Start the websocket server:**
 ```
 $ php artisan websockets:serve
 ```
+12. **(Optional) You can populate the application with sample data to experience a demonstration version of the app:**
+```
+$ php artisan db:seed --class=DemoSeeder
+```
 13. **Visit http://localhost:8000 in your web browser to access the application.**
+
 
 <br>
 
