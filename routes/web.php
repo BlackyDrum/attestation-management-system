@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/notifications', [\App\Http\Controllers\DashboardController::class, 'send']);
 
         Route::get('roles', [\App\Http\Controllers\RoleController::class, 'show'])->name('roles');
+        Route::patch('roles', [\App\Http\Controllers\RoleController::class, 'update']);
     });
 });
 
