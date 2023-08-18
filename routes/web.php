@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/users/upload', [\App\Http\Controllers\UserController::class, 'upload']);
 
         Route::post('/notifications', [\App\Http\Controllers\DashboardController::class, 'send']);
+
+        Route::get('roles', [\App\Http\Controllers\RoleController::class, 'show'])->name('roles');
     });
 });
 
