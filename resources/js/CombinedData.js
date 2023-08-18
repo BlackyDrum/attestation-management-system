@@ -80,5 +80,7 @@ export default function combine(data) {
         return subjectNameA < subjectNameB ? -1 : 1;
     });
 
+    combinedData.map((item, index) => item.index = index);
+
     return combinedData;
 }

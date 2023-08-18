@@ -391,6 +391,14 @@ const handleUserFileUpload = (attestation) => {
         onFinish: () => userFileForm.reset()
     })
 }
+
+const combinedDataSorted = computed(() => {
+    return id => {
+        if (combinedData.value) {
+            return combinedData.value.filter(item => item.semester_id === id);
+        }
+    }
+})
 </script>
 
 <template>
@@ -413,15 +421,15 @@ const handleUserFileUpload = (attestation) => {
         <div class="py-12">
             <div v-if="!noAttestations" class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <Accordion :activeIndex="0">
-                    <AccordionTab v-for="(s, index1) in semester" :key="Math.random()">
+                    <AccordionTab v-for="(s, index1) in semester">
                         <template #header>
                             <i class="pi pi-calendar mr-2"></i>
                             <span>{{s.semester}}</span>
                         </template>
 
 
-                        <Accordion class="shadow-xl" v-if="$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="`${s.id}_${index1}_${attestation.id}_${index}`">
-                            <AccordionTab v-if="s.id === attestation.semester_id" :header="`${attestation.subject_name} (${attestation.subject_number})`">
+                        <Accordion class="shadow-xl" v-if="$page.props.auth.user.admin">
+                            <AccordionTab v-for="(attestation, index) in combinedDataSorted(s.id)" :key="`${s.id}_${index1}_${attestation.id}_${index}`" :header="`${attestation.subject_name} (${attestation.subject_number})`">
                                 <div>
                                     <div class="shadow-xl">
                                         <Card class="break-words border">
@@ -456,9 +464,9 @@ const handleUserFileUpload = (attestation) => {
                                                     <SelectButton class="mx-auto my-2" v-model="chart" :options="chartSelect"/>
                                                 </div>
                                                 <div>
-                                                    <Chart class="md:w-1/2 mx-auto" v-if="chart === 'Pie'" type="pie" :data="chartData[index]"/>
-                                                    <Chart class="md:w-1/2 mx-auto" v-else-if="chart === 'Polar'" type="polarArea" :data="chartData[index]"/>
-                                                    <Chart v-else-if="chart === 'Bar'" type="bar" :data="chartData[index]"/>
+                                                    <Chart class="md:w-1/2 mx-auto" v-if="chart === 'Pie'" type="pie" :data="chartData[attestation.index]"/>
+                                                    <Chart class="md:w-1/2 mx-auto" v-else-if="chart === 'Polar'" type="polarArea" :data="chartData[attestation.index]"/>
+                                                    <Chart v-else-if="chart === 'Bar'" type="bar" :data="chartData[attestation.index]"/>
                                                 </div>
                                             </template>
                                             <template #footer>
@@ -497,8 +505,8 @@ const handleUserFileUpload = (attestation) => {
                         </Accordion>
 
 
-                        <Accordion v-if="!$page.props.auth.user.admin" v-for="(attestation, index) in combinedData" :key="`${s.id}_${index1}_${attestation.id}_${index}`">
-                            <AccordionTab v-if="s.id === attestation.semester_id" :header="`${attestation.subject_name} (${attestation.subject_number})`">
+                        <Accordion class="shadow-xl" v-if="!$page.props.auth.user.admin">
+                            <AccordionTab v-for="(attestation, index) in combinedDataSorted(s.id)" :key="`${s.id}_${index1}_${attestation.id}_${index}`" :header="`${attestation.subject_name} (${attestation.subject_number})`">
                                 <div>
                                     <div class="shadow-xl mb-4">
                                         <Card class="rounded-lg border">
@@ -515,14 +523,14 @@ const handleUserFileUpload = (attestation) => {
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <Chart type="bar" :data="chartData[index]"/>
+                                                <Chart type="bar" :data="chartData[attestation.index]"/>
                                             </template>
                                             <template #footer>
                                                 <div class="grid grid-cols-2 max-md:grid-cols-1">
                                                     <div>
                                                         <Button icon="pi pi-info-circle"
                                                                 label="Info" severity="success"
-                                                                @click="handleAttestationInfo(attestation, index)"/>
+                                                                @click="handleAttestationInfo(attestation, attestation.index)"/>
                                                     </div>
                                                 </div>
                                             </template>
