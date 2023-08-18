@@ -24,8 +24,14 @@ class ImportantDataSeeder extends Seeder
             ]);
         }
 
-        Semester::query()->create([
-            'semester' => "Summersemester " . date("Y")
-        ]);
+        $date = date("Y");
+
+        $semesters = ["Summersemester {$date}", "Wintersemester {$date}"];
+
+        foreach ($semesters as $semester) {
+            Semester::query()->create([
+                'semester' => $semester
+            ]);
+        }
     }
 }

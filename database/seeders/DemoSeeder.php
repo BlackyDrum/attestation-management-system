@@ -43,6 +43,22 @@ class DemoSeeder extends Seeder
             'creator_id' => 1,
         ]);
 
+        Attestation::query()->create([
+            'subject_number' => 25109,
+            'subject_name' => 'Computability and Complexity',
+            'acronym' => 'CC',
+            'semester_id' => 2,
+            'creator_id' => 1,
+        ]);
+
+        Attestation::query()->create([
+            'subject_number' => 25110,
+            'subject_name' => 'Data Bases and Information Systems',
+            'acronym' => 'DBIS',
+            'semester_id' => 2,
+            'creator_id' => 1,
+        ]);
+
         $subjects = Attestation::all();
         $users = User::all();
 
