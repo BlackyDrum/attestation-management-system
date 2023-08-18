@@ -124,7 +124,7 @@ const handleRoleUpdateForm = () => {
                     </Column>
                     <Column v-for="role in combinedData">
                         <template #header>
-                            <div class="mx-auto break-all">
+                            <div class="mx-auto break-words">
                                 {{role.role}}
                             </div>
                         </template>
