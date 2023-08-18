@@ -104,7 +104,7 @@ const handleRoleUpdateForm = () => {
         </template>
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8 ">
-                <DataTable :value="privilegesRaw" stripedRows>
+                <DataTable :value="privilegesRaw" stripedRows showGridlines>
                     <template #header>
                         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                             <div class="cursor-not-allowed md:ml-auto md:mr-4">
@@ -114,7 +114,7 @@ const handleRoleUpdateForm = () => {
                             </div>
                         </div>
                     </template>
-                    <Column>
+                    <Column class="font-bold">
                         <template #header>
                             Privileges
                         </template>
