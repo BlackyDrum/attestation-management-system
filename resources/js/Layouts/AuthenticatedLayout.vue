@@ -149,7 +149,7 @@ const deleteNotification = (index, clear) => {
                                     Imprint
                                 </div>
                             </NavLink>
-                            <div class="ml-4">
+                            <div class="ml-4 max-md:hidden">
                                 <button class="pi pi-bell p-overlay-badge dark:text-white text-gray-500 mr-0.5"
                                         style="font-size: 1.5rem"
                                         v-badge="notifications.length !== 0 ? notifications.length : '0'"
