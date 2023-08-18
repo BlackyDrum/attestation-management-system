@@ -106,6 +106,15 @@ const disableUserEditFormButton = computed(() => {
 })
 
 const handleUserEdit = (user) => {
+    if (user.admin && !page.props.auth.user.admin) {
+        window.toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'You cannot edit an admin account.',
+            life: 8000
+        })
+        return;
+    }
     showUserEditDialog.value = true;
     selectedUser.value = user;
     userEditForm.reset('password');

@@ -72,6 +72,10 @@ class UserController extends Controller
             'role.id' => 'The selected role in invalid.'
         ]);
 
+        if (User::query()->find($request->input('id'))->admin && !Auth::user()->admin) {
+            return to_route('user')->withErrors(["id" => "You cannot edit an admin account"]);
+        }
+
         $id = $request->input('id');
 
         $user = User::query()->find($id)->fill([
