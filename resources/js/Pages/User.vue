@@ -287,11 +287,10 @@ const handleSendNotificationDialogClose = () => {
 
 const getSeverity = data => {
     switch (data.role.toLowerCase()) {
-        case 'admin': return 'danger';
         case 'tutor': return 'warning';
         case 'professor': return 'success';
         case 'student': return 'primary';
-        case 'user': return 'info'
+        case 'scientific assistant': return 'info'
     }
 
     return 'primary';
@@ -336,7 +335,8 @@ const getSeverity = data => {
                     <Column class="font-semibold" field="matriculation_number" header="Matriculation Number"></Column>
                     <Column header="Role">
                         <template #body="{data}">
-                            <Tag :severity="getSeverity(data)" :value="data.role"></Tag>
+                            <Tag v-if="data.admin" severity="danger" value="Admin"></Tag>
+                            <Tag v-else :severity="getSeverity(data)" :value="data.role"></Tag>
                         </template>
                     </Column>
                     <Column>
