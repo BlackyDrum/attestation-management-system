@@ -287,10 +287,10 @@ const handleSendNotificationDialogClose = () => {
 
 const getSeverity = data => {
     switch (data.role.toLowerCase()) {
-        case 'tutor': return 'warning';
+        case 'tutor': return 'info';
         case 'professor': return 'success';
         case 'student': return 'primary';
-        case 'scientific assistant': return 'info'
+        case 'scientific assistant': return 'warning'
     }
 
     return 'primary';
