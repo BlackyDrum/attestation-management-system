@@ -78,7 +78,8 @@ $ php artisan websockets:serve
 ```
 $ php artisan db:seed --class=DemoSeeder
 ```
-13. **Visit http://localhost:8000 in your web browser to access the application.**
+13. **Start the Redis server.**
+14. **Visit http://localhost:8000 in your web browser to access the application.**
 
 
 <br>
