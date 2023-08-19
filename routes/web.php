@@ -44,12 +44,12 @@ Route::middleware('auth')->group(function () {
         Route::put('/attestations', [\App\Http\Controllers\AttestationController::class, 'edit']);
 
         Route::get('/users', [\App\Http\Controllers\UserController::class, 'show'])->name('user');
-        Route::delete('/users', [\App\Http\Controllers\UserController::class, 'delete']);
-        Route::put('/users', [\App\Http\Controllers\UserController::class, 'edit']);
-        Route::post('/users', [\App\Http\Controllers\UserController::class, 'create']);
-        Route::post('/users/upload', [\App\Http\Controllers\UserController::class, 'upload']);
+        Route::delete('/users', [\App\Http\Controllers\UserController::class, 'delete'])->name('delete_user');
+        Route::put('/users', [\App\Http\Controllers\UserController::class, 'edit'])->name('edit_user');
+        Route::post('/users', [\App\Http\Controllers\UserController::class, 'create'])->name('create_user');
+        Route::post('/users/upload', [\App\Http\Controllers\UserController::class, 'upload'])->name('create_user_upload');
 
-        Route::post('/notifications', [\App\Http\Controllers\DashboardController::class, 'send'])->name('send_notifications');
+        Route::post('/notifications', [\App\Http\Controllers\DashboardController::class, 'send'])->name('send_notification');
 
         Route::get('roles', [\App\Http\Controllers\RoleController::class, 'show'])->name('roles');
         Route::patch('roles', [\App\Http\Controllers\RoleController::class, 'update']);

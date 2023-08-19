@@ -17,6 +17,7 @@ class ImportantDataSeeder extends Seeder
     public function run(): void
     {
 
+        /*
         // NOTE: IT IS IMPORTANT TO HAVE A 'student' ROLE IN THIS ARRAY
         // THIS ROLE HAS THE LOWEST PRIVILEGES WITHIN THE APPLICATION
         $roles = ['Scientific Assistant', 'Student', 'Tutor', 'Professor'];
@@ -37,7 +38,7 @@ class ImportantDataSeeder extends Seeder
             ]);
         }
 
-
+*/
         // Roles and privileges
         $roles = Role::all();
         $privileges = [
@@ -45,9 +46,11 @@ class ImportantDataSeeder extends Seeder
             "can_create_subject",
             "can_edit_subject",
             "can_delete_subject",
-            "can_upload_file",
             "can_make_attestation",
+            "can_access_user_page",
             "can_edit_user",
+            "can_create_user",
+            "can_delete_user",
             "can_edit_role",
         ];
 

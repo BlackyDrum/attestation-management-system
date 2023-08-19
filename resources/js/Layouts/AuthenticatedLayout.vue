@@ -1,5 +1,5 @@
 <script setup>
-import {onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, ref} from 'vue';
+import {computed, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, ref} from 'vue';
 import {Link, usePage, router} from '@inertiajs/vue3';
 
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
@@ -55,6 +55,15 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
+})
+
+const checkUserPageAccessPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_access_user_page' && p.checked) {
+            return true;
+        }
+    }
+    return false;
 })
 
 const toggleNotificationOverlayPanel = (event) => {
@@ -122,7 +131,7 @@ const deleteNotification = (index, clear) => {
                                     <span class="pi pi-book mr-1"></span>
                                     Attestations
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.admin" :href="route('user')"
+                                <NavLink v-if="$page.props.auth.user.admin || checkUserPageAccessPrivilege" :href="route('user')"
                                          :active="route().current('user')">
                                     <span class="pi pi-users mr-1"></span>
                                     Users
@@ -277,7 +286,7 @@ const deleteNotification = (index, clear) => {
                             <span class="pi pi-book mr-1"></span>
                             Attestations
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.admin" :href="route('user')"
+                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkUserPageAccessPrivilege" :href="route('user')"
                                            :active="route().current('user')">
                             <span class="pi pi-users mr-1"></span>
                             Users
