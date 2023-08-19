@@ -122,6 +122,15 @@ const disableNotificationFormButton = computed(() => {
     return notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)
 })
 
+const checkSendNotificationPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_send_notification' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
 const handleResize = () => {
     if (!selectedSemester.value) return;
 
@@ -277,7 +286,7 @@ const deleteNotification = (index, clear) => {
                     </h2>
                 </div>
                 <div class="ml-auto">
-                    <primary-button v-if="$page.props.auth.user.admin" @click="showSendNotificationDialog = true">Send
+                    <primary-button v-if="$page.props.auth.user.admin || checkSendNotificationPrivilege" @click="showSendNotificationDialog = true">Send
                         Notification
                     </primary-button>
                 </div>

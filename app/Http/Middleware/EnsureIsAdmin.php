@@ -16,11 +16,22 @@ class EnsureIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || !Auth::user()->admin)
+        if (Auth::check() && Auth::user()->admin)
         {
-            abort(403);
+            return $next($request);
         }
 
-        return $next($request);
+        $privileges = HandleInertiaRequests::get_privileges();
+        $route = $request->route()->getName();
+        switch ($route) {
+            case 'send_notifications':
+                foreach ($privileges as $privilege)
+                {
+                    if ($privilege['privilege'] === 'can_send_notification')
+                        return $next($request);
+                }
+        }
+
+        abort(403);
     }
 }

@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/users', [\App\Http\Controllers\UserController::class, 'create']);
         Route::post('/users/upload', [\App\Http\Controllers\UserController::class, 'upload']);
 
-        Route::post('/notifications', [\App\Http\Controllers\DashboardController::class, 'send']);
+        Route::post('/notifications', [\App\Http\Controllers\DashboardController::class, 'send'])->name('send_notifications');
 
         Route::get('roles', [\App\Http\Controllers\RoleController::class, 'show'])->name('roles');
         Route::patch('roles', [\App\Http\Controllers\RoleController::class, 'update']);
