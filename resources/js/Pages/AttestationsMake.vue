@@ -169,7 +169,7 @@ const exportCSV = () => {
                     <Column style="font-weight: bold" field="Name" header="Name"/>
                     <Column v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
                         <template #header>
-                            <div class="mx-auto break-all">
+                            <div class="mx-auto break-words">
                                 <div>
                                     {{ header }}
                                     <span v-tooltip.left="`Checked: ${checkedCount[header]}`"

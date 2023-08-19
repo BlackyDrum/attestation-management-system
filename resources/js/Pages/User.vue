@@ -493,7 +493,7 @@ const getSeverity = data => {
     </Dialog>
 
     <!-- Edit User -->
-    <Dialog class="bg-gray-200 rounded-lg p-2 font-bold break-all lg:w-[50%] md:w-[75%] w-[90%]"
+    <Dialog class="bg-gray-200 rounded-lg p-2 font-bold break-words lg:w-[50%] md:w-[75%] w-[90%]"
             v-model:visible="showUserEditDialog" :closable="false"
             v-if="selectedUser" :header="selectedUser.name" :modal="true"
             :draggable="false">

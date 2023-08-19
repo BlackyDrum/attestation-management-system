@@ -555,7 +555,7 @@ const combinedDataSorted = computed(() => {
         </template>
 
         <span v-if="$page.props.auth.user.admin">
-            <ConfirmDialog class="bg-white p-4 custom-confirm-dialog rounded-md gap-8 break-all" ref="confirmDialog"/>
+            <ConfirmDialog class="bg-white p-4 custom-confirm-dialog rounded-md gap-8 break-words" ref="confirmDialog"/>
 
             <Dialog v-model:visible="showAttestationDialog" modal :header="isEdit ? 'Edit' : 'Create new Subject'"
                     :style="{ width: '90vw' }">
