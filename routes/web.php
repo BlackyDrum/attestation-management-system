@@ -52,7 +52,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/notifications', [\App\Http\Controllers\DashboardController::class, 'send'])->name('send_notification');
 
         Route::get('roles', [\App\Http\Controllers\RoleController::class, 'show'])->name('roles');
-        Route::patch('roles', [\App\Http\Controllers\RoleController::class, 'update']);
+        Route::patch('roles', [\App\Http\Controllers\RoleController::class, 'update'])->name('edit_roles');
     });
 });
 

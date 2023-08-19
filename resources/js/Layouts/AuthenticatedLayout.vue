@@ -66,6 +66,15 @@ const checkUserPageAccessPrivilege = computed(() => {
     return false;
 })
 
+const checkRolePageAccessPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_access_role_page' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
 const toggleNotificationOverlayPanel = (event) => {
     if (notifications.value.length !== 0)
         notificationOverlayPanel.value.toggle(event);
@@ -136,7 +145,7 @@ const deleteNotification = (index, clear) => {
                                     <span class="pi pi-users mr-1"></span>
                                     Users
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.admin" :href="route('roles')"
+                                <NavLink v-if="$page.props.auth.user.admin || checkRolePageAccessPrivilege" :href="route('roles')"
                                          :active="route().current('roles')">
                                     <span class="pi pi-paperclip mr-1"></span>
                                     Roles
@@ -291,7 +300,7 @@ const deleteNotification = (index, clear) => {
                             <span class="pi pi-users mr-1"></span>
                             Users
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.admin" :href="route('roles')"
+                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkRolePageAccessPrivilege" :href="route('roles')"
                                            :active="route().current('roles')">
                             <span class="pi pi-paperclip mr-1"></span>
                             Roles

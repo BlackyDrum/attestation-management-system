@@ -59,6 +59,20 @@ class EnsureIsAdmin
                     if ($privilege['privilege'] === 'can_create_user' && $privilege['checked'])
                         return $next($request);
                 }
+                break;
+            case 'roles':
+                foreach ($privileges as $privilege)
+                {
+                    if ($privilege['privilege'] === 'can_access_role_page' && $privilege['checked'])
+                        return $next($request);
+                }
+                break;
+            case 'edit_roles':
+                foreach ($privileges as $privilege)
+                {
+                    if ($privilege['privilege'] === 'can_edit_role' && $privilege['checked'])
+                        return $next($request);
+                }
         }
 
         abort(403,"Forbidden");

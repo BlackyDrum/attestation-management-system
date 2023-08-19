@@ -51,6 +51,7 @@ class ImportantDataSeeder extends Seeder
             "can_edit_user",
             "can_create_user",
             "can_delete_user",
+            "can_access_role_page",
             "can_edit_role",
         ];
 
