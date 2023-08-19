@@ -153,7 +153,7 @@ const deleteNotification = (index, clear) => {
                             </div>
 
                         </div>
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                        <div class="hidden lg:flex lg:items-center lg:ml-6">
                             <!-- Settings Dropdown -->
                             <NavLink class="max-lg:hidden" :no-link="true" @click="showPrivacyStatement = true">
                                 <div class="dark:text-white mx-4 max-lg:hidden">
@@ -249,7 +249,7 @@ const deleteNotification = (index, clear) => {
                         </div>
 
                         <!-- Hamburger -->
-                        <div class="flex items-center -mr-2 sm:hidden">
+                        <div class="flex items-center -mr-2 lg:hidden">
                             <button
                                 class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
                                 @click="showNavigationDropdown = !showNavigationDropdown"
@@ -284,7 +284,7 @@ const deleteNotification = (index, clear) => {
                 <!-- Responsive Navigation Menu -->
                 <div
                     :class="{ block: showNavigationDropdown, hidden: !showNavigationDropdown }"
-                    class="sm:hidden"
+                    class="lg:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
