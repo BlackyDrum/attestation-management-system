@@ -24,9 +24,11 @@ The Attestation Management System is a web application built using Laravel and V
 ![example](https://github.com/BlackyDrum/attestation-management-system/assets/111639941/e091a5f8-9975-4c03-83a6-b5988317b9b3)
 
 ## Requirements
-1. PHP: ^8.1
-2. Node: ^18.12
-3. Composer: ^2.5
+<ul>
+    <li>PHP: ^8.1</li>
+    <li>Node: ^18.12</li>
+    <li>Composer: ^2.5</li>
+</ul>
 
 ## Installation
 **Follow these steps to get the Attestation Management System up and running on your local machine:**
