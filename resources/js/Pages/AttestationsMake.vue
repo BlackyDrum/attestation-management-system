@@ -34,6 +34,7 @@ const userWithMatriculationNumber = ref([]);
 const formData = ref([]);
 const checkedCount = ref({});
 const dataTable = ref();
+const userDataBackup = ref(null);
 
 const filters = ref({
     'Name': {value: null, matchMode: 'contains'},
@@ -91,6 +92,8 @@ function updateData() {
     userWithMatriculationNumber.value.map(user => {
         user.Name = `${user.Name} (${user.matriculation_number})`;
     })
+
+    userDataBackup.value = JSON.parse(JSON.stringify(userData.value));
 }
 
 const extractData = (data, index) => {
@@ -136,6 +139,11 @@ const handleFormSend = () => {
 const exportCSV = () => {
     dataTable.value.exportCSV();
 };
+
+const resetForm = (field) => {
+    userData.value = JSON.parse(JSON.stringify(userDataBackup.value));
+    formData.value = [];
+}
 </script>
 
 <template>
@@ -163,7 +171,11 @@ const exportCSV = () => {
                                 <Button icon="pi pi-external-link" label="Export CSV"
                                         @click="exportCSV($event)"/>
                             </div>
-                            <div class="cursor-not-allowed md:ml-auto md:mr-4">
+                            <div class="flex flex-wrap gap-1 cursor-not-allowed lg:ml-auto md:mr-4">
+                                <Button icon="pi pi-save"
+                                        severity="warning" label="Reset"
+                                        @click="resetForm"
+                                        :disabled="formData.length === 0"/>
                                 <Button icon="pi pi-save"
                                         severity="success" label="Save changes"
                                         @click="handleFormSend" :disabled="formData.length === 0"/>

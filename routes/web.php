@@ -35,7 +35,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/my_attestations', [\App\Http\Controllers\MyAttestationsController::class, 'show'])->name('my_attestations');
 
-    Route::middleware(\App\Http\Middleware\EnsureIsAdmin::class)->group(function() {
+    Route::middleware(\App\Http\Middleware\CheckPrivileges::class)->group(function() {
         Route::get('/attestations/{id}', [\App\Http\Controllers\AttestationsMakeController::class, 'show'])->name('show_make_attestation');
         Route::patch('/attestations', [\App\Http\Controllers\AttestationsMakeController::class, 'make'])->name('make_attestation');
         Route::get('/attestations', [\App\Http\Controllers\AttestationController::class, 'show'])->name('attestations');
