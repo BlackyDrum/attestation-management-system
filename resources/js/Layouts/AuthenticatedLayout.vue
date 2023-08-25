@@ -149,6 +149,10 @@ const deleteNotification = (index, clear) => {
                                     <span class="pi pi-book mr-1"></span>
                                     Attestations
                                 </NavLink>
+                                <NavLink :href="route('my_attestations')" :active="route().current('my_attestations')">
+                                    <span class="pi pi-map mr-1"></span>
+                                    My Attestations
+                                </NavLink>
                                 <NavLink v-if="$page.props.auth.user.admin || checkUserPageAccessPrivilege" :href="route('user')"
                                          :active="route().current('user')">
                                     <span class="pi pi-users mr-1"></span>
@@ -303,6 +307,10 @@ const deleteNotification = (index, clear) => {
                         <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkAttestationAccessPrivilege" :href="route('attestations')" :active="route().current('attestations')">
                             <span class="pi pi-book mr-1"></span>
                             Attestations
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('my_attestations')" :active="route().current('my_attestations')">
+                            <span class="pi pi-map mr-1"></span>
+                            My Attestations
                         </ResponsiveNavLink>
                         <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkUserPageAccessPrivilege" :href="route('user')"
                                            :active="route().current('user')">

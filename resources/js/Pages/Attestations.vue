@@ -4,8 +4,6 @@ import {computed, onBeforeUpdate, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 import ButtonBar from '@/Components/ButtonBar.vue';
 
@@ -18,11 +16,6 @@ import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Checkbox from 'primevue/checkbox';
-import TabView from 'primevue/tabview';
-import TabPanel from 'primevue/tabpanel';
 import Editor from 'primevue/editor';
 import Chart from 'primevue/chart';
 import FileUpload from 'primevue/fileupload';
@@ -31,7 +24,6 @@ import AccordionTab from 'primevue/accordiontab';
 import SelectButton from 'primevue/selectbutton';
 
 import combine from '@/CombinedData.js';
-import reduce_tasks from '@/ReduceTasks.js';
 
 
 defineProps({
@@ -54,16 +46,13 @@ const page = usePage();
 const confirm = useConfirm();
 
 const showAttestationDialog = ref(false);
-const showAttestationInfoDialog = ref(false);
 const isEdit = ref(false);
 const taskCount = ref(1);
 const combinedData = ref(null);
 const subject_name = ref("");
 const tasks = ref([]);
-const userData = ref([]);
 const userWithMatriculationNumber = ref([]);
 const headers = ref(null);
-const descriptions = ref([]);
 const chartData = ref([]);
 const chart = ref("Polar");
 const chartSelect = ref(["Pie", "Polar", "Bar"])
@@ -381,23 +370,6 @@ const handleAttestationEdit = (attestation) => {
             description: task.description,
         })
         attestationForm.id = attestation.id;
-    }
-}
-
-const handleAttestationInfo = (attestation, index) => {
-    showAttestationInfoDialog.value = true;
-    subject_name.value = combinedData.value[index].subject_name;
-    tasks.value = combinedData.value[index].tasks;
-    descriptions.value = [];
-
-    let tmp = reduce_tasks(tasks.value, userData.value, headers.value);
-
-    tasks.value = tmp.tasks;
-    userData.value = tmp.userData;
-    headers.value = tmp.headers;
-
-    for (let i = 0; i < headers.value.length; i++) {
-        descriptions.value.push(combinedData.value[index].tasks[0][i].description)
     }
 }
 
@@ -719,49 +691,6 @@ const combinedDataSorted = computed(() => {
                 </form>
             </Dialog>
     </AuthenticatedLayout>
-
-    <Dialog v-model:visible="showAttestationInfoDialog" modal :header="subject_name"
-            :style="{ width: '90vw' }">
-        <TabView :scrollable="true">
-            <TabPanel>
-                <template #header>
-                    <i class="pi pi-calendar mr-2"></i>
-                    <span>Attestation</span>
-                </template>
-                <DataTable showGridlines stripedRows :value="userData">
-                    <Column field="Name" header="Name"></Column>
-                    <Column v-for="header in headers" :field="header" :key="header">
-                        <template #header="{ index }">
-                            <div class="mx-auto">
-                                <div>{{ header }}</div>
-                            </div>
-                        </template>
-                        <template #body="{ index, field, data }">
-                            <div class="flex justify-center items-center h-full">
-                                <Checkbox disabled v-model="data[field]" :binary="true"/>
-                            </div>
-                        </template>
-                    </Column>
-                </DataTable>
-            </TabPanel>
-            <TabPanel v-for="(header, index1) in headers" :key="header">
-                <template #header>
-                    <i class="pi pi-file-edit mr-2"></i>
-                    <span class="font-medium whitespace-nowrap">{{ header }}</span>
-                </template>
-                <Editor class="h-full w-full" readonly
-                        v-if="descriptions[index1]"
-                        v-model="descriptions[index1]">
-                    <template #toolbar>
-                        <span></span>
-                    </template>
-                </Editor>
-                <span v-else>
-                    <em>No Description available.</em>
-                </span>
-            </TabPanel>
-        </TabView>
-    </Dialog>
 </template>
 
 <style>

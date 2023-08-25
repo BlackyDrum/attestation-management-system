@@ -33,11 +33,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/attestations', [\App\Http\Controllers\AttestationController::class, 'show'])->name('attestations');
+    Route::get('/my_attestations', [\App\Http\Controllers\MyAttestationsController::class, 'show'])->name('my_attestations');
 
     Route::middleware(\App\Http\Middleware\EnsureIsAdmin::class)->group(function() {
         Route::get('/attestations/{id}', [\App\Http\Controllers\AttestationsMakeController::class, 'show'])->name('show_make_attestation');
         Route::patch('/attestations', [\App\Http\Controllers\AttestationsMakeController::class, 'make'])->name('make_attestation');
+        Route::get('/attestations', [\App\Http\Controllers\AttestationController::class, 'show'])->name('attestations');
         Route::post('/attestations', [\App\Http\Controllers\AttestationController::class, 'create'])->name('create_subject');
         Route::post('/attestations/users', [\App\Http\Controllers\AttestationController::class, 'upload'])->name('upload_user_subject');
         Route::delete('/attestations', [\App\Http\Controllers\AttestationController::class, 'delete'])->name('delete_subject');
