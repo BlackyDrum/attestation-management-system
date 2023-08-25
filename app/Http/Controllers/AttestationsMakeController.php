@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotificationEvent;
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\Attestation;
 use App\Models\AttestationTasks;
 use App\Models\UserHasCheckedTask;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
@@ -43,10 +45,26 @@ class AttestationsMakeController extends Controller
             'tasks.*.task_id.*' => 'The selected task is invalid or does not exist.',
         ]);
 
+        DB::beginTransaction();
+
         foreach ($request->input('tasks') as $task) {
             if (UserHasCheckedTask::query()->where('user_id', '=', $task['user_id'])
                     ->where('task_id', '=', $task['task_id'])->first()->checked == $task['checked'])
                 continue;
+
+            $privileges = HandleInertiaRequests::get_privileges();
+            $canRevokeAttestation = Auth::user()->admin;
+            foreach ($privileges as $privilege)
+            {
+                if ($privilege['privilege'] === 'can_revoke_attestation' && $privilege['checked'])
+                    $canRevokeAttestation = true;
+            }
+
+            if (!$canRevokeAttestation && !$task['checked']) {
+                DB::rollBack();
+                abort(403,"Forbidden");
+            }
+
 
             UserHasCheckedTask::query()->where('user_id', '=', $task['user_id'])
                 ->where('task_id', '=', $task['task_id'])->update([
@@ -74,5 +92,7 @@ class AttestationsMakeController extends Controller
                 ["users:{$task['user_id']}:notifications", $status . date('Y-m-d') . ' ' . date('h:i:sa')]);
 
         }
+
+        DB::commit();
     }
 }

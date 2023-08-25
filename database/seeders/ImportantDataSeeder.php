@@ -48,6 +48,7 @@ class ImportantDataSeeder extends Seeder
             "can_edit_subject",
             "can_delete_subject",
             "can_make_attestation",
+            "can_revoke_attestation",
             "can_access_user_page",
             "can_edit_user",
             "can_create_user",
