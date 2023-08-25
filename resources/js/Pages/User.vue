@@ -105,6 +105,42 @@ const disableUserEditFormButton = computed(() => {
 
 })
 
+const checkSendNotificationPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_send_notification' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
+const checkEditUserPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_edit_user' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
+const checkDeleteUserPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_delete_user' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
+const checkCreateUserPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_create_user' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
 const handleUserEdit = (user) => {
     if (user.admin && !page.props.auth.user.admin) {
         window.toast.add({
@@ -313,7 +349,7 @@ const getSeverity = data => {
         <template #header>
             <div class="grid grid-cols-2">
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Users</h2>
-                <div class="ml-auto md:hidden">
+                <div v-if="page.props.auth.user.admin || checkCreateUserPrivilege" class="ml-auto md:hidden">
                     <primary-button @click="handleCreateUserOpen">Create new User</primary-button>
                 </div>
             </div>
@@ -325,7 +361,7 @@ const getSeverity = data => {
                            :rowsPerPageOptions="[5, 10, 20, 50]" v-model:filters="filters" :value="users">
                     <template #header>
                         <div class="flex">
-                            <div class="self-center max-md:hidden">
+                            <div v-if="page.props.auth.user.admin || checkCreateUserPrivilege" class="self-center max-md:hidden">
                                 <secondary-button @click="handleCreateUserOpen">Create new User</secondary-button>
                             </div>
                             <span class="p-input-icon-left ml-auto">
@@ -353,16 +389,19 @@ const getSeverity = data => {
                             <div class="flex flex-wrap justify-content-center ml-autog gap-2">
                                 <div>
                                     <Button class="custom-button" icon="pi pi-user-edit"
-                                            severity="info" @click="handleUserEdit(data)"/>
+                                            severity="info" @click="handleUserEdit(data)"
+                                            v-if="page.props.auth.user.admin || checkEditUserPrivilege"/>
                                 </div>
                                 <div>
                                     <Button class="custom-button" icon="pi pi-envelope"
-                                            severity="info" @click="handleDialogOpen(data)"/>
+                                            severity="info" @click="handleDialogOpen(data)"
+                                            v-if="page.props.auth.user.admin || checkSendNotificationPrivilege"/>
                                 </div>
                                 <div>
                                     <Button class="custom-button" icon="pi pi-trash"
                                             severity="danger"
-                                            @click="confirmUserDeletion(data.id, data.name)"/>
+                                            @click="confirmUserDeletion(data.id, data.name)"
+                                            v-if="page.props.auth.user.admin || checkDeleteUserPrivilege"/>
                                 </div>
                             </div>
                         </template>
