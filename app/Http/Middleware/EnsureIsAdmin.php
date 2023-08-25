@@ -73,6 +73,44 @@ class EnsureIsAdmin
                     if ($privilege['privilege'] === 'can_edit_role' && $privilege['checked'])
                         return $next($request);
                 }
+                break;
+            case 'attestations':
+                foreach ($privileges as $privilege)
+                {
+                    if ($privilege['privilege'] === 'can_access_attestation_page' && $privilege['checked'])
+                        return $next($request);
+                }
+                break;
+            case 'show_make_attestation':
+            case 'make_attestation':
+                foreach ($privileges as $privilege)
+                {
+                    if ($privilege['privilege'] === 'can_make_attestation' && $privilege['checked'])
+                        return $next($request);
+                }
+                break;
+            case 'create_subject':
+                foreach ($privileges as $privilege)
+                {
+                    if ($privilege['privilege'] === 'can_create_subject' && $privilege['checked'])
+                        return $next($request);
+                }
+                break;
+            case 'edit_subject':
+            case 'upload_user_subject':
+                foreach ($privileges as $privilege)
+                {
+                    if ($privilege['privilege'] === 'can_edit_subject' && $privilege['checked'])
+                        return $next($request);
+                }
+                break;
+            case 'delete_subject':
+                foreach ($privileges as $privilege)
+                {
+                    if ($privilege['privilege'] === 'can_delete_subject' && $privilege['checked'])
+                        return $next($request);
+                }
+                break;
         }
 
         abort(403,"Forbidden");

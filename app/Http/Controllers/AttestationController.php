@@ -34,14 +34,10 @@ class AttestationController extends Controller
     {
         $attestationQuery = AttestationController::createQuery();
 
-        if (!Auth::user()->admin) {
-            $attestationQuery->where('users.id', '=', Auth::id());
-        }
-
         $attestations = $attestationQuery->get();
 
         return Inertia::render('Attestations', [
-            'users' => Auth::user()->admin ? User::all() : [],
+            'users' => User::all(),
             'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
             'attestations' => $attestations,
         ]);

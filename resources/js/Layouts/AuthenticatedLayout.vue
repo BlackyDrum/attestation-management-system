@@ -75,6 +75,15 @@ const checkRolePageAccessPrivilege = computed(() => {
     return false;
 })
 
+const checkAttestationAccessPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_access_attestation_page' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
 const toggleNotificationOverlayPanel = (event) => {
     if (notifications.value.length !== 0)
         notificationOverlayPanel.value.toggle(event);
@@ -136,7 +145,7 @@ const deleteNotification = (index, clear) => {
                                     <span class="pi pi-inbox mr-1"></span>
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('attestations')" :active="route().current('attestations')">
+                                <NavLink v-if="$page.props.auth.user.admin || checkAttestationAccessPrivilege" :href="route('attestations')" :active="route().current('attestations')">
                                     <span class="pi pi-book mr-1"></span>
                                     Attestations
                                 </NavLink>
@@ -291,7 +300,7 @@ const deleteNotification = (index, clear) => {
                             <span class="pi pi-inbox mr-1"></span>
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('attestations')" :active="route().current('attestations')">
+                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkAttestationAccessPrivilege" :href="route('attestations')" :active="route().current('attestations')">
                             <span class="pi pi-book mr-1"></span>
                             Attestations
                         </ResponsiveNavLink>
