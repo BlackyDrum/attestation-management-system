@@ -4,8 +4,6 @@ import {computed, onBeforeUpdate, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 import ButtonBar from '@/Components/ButtonBar.vue';
 
@@ -18,11 +16,6 @@ import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 import ConfirmDialog from 'primevue/confirmdialog';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Checkbox from 'primevue/checkbox';
-import TabView from 'primevue/tabview';
-import TabPanel from 'primevue/tabpanel';
 import Editor from 'primevue/editor';
 import Chart from 'primevue/chart';
 import FileUpload from 'primevue/fileupload';
@@ -31,7 +24,6 @@ import AccordionTab from 'primevue/accordiontab';
 import SelectButton from 'primevue/selectbutton';
 
 import combine from '@/CombinedData.js';
-import reduce_tasks from '@/ReduceTasks.js';
 
 
 defineProps({
@@ -54,16 +46,13 @@ const page = usePage();
 const confirm = useConfirm();
 
 const showAttestationDialog = ref(false);
-const showAttestationInfoDialog = ref(false);
 const isEdit = ref(false);
 const taskCount = ref(1);
 const combinedData = ref(null);
 const subject_name = ref("");
 const tasks = ref([]);
-const userData = ref([]);
 const userWithMatriculationNumber = ref([]);
 const headers = ref(null);
-const descriptions = ref([]);
 const chartData = ref([]);
 const chart = ref("Polar");
 const chartSelect = ref(["Pie", "Polar", "Bar"])
@@ -122,7 +111,42 @@ const disableFormSend = computed(() => {
 
 const buttonLabel = computed(() => {
     return isEdit.value ? "Save Changes" : "Create new subject"
+})
 
+const checkCreateSubjectPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_create_subject' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
+const checkEditSubjectPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_edit_subject' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
+const checkDeleteSubjectPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_delete_subject' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
+const checkMakeAttestationPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_make_attestation' && p.checked) {
+            return true;
+        }
+    }
+    return false;
 })
 
 const createNameWithMatNumber = () => {
@@ -349,23 +373,6 @@ const handleAttestationEdit = (attestation) => {
     }
 }
 
-const handleAttestationInfo = (attestation, index) => {
-    showAttestationInfoDialog.value = true;
-    subject_name.value = combinedData.value[index].subject_name;
-    tasks.value = combinedData.value[index].tasks;
-    descriptions.value = [];
-
-    let tmp = reduce_tasks(tasks.value, userData.value, headers.value);
-
-    tasks.value = tmp.tasks;
-    userData.value = tmp.userData;
-    headers.value = tmp.headers;
-
-    for (let i = 0; i < headers.value.length; i++) {
-        descriptions.value.push(combinedData.value[index].tasks[0][i].description)
-    }
-}
-
 const handleUserFileUpload = (attestation) => {
     userFileForm.id = attestation.id;
     userFileForm.post('/attestations/users', {
@@ -409,11 +416,10 @@ const combinedDataSorted = computed(() => {
             <div class="grid grid-cols-2">
                 <div>
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight dark:text-gray-200">
-                        <span v-if="$page.props.auth.user.admin">Attestations Admin Panel</span>
-                        <span v-else>My Attestations</span>
+                        <span>Attestations Panel</span>
                     </h2>
                 </div>
-                <div class="ml-auto" v-if="$page.props.auth.user.admin">
+                <div class="ml-auto" v-if="$page.props.auth.user.admin || checkCreateSubjectPrivilege">
                     <primary-button @click="handleDialogOpen">Create new Subject</primary-button>
                 </div>
             </div>
@@ -428,7 +434,7 @@ const combinedDataSorted = computed(() => {
                         </template>
 
 
-                        <Accordion class="shadow-xl" v-if="$page.props.auth.user.admin">
+                        <Accordion class="shadow-xl">
                             <AccordionTab v-for="(attestation, index) in combinedDataSorted(s.id)" :key="`${s.id}_${index1}_${attestation.id}_${index}`" :header="`${attestation.subject_name} (${attestation.subject_number})`">
                                 <div>
                                     <div class="shadow-xl">
@@ -474,16 +480,19 @@ const combinedDataSorted = computed(() => {
                                                     <div class="flex flex-wrap gap-2">
                                                         <Button label="Edit"
                                                                 severity="success"
+                                                                v-if="page.props.auth.user.admin || checkEditSubjectPrivilege"
                                                                 :disabled="userFileForm.processing"
                                                                 @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit"/>
                                                         <Button label="Delete"
                                                                 severity="danger"
+                                                                v-if="page.props.auth.user.admin || checkDeleteSubjectPrivilege"
                                                                 :disabled="userFileForm.processing"
                                                                 @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash"/>
                                                         <FileUpload
                                                             accept="text/csv"
                                                             customUpload chooseLabel="Upload"
                                                             v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject'"
+                                                            v-if="page.props.auth.user.admin || checkEditSubjectPrivilege"
                                                             :disabled="userFileForm.processing" mode="basic" name="userfile[]"
                                                             :maxFileSize="1e7"
                                                             :auto="false"
@@ -493,44 +502,9 @@ const combinedDataSorted = computed(() => {
                                                     <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
                                                         <Button icon="pi pi-arrow-right"
                                                                 label="Make attestations" severity="info"
+                                                                v-if="page.props.auth.user.admin || checkMakeAttestationPrivilege"
                                                                 :disabled="userFileForm.processing"
                                                                 @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"/>
-                                                    </div>
-                                                </div>
-                                            </template>
-                                        </Card>
-                                    </div>
-                                </div>
-                            </AccordionTab>
-                        </Accordion>
-
-
-                        <Accordion class="shadow-xl" v-if="!$page.props.auth.user.admin">
-                            <AccordionTab v-for="(attestation, index) in combinedDataSorted(s.id)" :key="`${s.id}_${index1}_${attestation.id}_${index}`" :header="`${attestation.subject_name} (${attestation.subject_number})`">
-                                <div>
-                                    <div class="shadow-xl mb-4">
-                                        <Card class="rounded-lg border">
-                                            <template #title> {{ attestation.subject_name }} ({{ attestation.semester }})</template>
-                                            <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
-                                            <template #content>
-                                                <div class="flex flex-wrap justify-evenly gap-2">
-                                                    <div class="w-1/2 max-md:w-full">
-                                                        <span class="p-input-icon-left w-full">
-                                                            <i class="pi pi-file"/>
-                                                            <InputText class="w-full" disabled
-                                                                       placeholder="Search"
-                                                                       :value="`Tasks: ${attestation.tasks[0].length}`"/>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <Chart type="bar" :data="chartData[attestation.index]"/>
-                                            </template>
-                                            <template #footer>
-                                                <div class="grid grid-cols-2 max-md:grid-cols-1">
-                                                    <div>
-                                                        <Button icon="pi pi-info-circle"
-                                                                label="Info" severity="success"
-                                                                @click="handleAttestationInfo(attestation, attestation.index)"/>
                                                     </div>
                                                 </div>
                                             </template>
@@ -554,8 +528,7 @@ const combinedDataSorted = computed(() => {
             </div>
         </template>
 
-        <span v-if="$page.props.auth.user.admin">
-            <ConfirmDialog class="bg-white p-4 custom-confirm-dialog rounded-md gap-8 break-all" ref="confirmDialog"/>
+            <ConfirmDialog class="bg-white p-4 custom-confirm-dialog rounded-md gap-8 break-words" ref="confirmDialog"/>
 
             <Dialog v-model:visible="showAttestationDialog" modal :header="isEdit ? 'Edit' : 'Create new Subject'"
                     :style="{ width: '90vw' }">
@@ -717,51 +690,7 @@ const combinedDataSorted = computed(() => {
                     </ButtonBar>
                 </form>
             </Dialog>
-        </span>
     </AuthenticatedLayout>
-
-    <Dialog v-model:visible="showAttestationInfoDialog" modal :header="subject_name"
-            :style="{ width: '90vw' }">
-        <TabView :scrollable="true">
-            <TabPanel>
-                <template #header>
-                    <i class="pi pi-calendar mr-2"></i>
-                    <span>Attestation</span>
-                </template>
-                <DataTable showGridlines stripedRows :value="userData">
-                    <Column field="Name" header="Name"></Column>
-                    <Column v-for="header in headers" :field="header" :key="header">
-                        <template #header="{ index }">
-                            <div class="mx-auto">
-                                <div>{{ header }}</div>
-                            </div>
-                        </template>
-                        <template #body="{ index, field, data }">
-                            <div class="flex justify-center items-center h-full">
-                                <Checkbox disabled v-model="data[field]" :binary="true"/>
-                            </div>
-                        </template>
-                    </Column>
-                </DataTable>
-            </TabPanel>
-            <TabPanel v-for="(header, index1) in headers" :key="header">
-                <template #header>
-                    <i class="pi pi-file-edit mr-2"></i>
-                    <span class="font-medium whitespace-nowrap">{{ header }}</span>
-                </template>
-                <Editor class="h-full w-full" readonly
-                        v-if="descriptions[index1]"
-                        v-model="descriptions[index1]">
-                    <template #toolbar>
-                        <span></span>
-                    </template>
-                </Editor>
-                <span v-else>
-                    <em>No Description available.</em>
-                </span>
-            </TabPanel>
-        </TabView>
-    </Dialog>
 </template>
 
 <style>

@@ -1,6 +1,6 @@
 <script setup>
 import {Head, router, usePage} from '@inertiajs/vue3';
-import {onBeforeUpdate, onMounted, ref} from 'vue';
+import {computed, onBeforeUpdate, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
@@ -34,6 +34,7 @@ const userWithMatriculationNumber = ref([]);
 const formData = ref([]);
 const checkedCount = ref({});
 const dataTable = ref();
+const userDataBackup = ref(null);
 
 const filters = ref({
     'Name': {value: null, matchMode: 'contains'},
@@ -46,6 +47,16 @@ onMounted(() => {
 onBeforeUpdate(() => {
     updateData();
     formData.value = [];
+})
+
+
+const canRevokeAttestationPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_revoke_attestation' && p.checked) {
+            return true;
+        }
+    }
+    return false;
 })
 
 function updateData() {
@@ -81,6 +92,8 @@ function updateData() {
     userWithMatriculationNumber.value.map(user => {
         user.Name = `${user.Name} (${user.matriculation_number})`;
     })
+
+    userDataBackup.value = JSON.parse(JSON.stringify(userData.value));
 }
 
 const extractData = (data, index) => {
@@ -126,6 +139,11 @@ const handleFormSend = () => {
 const exportCSV = () => {
     dataTable.value.exportCSV();
 };
+
+const resetForm = (field) => {
+    userData.value = JSON.parse(JSON.stringify(userDataBackup.value));
+    formData.value = [];
+}
 </script>
 
 <template>
@@ -153,7 +171,11 @@ const exportCSV = () => {
                                 <Button icon="pi pi-external-link" label="Export CSV"
                                         @click="exportCSV($event)"/>
                             </div>
-                            <div class="cursor-not-allowed md:ml-auto md:mr-4">
+                            <div class="flex flex-wrap gap-1 cursor-not-allowed lg:ml-auto md:mr-4">
+                                <Button icon="pi pi-save"
+                                        severity="warning" label="Reset"
+                                        @click="resetForm"
+                                        :disabled="formData.length === 0"/>
                                 <Button icon="pi pi-save"
                                         severity="success" label="Save changes"
                                         @click="handleFormSend" :disabled="formData.length === 0"/>
@@ -169,7 +191,7 @@ const exportCSV = () => {
                     <Column style="font-weight: bold" field="Name" header="Name"/>
                     <Column v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
                         <template #header>
-                            <div class="mx-auto break-all">
+                            <div class="mx-auto break-words">
                                 <div>
                                     {{ header }}
                                     <span v-tooltip.left="`Checked: ${checkedCount[header]}`"
@@ -182,6 +204,7 @@ const exportCSV = () => {
                                 <Checkbox v-if="data['user_id']" v-model="data[field]"
                                           :binary="true"
                                           @change="extractData(data, index)"
+                                          :disabled="!canRevokeAttestationPrivilege && !page.props.auth.user.admin && data[field]"
                                           v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
                             </div>
                         </template>

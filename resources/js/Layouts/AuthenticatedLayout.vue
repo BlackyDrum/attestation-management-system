@@ -1,5 +1,5 @@
 <script setup>
-import {onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, ref} from 'vue';
+import {computed, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, ref} from 'vue';
 import {Link, usePage, router} from '@inertiajs/vue3';
 
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
@@ -55,6 +55,33 @@ onMounted(() => {
 
 onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
+})
+
+const checkUserPageAccessPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_access_user_page' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
+const checkRolePageAccessPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_access_role_page' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
+const checkAttestationAccessPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_access_attestation_page' && p.checked) {
+            return true;
+        }
+    }
+    return false;
 })
 
 const toggleNotificationOverlayPanel = (event) => {
@@ -113,24 +140,33 @@ const deleteNotification = (index, clear) => {
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-5 sm:-my-px sm:flex lg:ml-10 md:ml-5">
+                            <div class="hidden space-x-5 lg:-my-px lg:flex lg:ml-10 md:ml-5">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     <span class="pi pi-inbox mr-1"></span>
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('attestations')" :active="route().current('attestations')">
+                                <NavLink v-if="$page.props.auth.user.admin || checkAttestationAccessPrivilege" :href="route('attestations')" :active="route().current('attestations')">
                                     <span class="pi pi-book mr-1"></span>
                                     Attestations
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.admin" :href="route('user')"
+                                <NavLink :href="route('my_attestations')" :active="route().current('my_attestations')">
+                                    <span class="pi pi-map mr-1"></span>
+                                    My Attestations
+                                </NavLink>
+                                <NavLink v-if="$page.props.auth.user.admin || checkUserPageAccessPrivilege" :href="route('user')"
                                          :active="route().current('user')">
                                     <span class="pi pi-users mr-1"></span>
                                     Users
                                 </NavLink>
+                                <NavLink v-if="$page.props.auth.user.admin || checkRolePageAccessPrivilege" :href="route('roles')"
+                                         :active="route().current('roles')">
+                                    <span class="pi pi-paperclip mr-1"></span>
+                                    Roles
+                                </NavLink>
                             </div>
 
                         </div>
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                        <div class="hidden xl:flex xl:items-center xl:ml-6">
                             <!-- Settings Dropdown -->
                             <NavLink class="max-lg:hidden" :no-link="true" @click="showPrivacyStatement = true">
                                 <div class="dark:text-white mx-4 max-lg:hidden">
@@ -144,7 +180,7 @@ const deleteNotification = (index, clear) => {
                                     Imprint
                                 </div>
                             </NavLink>
-                            <div class="ml-4">
+                            <div class="ml-4 max-md:hidden">
                                 <button class="pi pi-bell p-overlay-badge dark:text-white text-gray-500 mr-0.5"
                                         style="font-size: 1.5rem"
                                         v-badge="notifications.length !== 0 ? notifications.length : '0'"
@@ -226,7 +262,7 @@ const deleteNotification = (index, clear) => {
                         </div>
 
                         <!-- Hamburger -->
-                        <div class="flex items-center -mr-2 sm:hidden">
+                        <div class="flex items-center -mr-2 xl:hidden">
                             <button
                                 class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
                                 @click="showNavigationDropdown = !showNavigationDropdown"
@@ -261,21 +297,30 @@ const deleteNotification = (index, clear) => {
                 <!-- Responsive Navigation Menu -->
                 <div
                     :class="{ block: showNavigationDropdown, hidden: !showNavigationDropdown }"
-                    class="sm:hidden"
+                    class="xl:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             <span class="pi pi-inbox mr-1"></span>
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('attestations')" :active="route().current('attestations')">
+                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkAttestationAccessPrivilege" :href="route('attestations')" :active="route().current('attestations')">
                             <span class="pi pi-book mr-1"></span>
                             Attestations
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.admin" :href="route('user')"
+                        <ResponsiveNavLink :href="route('my_attestations')" :active="route().current('my_attestations')">
+                            <span class="pi pi-map mr-1"></span>
+                            My Attestations
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkUserPageAccessPrivilege" :href="route('user')"
                                            :active="route().current('user')">
                             <span class="pi pi-users mr-1"></span>
                             Users
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkRolePageAccessPrivilege" :href="route('roles')"
+                                           :active="route().current('roles')">
+                            <span class="pi pi-paperclip mr-1"></span>
+                            Roles
                         </ResponsiveNavLink>
                         <NavLink :no-link="true" @click="showPrivacyStatement = true">
                             <div class="dark:text-white mx-4">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotificationEvent;
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\Semester;
 use App\Models\ToDoList;
 use App\Models\User;
@@ -34,8 +35,18 @@ class DashboardController extends Controller
             ->orderBy('id')
             ->get();
 
+        $privileges = HandleInertiaRequests::get_privileges();
+        $canSeeUsers = false;
+        foreach ($privileges as $privilege)
+        {
+            if ($privilege['privilege'] === 'can_send_notification') {
+                $canSeeUsers = true;
+                break;
+            }
+        }
+
         return Inertia::render('Dashboard', [
-            'users' => Auth::user()->admin ? User::all() : [],
+            'users' => Auth::user()->admin || $canSeeUsers ? User::all() : [],
             'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
             'data' => $data,
             'selected_semester' => $semester,

@@ -69,8 +69,12 @@ class UserController extends Controller
             'password' => ['nullable', Rules\Password::defaults()],
         ], [
             'id.*' => 'The selected user is invalid or does not exist.',
-            'role.id' => 'The selected role in invalid.'
+            'role.id' => 'The selected role is invalid.'
         ]);
+
+        if (User::query()->find($request->input('id'))->admin && !Auth::user()->admin) {
+            return to_route('user')->withErrors(["id" => "You cannot edit an admin account"]);
+        }
 
         $id = $request->input('id');
 

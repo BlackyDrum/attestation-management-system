@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotificationEvent;
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\Attestation;
 use App\Models\AttestationTasks;
 use App\Models\Semester;
@@ -34,14 +35,10 @@ class AttestationController extends Controller
     {
         $attestationQuery = AttestationController::createQuery();
 
-        if (!Auth::user()->admin) {
-            $attestationQuery->where('users.id', '=', Auth::id());
-        }
-
         $attestations = $attestationQuery->get();
 
         return Inertia::render('Attestations', [
-            'users' => Auth::user()->admin ? User::all() : [],
+            'users' => User::all(),
             'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
             'attestations' => $attestations,
         ]);
@@ -370,7 +367,15 @@ class AttestationController extends Controller
             ])
             ->orderBy('attestation_tasks.id');
 
-        if (Auth::user()->admin) {
+        $privileges = HandleInertiaRequests::get_privileges();
+        $canAccessAttestationPage = Auth::user()->admin;
+        foreach ($privileges as $privilege)
+        {
+            if ($privilege['privilege'] === 'can_access_attestation_page' && $privilege['checked'])
+                $canAccessAttestationPage = true;
+        }
+
+        if ($canAccessAttestationPage) {
             $attestationQuery->addSelect([
                 'editor.name AS editor_name',
                 'user_has_checked_task.editor_id',
