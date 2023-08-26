@@ -91,7 +91,6 @@ onMounted(() => {
     notifications.value = page.props.auth.notifications;
     semester_id.value = localStorage.getItem('dashboard_semester_id');
     selectedSemester.value = page.props.semester[page.props.semester.findIndex(item => item.id === parseInt(semester_id.value))] ?? null;
-    console.log(selectedSemester.value)
 
     if (selectedSemester.value) {
         loadSemesterData();
