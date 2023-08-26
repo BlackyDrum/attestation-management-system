@@ -285,7 +285,7 @@ const deleteNotification = (index, clear) => {
                               v-model="selectedSemester" @change="handleSemesterSelection($event)"
                               :options="semester" optionLabel="semester"/>
                 </div>
-                <div class="mt-4" v-if="!semester_id">
+                <div class="mt-4" v-if="!selectedSemester">
                     <div class="text-gray-700 text-center">
                         <div class="pi pi-chart-line custom-icon"></div>
                     </div>
