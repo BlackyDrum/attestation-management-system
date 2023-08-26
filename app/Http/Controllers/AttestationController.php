@@ -371,7 +371,7 @@ class AttestationController extends Controller
         $canAccessAttestationPage = Auth::user()->admin;
         foreach ($privileges as $privilege)
         {
-            if ($privilege['privilege'] === 'can_access_attestation_page' && $privilege['checked'])
+            if ($privilege['privilege'] === 'can_access_subject_page' && $privilege['checked'])
                 $canAccessAttestationPage = true;
         }
 

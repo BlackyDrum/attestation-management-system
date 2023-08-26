@@ -32,7 +32,7 @@ class ImportantDataSeeder extends Seeder
         $roles = Role::all();
         $privileges = [
             "can_send_notification",
-            "can_access_attestation_page",
+            "can_access_subject_page",
             "can_create_subject",
             "can_edit_subject",
             "can_delete_subject",

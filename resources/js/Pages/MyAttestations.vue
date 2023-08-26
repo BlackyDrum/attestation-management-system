@@ -229,3 +229,13 @@ const setupChart = () => {
         </TabView>
     </Dialog>
 </template>
+
+<style scoped>
+.custom-input-text {
+    font-weight: bold
+}
+
+.custom-icon {
+    font-size: 10rem
+}
+</style>

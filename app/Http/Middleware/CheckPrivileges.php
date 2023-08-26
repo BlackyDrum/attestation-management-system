@@ -77,7 +77,7 @@ class CheckPrivileges
             case 'attestations':
                 foreach ($privileges as $privilege)
                 {
-                    if ($privilege['privilege'] === 'can_access_attestation_page' && $privilege['checked'])
+                    if ($privilege['privilege'] === 'can_access_subject_page' && $privilege['checked'])
                         return $next($request);
                 }
                 break;

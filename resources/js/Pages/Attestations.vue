@@ -524,7 +524,7 @@ const combinedDataSorted = computed(() => {
                 <div class="pi pi-book custom-icon"></div>
             </div>
             <div class="text-gray-500 text-center mt-4">
-                No Attestations assigned to you
+                No Subjects available
             </div>
         </template>
 

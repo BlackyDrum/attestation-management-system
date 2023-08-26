@@ -77,7 +77,7 @@ const checkRolePageAccessPrivilege = computed(() => {
 
 const checkAttestationAccessPrivilege = computed(() => {
     for (const p of page.props.auth.privileges) {
-        if (p.privilege === 'can_access_attestation_page' && p.checked) {
+        if (p.privilege === 'can_access_subject_page' && p.checked) {
             return true;
         }
     }
@@ -147,7 +147,7 @@ const deleteNotification = (index, clear) => {
                                 </NavLink>
                                 <NavLink v-if="$page.props.auth.user.admin || checkAttestationAccessPrivilege" :href="route('attestations')" :active="route().current('attestations')">
                                     <span class="pi pi-book mr-1"></span>
-                                    Attestations
+                                    Subjects
                                 </NavLink>
                                 <NavLink :href="route('my_attestations')" :active="route().current('my_attestations')">
                                     <span class="pi pi-map mr-1"></span>
@@ -306,7 +306,7 @@ const deleteNotification = (index, clear) => {
                         </ResponsiveNavLink>
                         <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkAttestationAccessPrivilege" :href="route('attestations')" :active="route().current('attestations')">
                             <span class="pi pi-book mr-1"></span>
-                            Attestations
+                            Subjects
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('my_attestations')" :active="route().current('my_attestations')">
                             <span class="pi pi-map mr-1"></span>
