@@ -1,6 +1,6 @@
 <script setup>
 import {Head, usePage} from '@inertiajs/vue3';
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
@@ -31,6 +31,15 @@ onMounted(() => {
     }
     combinedData.value.sort((a, b) => a.role.localeCompare(b.role))
     privilegesRaw.value.sort((a, b) => a - b);
+})
+
+const checkEditRolePrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_edit_role' && p.checked) {
+            return true;
+        }
+    }
+    return false;
 })
 
 const reducedData = page.props.privileges.reduce((accumulator, current) => {
@@ -131,7 +140,7 @@ const handleRoleUpdateForm = () => {
                         <template #body="{index, data}">
                             <div class="flex justify-center items-center h-full">
                                 <Checkbox v-model="role.checked[role.privilege.findIndex(item => item === data)]"
-                                          :binary="true"
+                                          :binary="true" :disabled="!checkEditRolePrivilege && !page.props.auth.user.admin"
                                           @change="extractData(role, role.privilege.findIndex(item => item === data))"/>
                             </div>
                         </template>
