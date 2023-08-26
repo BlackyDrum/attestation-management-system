@@ -21,7 +21,7 @@
 The Attestation Management System is a web application built using Laravel and Vue.js, designed specifically for universities to streamline the process of tracking student tasks and providing attestation. This system aims to simplify the workflow between professors and students, making it easier to monitor the progress and completion of various tasks assigned to students.
 </p>
 
-![example](https://github.com/BlackyDrum/attestation-management-system/assets/111639941/e091a5f8-9975-4c03-83a6-b5988317b9b3)
+![example](https://github.com/BlackyDrum/attestation-management-system/assets/111639941/96ed7358-b649-401d-8bbf-caf7fb6fa0fd)
 
 ## Requirements
 <ul>
