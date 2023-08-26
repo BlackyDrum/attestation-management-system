@@ -25,10 +25,6 @@ class DashboardController extends Controller
             ->where('users.id', '=', Auth::id())
             ->get();
 
-        $semester = Semester::query()
-            ->where('id', '=', User::query()->find(Auth::id())->dashboard_semester)
-            ->first();
-
         $todos = ToDoList::query()
             ->where('creator_id', '=', Auth::id())
             ->orderBy('checked')
@@ -49,7 +45,6 @@ class DashboardController extends Controller
             'users' => Auth::user()->admin || $canSeeUsers ? User::all() : [],
             'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
             'data' => $data,
-            'selected_semester' => $semester,
             'todos' => $todos,
         ]);
     }

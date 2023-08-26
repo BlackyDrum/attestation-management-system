@@ -23,6 +23,8 @@ import Textarea from 'primevue/textarea';
 
 import combine from "@/CombinedData.js";
 
+import Cookies from 'js-cookie';
+
 
 defineProps({
     users: {
@@ -37,9 +39,6 @@ defineProps({
     data: {
         type: Array
     },
-    selected_semester: {
-        type: Array
-    }
 })
 
 
@@ -48,6 +47,7 @@ const page = usePage();
 const SCREEN_WIDTH_RESIZE = 1280;
 const notifications = ref([]);
 const selectedSemester = ref(null);
+const semester_id = ref(null);
 const acronyms = ref([]);
 const totalTaskCount = ref(0);
 const totalCheckedCount = ref(0);
@@ -91,7 +91,8 @@ const chartOptionsPieTotal = ref({
 
 onMounted(() => {
     notifications.value = page.props.auth.notifications;
-    selectedSemester.value = page.props.selected_semester;
+    semester_id.value = Cookies.get('dashboard_semester_id');
+    selectedSemester.value = page.props.semester[page.props.semester.findIndex(item => item.id === parseInt(semester_id.value))];
 
     if (selectedSemester.value) {
         loadSemesterData();
@@ -193,24 +194,10 @@ const handleDialogClose = () => {
 }
 
 const handleSemesterSelection = (event) => {
-    loadingData.value = true;
-    axios.patch('/dashboard/current_semester', {
-        semester: selectedSemester.value.id,
-    })
-        .then(response => {
-            loadSemesterData();
-        })
-        .catch(error => {
-            window.toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error.response.data.message,
-                life: 8000,
-            })
-        })
-        .then(() => {
-            loadingData.value = false;
-        })
+    Cookies.set('dashboard_semester_id',selectedSemester.value.id,{ expires: 7 });
+    semester_id.value = selectedSemester.value.id;
+
+    loadSemesterData()
 }
 
 const loadSemesterData = () => {
@@ -222,7 +209,7 @@ const loadSemesterData = () => {
     chartOptionsPieTotal.value.aspectRatio = window.innerWidth > SCREEN_WIDTH_RESIZE ? 1 : 3;
 
     combinedData.value = combine(page.props.data);
-    combinedData.value = combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
+    combinedData.value = combinedData.value.filter(item => item.semester_id === parseInt(semester_id.value));
 
     let totalTasks = 0;
     let totalChecked = 0;
@@ -300,7 +287,7 @@ const deleteNotification = (index, clear) => {
                               v-model="selectedSemester" @change="handleSemesterSelection($event)"
                               :options="semester" optionLabel="semester"/>
                 </div>
-                <div class="mt-4" v-if="!selectedSemester">
+                <div class="mt-4" v-if="!semester_id">
                     <div class="text-gray-700 text-center">
                         <div class="pi pi-chart-line custom-icon"></div>
                     </div>
