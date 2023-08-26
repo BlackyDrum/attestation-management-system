@@ -23,8 +23,6 @@ import Textarea from 'primevue/textarea';
 
 import combine from "@/CombinedData.js";
 
-import Cookies from 'js-cookie';
-
 
 defineProps({
     users: {
@@ -91,7 +89,7 @@ const chartOptionsPieTotal = ref({
 
 onMounted(() => {
     notifications.value = page.props.auth.notifications;
-    semester_id.value = Cookies.get('dashboard_semester_id');
+    semester_id.value = localStorage.getItem('dashboard_semester_id');
     selectedSemester.value = page.props.semester[page.props.semester.findIndex(item => item.id === parseInt(semester_id.value))];
 
     if (selectedSemester.value) {
@@ -194,7 +192,7 @@ const handleDialogClose = () => {
 }
 
 const handleSemesterSelection = (event) => {
-    Cookies.set('dashboard_semester_id',selectedSemester.value.id,{ expires: 7 });
+    localStorage.setItem('dashboard_semester_id',selectedSemester.value.id);
     semester_id.value = selectedSemester.value.id;
 
     loadSemesterData()
