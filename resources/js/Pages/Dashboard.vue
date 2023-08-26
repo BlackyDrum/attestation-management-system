@@ -207,7 +207,7 @@ const loadSemesterData = () => {
     chartOptionsPieTotal.value.aspectRatio = window.innerWidth > SCREEN_WIDTH_RESIZE ? 1 : 3;
 
     combinedData.value = combine(page.props.data);
-    combinedData.value = combinedData.value.filter(item => item.semester_id === parseInt(semester_id.value));
+    combinedData.value = combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
 
     let totalTasks = 0;
     let totalChecked = 0;
