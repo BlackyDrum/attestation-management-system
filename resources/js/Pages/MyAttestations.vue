@@ -174,6 +174,16 @@ const setupChart = () => {
                 </Accordion>
             </div>
         </div>
+
+        <template
+            v-if="noAttestations">
+            <div class="text-gray-700 text-center">
+                <div class="pi pi-book custom-icon"></div>
+            </div>
+            <div class="text-gray-500 text-center mt-4">
+                No Attestations assigned to you
+            </div>
+        </template>
     </AuthenticatedLayout>
 
     <Dialog v-model:visible="showAttestationInfoDialog" modal :header="subject_name"

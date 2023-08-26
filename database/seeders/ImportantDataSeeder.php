@@ -28,17 +28,6 @@ class ImportantDataSeeder extends Seeder
             ]);
         }
 
-        $date = date("Y");
-
-        $semesters = ["Summersemester {$date}", "Wintersemester {$date}"];
-
-        foreach ($semesters as $semester) {
-            Semester::query()->create([
-                'semester' => $semester
-            ]);
-        }
-
-
         // Roles and privileges
         $roles = Role::all();
         $privileges = [

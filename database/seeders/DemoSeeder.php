@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Attestation;
 use App\Models\AttestationTasks;
+use App\Models\Semester;
 use App\Models\User;
 use App\Models\UserHasAttestation;
 use App\Models\UserHasCheckedTask;
@@ -19,44 +20,57 @@ class DemoSeeder extends Seeder
     {
         \App\Models\User::factory(100)->create();
 
+        $date = date("Y");
+
+        $semesters = ["Summersemester {$date}", "Wintersemester {$date}"];
+
+        foreach ($semesters as $semester) {
+            Semester::query()->create([
+                'semester' => $semester
+            ]);
+        }
+
+        $semesters = Semester::all();
+        $users = User::all();
+
         Attestation::query()->create([
             'subject_number' => 25106,
             'subject_name' => 'Data Structures and Algorithms',
             'acronym' => 'DSA',
-            'semester_id' => 1,
-            'creator_id' => 1,
+            'semester_id' => $semesters[0]->id,
+            'creator_id' => $users[0]->id,
         ]);
 
         Attestation::query()->create([
             'subject_number' => 25107,
             'subject_name' => 'Data Communication',
             'acronym' => 'DC',
-            'semester_id' => 1,
-            'creator_id' => 1,
+            'semester_id' => $semesters[0]->id,
+            'creator_id' => $users[0]->id,
         ]);
 
         Attestation::query()->create([
             'subject_number' => 25108,
             'subject_name' => 'Introduction to Computer Engineering',
             'acronym' => 'ICE',
-            'semester_id' => 1,
-            'creator_id' => 1,
+            'semester_id' => $semesters[0]->id,
+            'creator_id' => $users[0]->id,
         ]);
 
         Attestation::query()->create([
             'subject_number' => 25109,
             'subject_name' => 'Computability and Complexity',
             'acronym' => 'CC',
-            'semester_id' => 2,
-            'creator_id' => 1,
+            'semester_id' => $semesters[1]->id,
+            'creator_id' => $users[0]->id,
         ]);
 
         Attestation::query()->create([
             'subject_number' => 25110,
             'subject_name' => 'Data Bases and Information Systems',
             'acronym' => 'DBIS',
-            'semester_id' => 2,
-            'creator_id' => 1,
+            'semester_id' => $semesters[1]->id,
+            'creator_id' => $users[0]->id,
         ]);
 
         $subjects = Attestation::all();

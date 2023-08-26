@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedBigInteger('dashboard_semester')->nullable();
 
-            $table->foreign('dashboard_semester')->references('id')->on('semester')->onDelete('cascade');
+            $table->foreign('dashboard_semester')->references('id')->on('semester')->onDelete('set null');
         });
     }
 
