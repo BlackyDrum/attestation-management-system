@@ -49,6 +49,14 @@ onBeforeUpdate(() => {
     formData.value = [];
 })
 
+const canMakeAttestationPrivilege = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_make_attestation' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
 
 const canRevokeAttestationPrivilege = computed(() => {
     for (const p of page.props.auth.privileges) {
@@ -204,7 +212,7 @@ const resetForm = (field) => {
                                 <Checkbox v-if="data['user_id']" v-model="data[field]"
                                           :binary="true"
                                           @change="extractData(data, index)"
-                                          :disabled="!canRevokeAttestationPrivilege && !page.props.auth.user.admin && data[field]"
+                                          :disabled="(!canMakeAttestationPrivilege && !page.props.auth.user.admin) || !canRevokeAttestationPrivilege && !page.props.auth.user.admin && data[field]"
                                           v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
                             </div>
                         </template>

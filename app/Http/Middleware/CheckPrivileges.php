@@ -82,6 +82,12 @@ class CheckPrivileges
                 }
                 break;
             case 'show_make_attestation':
+                foreach ($privileges as $privilege)
+                {
+                    if ($privilege['privilege'] === 'can_access_attestation_page' && $privilege['checked'])
+                        return $next($request);
+                }
+                break;
             case 'make_attestation':
                 foreach ($privileges as $privilege)
                 {

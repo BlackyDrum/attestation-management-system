@@ -140,9 +140,9 @@ const checkDeleteSubjectPrivilege = computed(() => {
     return false;
 })
 
-const checkMakeAttestationPrivilege = computed(() => {
+const checkCanAccessAttestationPage = computed(() => {
     for (const p of page.props.auth.privileges) {
-        if (p.privilege === 'can_make_attestation' && p.checked) {
+        if (p.privilege === 'can_access_attestation_page' && p.checked) {
             return true;
         }
     }
@@ -502,7 +502,7 @@ const combinedDataSorted = computed(() => {
                                                     <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
                                                         <Button icon="pi pi-arrow-right"
                                                                 label="Make attestations" severity="info"
-                                                                v-if="page.props.auth.user.admin || checkMakeAttestationPrivilege"
+                                                                v-if="page.props.auth.user.admin || checkCanAccessAttestationPage"
                                                                 :disabled="userFileForm.processing"
                                                                 @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"/>
                                                     </div>
