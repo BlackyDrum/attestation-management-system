@@ -8,6 +8,7 @@ use App\Models\Attestation;
 use App\Models\AttestationTasks;
 use App\Models\Semester;
 use App\Models\User;
+use App\Models\UserCanAccessAdditionalAttestation;
 use App\Models\UserHasAttestation;
 use App\Models\UserHasCheckedTask;
 use App\Rules\CheckTitle;
@@ -34,6 +35,11 @@ class AttestationController extends Controller
     public function show(Request $request)
     {
         $attestationQuery = AttestationController::createQuery();
+
+        if (!Auth::user()->admin) {
+            $tmp = UserCanAccessAdditionalAttestation::query()->where('user_id', '=', Auth::id())->select(['attestation_id'])->get();
+            $attestationQuery->whereIn('attestation.id',$tmp)->orWhere('attestation.creator_id', '=', Auth::id());
+        }
 
         $attestations = $attestationQuery->get();
 
@@ -308,6 +314,26 @@ class AttestationController extends Controller
         return to_route('attestations');
     }
 
+    public function include_users_to_attestation(Request $request)
+    {
+        $request->validate([
+            'attestation_id' => 'required|integer|exists:attestation,id',
+            'users' => 'required|array|min:1',
+            'users.*.id' => 'required|integer|exists:users,id'
+        ],[
+            'users.*.id.*' => 'The selected User is invalid or does not exist.'
+        ]);
+
+        foreach ($request->input('users') as $user) {
+            UserCanAccessAdditionalAttestation::query()->create([
+                'attestation_id' => $request->input('attestation_id'),
+                'user_id' => $user['id'],
+            ]);
+        }
+
+        return to_route('attestations');
+    }
+
     private function validateRequest(Request $request)
     {
         $request->validate([
@@ -368,18 +394,25 @@ class AttestationController extends Controller
             ->orderBy('attestation_tasks.id');
 
         $privileges = HandleInertiaRequests::get_privileges();
-        $canAccessAttestationPage = Auth::user()->admin;
-        foreach ($privileges as $privilege)
-        {
-            if ($privilege['privilege'] === 'can_access_subject_page' && $privilege['checked'])
-                $canAccessAttestationPage = true;
-        }
 
-        if ($canAccessAttestationPage) {
+        if (Auth::user()->admin) {
             $attestationQuery->addSelect([
                 'editor.name AS editor_name',
                 'user_has_checked_task.editor_id',
             ]);
+            return $attestationQuery;
+        }
+
+        foreach ($privileges as $privilege)
+        {
+            if ($privilege['privilege'] === 'can_access_subject_page' && $privilege['checked']) {
+                $attestationQuery->addSelect([
+                    'editor.name AS editor_name',
+                    'user_has_checked_task.editor_id',
+                ]);
+                break;
+            }
+
         }
 
         return $attestationQuery;

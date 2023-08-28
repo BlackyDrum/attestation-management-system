@@ -40,7 +40,8 @@ Route::middleware('auth')->group(function () {
         Route::patch('/attestations', [\App\Http\Controllers\AttestationsMakeController::class, 'make'])->name('make_attestation');
         Route::get('/attestations', [\App\Http\Controllers\AttestationController::class, 'show'])->name('attestations');
         Route::post('/attestations', [\App\Http\Controllers\AttestationController::class, 'create'])->name('create_subject');
-        Route::post('/attestations/users', [\App\Http\Controllers\AttestationController::class, 'upload'])->name('upload_user_subject');
+        Route::post('/attestations/users/upload', [\App\Http\Controllers\AttestationController::class, 'upload'])->name('upload_user_subject');
+        Route::post('/attestations/users/include', [\App\Http\Controllers\AttestationController::class, 'include_users_to_attestation']);
         Route::delete('/attestations', [\App\Http\Controllers\AttestationController::class, 'delete'])->name('delete_subject');
         Route::put('/attestations', [\App\Http\Controllers\AttestationController::class, 'edit'])->name('edit_subject');
 

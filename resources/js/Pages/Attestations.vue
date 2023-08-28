@@ -22,6 +22,8 @@ import FileUpload from 'primevue/fileupload';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import SelectButton from 'primevue/selectbutton';
+import OverlayPanel from 'primevue/overlaypanel';
+import InlineMessage from 'primevue/inlinemessage';
 
 import combine from '@/CombinedData.js';
 
@@ -56,6 +58,7 @@ const headers = ref(null);
 const chartData = ref([]);
 const chart = ref("Polar");
 const chartSelect = ref(["Pie", "Polar", "Bar"])
+const op = ref();
 
 const attestationForm = useForm({
     id: null,
@@ -65,6 +68,11 @@ const attestationForm = useForm({
     acronym: null,
     semester: null,
     attestations: [],
+})
+
+const includeUserForm = useForm({
+    attestation_id: null,
+    users: [],
 })
 
 const userFileForm = useForm({
@@ -375,7 +383,7 @@ const handleAttestationEdit = (attestation) => {
 
 const handleUserFileUpload = (attestation) => {
     userFileForm.id = attestation.id;
-    userFileForm.post('/attestations/users', {
+    userFileForm.post('/attestations/users/upload', {
         preserveScroll: true,
         onSuccess: () => {
             window.toast.add({
@@ -406,6 +414,39 @@ const combinedDataSorted = computed(() => {
         }
     }
 })
+
+const toggle = (event, attestation_id) => {
+    op.value.toggle(event);
+    includeUserForm.attestation_id = attestation_id;
+}
+
+const handleIncludeUserToAdditionalAttestation = () => {
+    includeUserForm.post('/attestations/users/include', {
+        preserveScroll: true,
+        onSuccess: () => {
+            window.toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Users included to this subject.',
+                life: 3000,
+            })
+        },
+        onError: (errors) => {
+            for (const error in errors) {
+                window.toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: errors[error],
+                    life: 8000,
+                })
+            }
+        },
+        onFinish: () => {
+            includeUserForm.users = [];
+            toggle();
+        }
+    })
+}
 </script>
 
 <template>
@@ -440,8 +481,13 @@ const combinedDataSorted = computed(() => {
                                     <div class="shadow-xl">
                                         <Card class="break-words border">
                                             <template #title>
-                                                <div>
-                                                    {{ attestation.subject_name }} ({{ attestation.semester }})
+                                                <div class="grid grid-cols-[90%,10%]">
+                                                    <div>
+                                                        {{ attestation.subject_name }}
+                                                    </div>
+                                                    <div class="ml-auto">
+                                                        <Button icon="pi pi-user" aria-label="Submit" @click="toggle($event,attestation.id)"/>
+                                                    </div>
                                                 </div>
                                             </template>
                                             <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
@@ -690,6 +736,17 @@ const combinedDataSorted = computed(() => {
                     </ButtonBar>
                 </form>
             </Dialog>
+        <OverlayPanel ref="op">
+            <div class="flex flex-wrap gap-3">
+                <InlineMessage severity="info">Include other users to see this subject</InlineMessage>
+                <MultiSelect class="w-full" filter :disabled="includeUserForm.processing"
+                             :loading="!$props.users" placeholder="Users"
+                             v-model="includeUserForm.users" :options="userWithMatriculationNumber"
+                             optionLabel="name" :maxSelectedLabels="0"
+                             :virtualScrollerOptions="{ itemSize: 44 }"/>
+                <Button icon="pi pi-check" label="Save" :disabled="includeUserForm.processing" @click="handleIncludeUserToAdditionalAttestation"></Button>
+            </div>
+        </OverlayPanel>
     </AuthenticatedLayout>
 </template>
 
