@@ -168,6 +168,11 @@ class AttestationController extends Controller
             ->join('user_has_checked_task', 'user_has_checked_task.task_id', '=', 'attestation_tasks.id')
             ->get();
 
+        // Delete the old 'final attestation'
+        AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
+            ->where('title', '=', $this->finalAttestation)
+            ->first()->delete();
+
         // Create a new 'final attestation' for this subject. We need to do that because we want to
         // ensure it consistently holds the highest ID among all tasks for a subject.
         $newFinalAttestation = AttestationTasks::query()->create([
@@ -187,11 +192,6 @@ class AttestationController extends Controller
                 'checked' => $item->checked
             ]);
         }
-
-        // Delete the old 'final attestation'
-        AttestationTasks::query()->where('attestation_id', '=', $attestation['id'])
-            ->where('title', '=', $this->finalAttestation)
-            ->first()->delete();
 
         // Remove any tasks that are unassigned to this subject, often occurring
         // when a user deletes a task on the client side.
