@@ -6,6 +6,7 @@ use App\Events\NotificationEvent;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\Attestation;
 use App\Models\AttestationTasks;
+use App\Models\UserCanAccessAdditionalAttestation;
 use App\Models\UserHasCheckedTask;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\JoinClause;
@@ -26,6 +27,19 @@ class AttestationsMakeController extends Controller
         }
 
         $attestations = AttestationController::createQuery($id)->get();
+
+        $subject = Attestation::query()->find($id);
+        if (!Auth::user()->admin && $subject->creator_id !== Auth::id()) {
+            try {
+                UserCanAccessAdditionalAttestation::query()
+                    ->where('user_id', '=', Auth::id())
+                    ->where('attestation_id', '=', $id)
+                    ->firstOrFail();
+            }
+            catch (ModelNotFoundException $exception) {
+                abort(403, "Forbidden");
+            }
+        }
 
         return Inertia::render('AttestationsMake', [
             'attestations' => $attestations,
