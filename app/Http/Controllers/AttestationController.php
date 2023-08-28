@@ -121,6 +121,19 @@ class AttestationController extends Controller
             'id.*' => "The selected attestation id is invalid"
         ]);
 
+        $attestation = Attestation::query()->find($request->input('id'));
+        if (!Auth::user()->admin && $attestation->creator_id !== Auth::id()) {
+            try {
+                UserCanAccessAdditionalAttestation::query()
+                    ->where('user_id', '=', Auth::id())
+                    ->where('attestation_id', '=', $attestation->id)
+                    ->firstOrFail();
+            }
+            catch (ModelNotFoundException $exception) {
+                abort(403, "Forbidden");
+            }
+        }
+
         DB::beginTransaction();
 
         $attestation = Attestation::query()->find($request->input('id'))->fill([
@@ -235,6 +248,8 @@ class AttestationController extends Controller
             'attestation_id' => 'required|integer|exists:attestation,id'
         ]);
 
+        $this->checkIncludedUser(Attestation::query()->find($request->input('attestation_id')));
+
         Attestation::query()->find($request->input('attestation_id'))->delete();
 
         return response()->json(['success' => true, 'attestation_id' => $request->input('attestation_id')]);
@@ -338,6 +353,21 @@ class AttestationController extends Controller
         }
 
         return to_route('attestations');
+    }
+
+    public static function checkIncludedUser($attestation)
+    {
+        if (!Auth::user()->admin && $attestation->creator_id !== Auth::id()) {
+            try {
+                UserCanAccessAdditionalAttestation::query()
+                    ->where('user_id', '=', Auth::id())
+                    ->where('attestation_id', '=', $attestation->id)
+                    ->firstOrFail();
+            }
+            catch (ModelNotFoundException $exception) {
+                abort(403, "Forbidden");
+            }
+        }
     }
 
     private function validateRequest(Request $request)

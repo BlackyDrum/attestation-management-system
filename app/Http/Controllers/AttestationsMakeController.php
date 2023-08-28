@@ -28,18 +28,7 @@ class AttestationsMakeController extends Controller
 
         $attestations = AttestationController::createQuery($id)->get();
 
-        $subject = Attestation::query()->find($id);
-        if (!Auth::user()->admin && $subject->creator_id !== Auth::id()) {
-            try {
-                UserCanAccessAdditionalAttestation::query()
-                    ->where('user_id', '=', Auth::id())
-                    ->where('attestation_id', '=', $id)
-                    ->firstOrFail();
-            }
-            catch (ModelNotFoundException $exception) {
-                abort(403, "Forbidden");
-            }
-        }
+        AttestationController::checkIncludedUser(Attestation::query()->find($id));
 
         return Inertia::render('AttestationsMake', [
             'attestations' => $attestations,
