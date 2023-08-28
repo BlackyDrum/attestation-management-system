@@ -324,6 +324,12 @@ class AttestationController extends Controller
             'users.*.id.*' => 'The selected User is invalid or does not exist.'
         ]);
 
+        $subject = Attestation::query()->find($request->input('attestation_id'));
+
+        if (!Auth::user()->admin && $subject->creator_id !== Auth::id()) {
+            abort(403, "Forbidden");
+        }
+
         foreach ($request->input('users') as $user) {
             UserCanAccessAdditionalAttestation::query()->create([
                 'attestation_id' => $request->input('attestation_id'),

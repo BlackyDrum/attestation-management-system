@@ -486,7 +486,7 @@ const handleIncludeUserToAdditionalAttestation = () => {
                                                         {{ attestation.subject_name }}
                                                     </div>
                                                     <div class="ml-auto">
-                                                        <Button icon="pi pi-user" aria-label="Submit" @click="toggle($event,attestation.id)"/>
+                                                        <Button v-if="$page.props.auth.user.admin || attestation.creator_id === $page.props.auth.user.id" icon="pi pi-user" aria-label="Submit" @click="toggle($event,attestation.id)"/>
                                                     </div>
                                                 </div>
                                             </template>
