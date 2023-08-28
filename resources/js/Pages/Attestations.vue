@@ -6,6 +6,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 import ButtonBar from '@/Components/ButtonBar.vue';
+import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 
 import {useConfirm} from 'primevue/useconfirm';
 import Dialog from 'primevue/dialog';
@@ -481,11 +482,11 @@ const handleIncludeUserToAdditionalAttestation = () => {
                                     <div class="shadow-xl">
                                         <Card class="break-words border">
                                             <template #title>
-                                                <div class="grid grid-cols-[90%,10%]">
+                                                <div class="grid grid-cols-[80%,20%]">
                                                     <div>
                                                         {{ attestation.subject_name }}
                                                     </div>
-                                                    <div class="ml-auto">
+                                                    <div class="ml-auto self-center">
                                                         <Button v-if="$page.props.auth.user.admin || attestation.creator_id === $page.props.auth.user.id" icon="pi pi-user" aria-label="Submit" @click="toggle($event,attestation.id)"/>
                                                     </div>
                                                 </div>
@@ -745,6 +746,9 @@ const handleIncludeUserToAdditionalAttestation = () => {
                              optionLabel="name" :maxSelectedLabels="0"
                              :virtualScrollerOptions="{ itemSize: 44 }"/>
                 <Button icon="pi pi-check" label="Save" :disabled="includeUserForm.processing" @click="handleIncludeUserToAdditionalAttestation"></Button>
+                <div class="justify-center">
+                    <CustomProgressSpinner :processing="includeUserForm.processing"></CustomProgressSpinner>
+                </div>
             </div>
         </OverlayPanel>
     </AuthenticatedLayout>
