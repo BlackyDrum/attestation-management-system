@@ -90,6 +90,6 @@ $ php artisan db:seed --class=DemoSeeder
 <p>In order to have full access to the Attestation Management System, you need to manually add a user and set the admin flag to true. You can use the following command:</p>
 
 ```sql
-INSERT INTO users(matriculation_number,name, email, password, admin, role_id) VALUES (0,'Admin','admin@example.com', '$2y$10$7yXSbuH7.wseW.r8ob9ULO1rM7ORxh9n0xp014DCwqOiRct2s1JTm',true,1);
+INSERT INTO users(matriculation_number,name,email,password,admin,role_id) VALUES (0,'Admin','admin@example.com','$2y$10$7yXSbuH7.wseW.r8ob9ULO1rM7ORxh9n0xp014DCwqOiRct2s1JTm',true,1);
 ```
 **Please note that the password used in this example is "default." It's crucial to change the password to something secure and unique once you gain access to the system.**
