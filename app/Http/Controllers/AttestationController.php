@@ -331,7 +331,7 @@ class AttestationController extends Controller
         }
 
         foreach ($request->input('users') as $user) {
-            UserCanAccessAdditionalAttestation::query()->create([
+            UserCanAccessAdditionalAttestation::query()->firstOrCreate([
                 'attestation_id' => $request->input('attestation_id'),
                 'user_id' => $user['id'],
             ]);
