@@ -42,7 +42,7 @@ defineProps({
     errors: {
         type: Object
     },
-    additional: {
+    additional_attestations: {
         type: Array
     }
 })
@@ -425,7 +425,7 @@ const toggle = (event, attestation_id) => {
     includeUserForm.attestation_id = attestation_id;
 
     page.props.users.forEach(user => {
-        page.props.additional.forEach(item => {
+        page.props.additional_attestations.forEach(item => {
             if (item.user_id === user.id && item.attestation_id === attestation_id)
                 includeUserForm.users.push(user);
         })

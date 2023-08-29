@@ -56,7 +56,7 @@ class AttestationController extends Controller
             'users' => User::all(),
             'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
             'attestations' => $attestationQuery->get(),
-            'additional' => $additional,
+            'additional_attestations' => $additional,
         ]);
     }
 
