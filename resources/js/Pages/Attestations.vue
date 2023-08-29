@@ -750,7 +750,7 @@ const handleIncludeUserToAdditionalAttestation = () => {
             </Dialog>
         <OverlayPanel ref="op">
             <div class="flex flex-wrap gap-3">
-                <InlineMessage class="w-full" severity="info">Include other users to see this subject</InlineMessage>
+                <InlineMessage class="w-full" severity="warn">Users included here will have access to this subject</InlineMessage>
                 <MultiSelect class="w-full" filter :disabled="includeUserForm.processing"
                              :loading="!$props.users" placeholder="Users"
                              v-model="includeUserForm.users" :options="userWithMatriculationNumber"
