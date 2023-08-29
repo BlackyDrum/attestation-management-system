@@ -41,12 +41,22 @@ class AttestationController extends Controller
             $attestationQuery->whereIn('attestation.id',$tmp)->orWhere('attestation.creator_id', '=', Auth::id());
         }
 
-        $attestations = $attestationQuery->get();
+        $additional = UserCanAccessAdditionalAttestation::query()
+            ->join('users', 'users.id', '=', 'user_can_access_additional_attestation.user_id')
+            ->join('attestation', 'attestation.id', '=', 'user_can_access_additional_attestation.attestation_id')
+            ->select([
+                'user_id',
+                'attestation_id',
+                'name',
+                'matriculation_number',
+            ])
+            ->get();
 
         return Inertia::render('Attestations', [
             'users' => User::all(),
             'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
-            'attestations' => $attestations,
+            'attestations' => $attestationQuery->get(),
+            'additional' => $additional,
         ]);
     }
 
@@ -345,12 +355,17 @@ class AttestationController extends Controller
             abort(403, "Forbidden");
         }
 
+        $ids = [];
         foreach ($request->input('users') as $user) {
-            UserCanAccessAdditionalAttestation::query()->firstOrCreate([
+            $ids[] = UserCanAccessAdditionalAttestation::query()->firstOrCreate([
                 'attestation_id' => $request->input('attestation_id'),
                 'user_id' => $user['id'],
-            ]);
+            ])->id;
         }
+
+        UserCanAccessAdditionalAttestation::query()
+            ->where('attestation_id', '=', $request->input('attestation_id'))
+            ->whereNotIn('id', $ids)->delete();
 
         return to_route('attestations');
     }

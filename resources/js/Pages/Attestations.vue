@@ -41,6 +41,9 @@ defineProps({
     },
     errors: {
         type: Object
+    },
+    additional: {
+        type: Array
     }
 })
 
@@ -417,8 +420,16 @@ const combinedDataSorted = computed(() => {
 })
 
 const toggle = (event, attestation_id) => {
+    includeUserForm.users = [];
     op.value.toggle(event);
     includeUserForm.attestation_id = attestation_id;
+
+    page.props.users.forEach(user => {
+        page.props.additional.forEach(item => {
+            if (item.user_id === user.id && item.attestation_id === attestation_id)
+                includeUserForm.users.push(user);
+        })
+    })
 }
 
 const handleIncludeUserToAdditionalAttestation = () => {
