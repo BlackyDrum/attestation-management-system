@@ -25,7 +25,6 @@ Route::delete('/notifications', [\App\Http\Controllers\DashboardController::clas
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'show'])->name('dashboard');
     Route::patch('/dashboard/current_semester', [\App\Http\Controllers\DashboardController::class, 'update_semester']);
-    Route::post('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'create_to_do']);
     Route::patch('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'check_to_do']);
     Route::delete('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'delete_to_do']);
 
@@ -36,6 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/my_attestations', [\App\Http\Controllers\MyAttestationsController::class, 'show'])->name('my_attestations');
 
     Route::middleware(\App\Http\Middleware\CheckPrivileges::class)->group(function() {
+        Route::post('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'create_to_do'])->name('create_to_do');
+
         Route::get('/attestations/{id}', [\App\Http\Controllers\AttestationsMakeController::class, 'show'])->name('show_make_attestation');
         Route::patch('/attestations', [\App\Http\Controllers\AttestationsMakeController::class, 'make'])->name('make_attestation');
         Route::get('/attestations', [\App\Http\Controllers\AttestationController::class, 'show'])->name('attestations');

@@ -29,6 +29,7 @@ class ImportantDataSeeder extends Seeder
         // Roles and privileges
         $roles = Role::all();
         $privileges = [
+            "can_create_todo",
             "can_send_notification",
             "can_access_subject_page",
             "can_create_subject",

@@ -117,6 +117,13 @@ class CheckPrivileges
                         return $next($request);
                 }
                 break;
+            case 'create_to_do':
+                foreach ($privileges as $privilege)
+                {
+                    if ($privilege['privilege'] === 'can_create_todo' && $privilege['checked'])
+                        return $next($request);
+                }
+                break;
         }
 
         abort(403,"Forbidden");
