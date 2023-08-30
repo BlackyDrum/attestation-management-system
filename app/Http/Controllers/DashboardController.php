@@ -89,19 +89,6 @@ class DashboardController extends Controller
         return redirect()->back();
     }
 
-    public function update_semester(Request $request)
-    {
-        $request->validate([
-            'semester' => 'required|integer|exists:semester,id',
-        ], [
-            'semester.*' => 'The selected semester in invalid or does not exist.'
-        ]);
-
-        User::query()->find(Auth::id())->fill([
-            'dashboard_semester' => $request->input('semester')
-        ])->save();
-    }
-
     public function create_to_do(Request $request)
     {
         $request->validate([
