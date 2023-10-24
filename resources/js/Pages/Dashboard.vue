@@ -307,7 +307,7 @@ const deleteNotification = (index, clear) => {
                             <Chart type="doughnut" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
                             <div class="mt-6">
                                 <ProgressBar
-                                    :value="Math.round(totalCheckedCount / totalTaskCount * 100)"></ProgressBar>
+                                    :value="Math.round(totalCheckedCount / totalTaskCount * 100) || 0"></ProgressBar>
                             </div>
                         </div>
                     </div>
