@@ -280,7 +280,7 @@ const saveComment = () => {
             <div class="flex">
                 <CustomProgressSpinner :processing="commentFormProcessing"></CustomProgressSpinner>
                 <div class="ml-auto">
-                    <Button label="Save Changes" @click="saveComment"></Button>
+                    <Button class="" label="Update comment" icon="pi pi-save" severity="success" @click="saveComment"></Button>
                 </div>
             </div>
         </OverlayPanel>
