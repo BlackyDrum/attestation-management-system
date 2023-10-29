@@ -40,6 +40,7 @@ const dataTable = ref();
 const userDataBackup = ref(null);
 const comment = ref(null);
 const commentPanel = ref();
+const commentFormProcessing = ref(false);
 
 const commentForm = useForm({
     comment: null,
@@ -174,6 +175,7 @@ const editComment = (data, field, index,  event) => {
 }
 
 const saveComment = () => {
+    commentFormProcessing.value = true;
     window.axios.patch("/attestations/comment", {
         comment: commentForm.comment,
         user_id: commentForm.user_id,
@@ -198,6 +200,7 @@ const saveComment = () => {
         })
         .then(() => {
             commentPanel.value.toggle();
+            commentFormProcessing.value = false;
         })
 }
 </script>
@@ -275,7 +278,7 @@ const saveComment = () => {
         <OverlayPanel ref="commentPanel">
             <Textarea v-model="commentForm.comment" rows="5" cols="40" />
             <div class="flex">
-                <CustomProgressSpinner :processing="commentForm.processing"></CustomProgressSpinner>
+                <CustomProgressSpinner :processing="commentFormProcessing"></CustomProgressSpinner>
                 <div class="ml-auto">
                     <Button label="Save Changes" @click="saveComment"></Button>
                 </div>
