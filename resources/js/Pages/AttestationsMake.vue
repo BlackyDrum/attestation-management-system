@@ -265,7 +265,7 @@ const saveComment = () => {
                                           @change="extractData(data, index)"
                                           :disabled="(!canMakeAttestationPrivilege && !page.props.auth.user.admin) || !canRevokeAttestationPrivilege && !page.props.auth.user.admin && data[field]"
                                           v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
-                            <div class="ml-3 hidden group-hover:block">
+                            <div class="ml-3 hidden group-hover:block text-gray-400">
                                 <span class="pi pi-comment cursor-pointer" @click="editComment(data, field, index,  $event)"></span>
                             </div>
                             </div>

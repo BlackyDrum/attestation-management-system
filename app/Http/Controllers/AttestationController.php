@@ -382,7 +382,7 @@ class AttestationController extends Controller
             ->where('user_id', '=', $request->input('user_id'))
             ->where('task_id', '=', $request->input('task_id'))
             ->update([
-                'comment' => $request->input('comment')
+                'comment' => htmlspecialchars($request->input('comment'))
             ]);
     }
 
