@@ -370,6 +370,22 @@ class AttestationController extends Controller
         return to_route('attestations');
     }
 
+    public function updateComment(Request $request)
+    {
+        $request->validate([
+            'comment' => 'nullable|string|max:512',
+            'user_id' => 'required|integer|exists:users,id',
+            'task_id' => 'required|integer|exists:attestation_tasks,id'
+        ]);
+
+        UserHasCheckedTask::query()
+            ->where('user_id', '=', $request->input('user_id'))
+            ->where('task_id', '=', $request->input('task_id'))
+            ->update([
+                'comment' => $request->input('comment')
+            ]);
+    }
+
     public static function checkIncludedUser($attestation)
     {
         if (!Auth::user()->admin && $attestation->creator_id !== Auth::id()) {
@@ -441,6 +457,7 @@ class AttestationController extends Controller
                 'attestation_tasks.id AS task_id',
                 'user_has_checked_task.id AS checked_id',
                 'user_has_checked_task.updated_at',
+                'user_has_checked_task.comment',
             ])
             ->orderBy('attestation_tasks.id');
 

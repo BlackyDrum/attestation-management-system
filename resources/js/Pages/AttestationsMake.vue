@@ -1,14 +1,17 @@
 <script setup>
-import {Head, router, usePage} from '@inertiajs/vue3';
+import {Head, router, useForm, usePage} from '@inertiajs/vue3';
 import {computed, onBeforeUpdate, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Checkbox from 'primevue/checkbox';
 import InputText from 'primevue/inputtext';
+import OverlayPanel from 'primevue/overlaypanel';
+import Textarea from 'primevue/textarea';
 
 import combine from '@/CombinedData.js';
 import reduce_tasks from '@/ReduceTasks.js';
@@ -35,6 +38,14 @@ const formData = ref([]);
 const checkedCount = ref({});
 const dataTable = ref();
 const userDataBackup = ref(null);
+const comment = ref(null);
+const commentPanel = ref();
+
+const commentForm = useForm({
+    comment: null,
+    user_id: null,
+    task_id: null,
+})
 
 const filters = ref({
     'Name': {value: null, matchMode: 'contains'},
@@ -108,12 +119,12 @@ const extractData = (data, index) => {
     const keys = (Object.keys(data).filter(key => key.startsWith('task_id'))).map(key => key.replace('task_id_', ''));
 
     formData.value = formData.value.filter(obj => obj.user_id !== data.user_id);
-
     for (const key of keys) {
         formData.value.push({
             user_id: data.user_id,
             checked: Boolean(data[key]),
             task_id: data[`task_id_${key}`],
+            comment: comment.value
         })
     }
 }
@@ -151,6 +162,43 @@ const exportCSV = () => {
 const resetForm = (field) => {
     userData.value = JSON.parse(JSON.stringify(userDataBackup.value));
     formData.value = [];
+}
+
+const editComment = (data, field, index,  event) => {
+    commentForm.reset();
+    commentForm.comment = data[`comment_${field}`] || null;
+    commentForm.user_id = data.user_id;
+    commentForm.task_id = data[`task_id_${field}`];
+
+    commentPanel.value.toggle(event);
+}
+
+const saveComment = () => {
+    window.axios.patch("/attestations/comment", {
+        comment: commentForm.comment,
+        user_id: commentForm.user_id,
+        task_id: commentForm.task_id,
+    })
+        .then(result => {
+            window.toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: "Comment updated",
+                life: 3000,
+            })
+            router.reload();
+        })
+        .catch(error => {
+            window.toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 8000,
+            })
+        })
+        .then(() => {
+            commentPanel.value.toggle();
+        })
 }
 </script>
 
@@ -197,7 +245,7 @@ const resetForm = (field) => {
                         </div>
                     </template>
                     <Column style="font-weight: bold" field="Name" header="Name"/>
-                    <Column v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
+                    <Column class="group" v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
                         <template #header>
                             <div class="mx-auto break-words">
                                 <div>
@@ -214,11 +262,24 @@ const resetForm = (field) => {
                                           @change="extractData(data, index)"
                                           :disabled="(!canMakeAttestationPrivilege && !page.props.auth.user.admin) || !canRevokeAttestationPrivilege && !page.props.auth.user.admin && data[field]"
                                           v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
+                            <div class="ml-3 hidden group-hover:block">
+                                <span class="pi pi-comment cursor-pointer" @click="editComment(data, field, index,  $event)"></span>
+                            </div>
                             </div>
                         </template>
                     </Column>
                 </DataTable>
             </div>
         </div>
+
+        <OverlayPanel ref="commentPanel">
+            <Textarea v-model="commentForm.comment" rows="5" cols="40" />
+            <div class="flex">
+                <CustomProgressSpinner :processing="commentForm.processing"></CustomProgressSpinner>
+                <div class="ml-auto">
+                    <Button label="Save Changes" @click="saveComment"></Button>
+                </div>
+            </div>
+        </OverlayPanel>
     </AuthenticatedLayout>
 </template>

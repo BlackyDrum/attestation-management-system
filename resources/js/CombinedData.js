@@ -25,7 +25,8 @@ export default function combine(data) {
             checked: item.checked,
             editor_id: item.editor_id,
             editor_name: item.editor_name,
-            updated_at: item.updated_at
+            updated_at: item.updated_at,
+            comment: item.comment,
         };
 
         // If an entry with the same properties exists, check if the task is already present

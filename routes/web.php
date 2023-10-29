@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/attestations', [\App\Http\Controllers\AttestationController::class, 'delete'])->name('delete_subject');
         Route::put('/attestations', [\App\Http\Controllers\AttestationController::class, 'edit'])->name('edit_subject');
 
+        Route::patch('/attestations/comment', [\App\Http\Controllers\AttestationController::class, 'updateComment'])->name('update_comment');
+
         Route::get('/users', [\App\Http\Controllers\UserController::class, 'show'])->name('user');
         Route::delete('/users', [\App\Http\Controllers\UserController::class, 'delete'])->name('delete_user');
         Route::put('/users', [\App\Http\Controllers\UserController::class, 'edit'])->name('edit_user');
