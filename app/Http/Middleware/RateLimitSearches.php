@@ -21,7 +21,7 @@ class RateLimitSearches
 
         // Define the rate limit rules
         $rules = [
-            'max_attempts' => 10,     // Maximum number of attempts allowed
+            'max_attempts' => 20,     // Maximum number of attempts allowed
             'decay_seconds' => 3,    // Time period in minutes
         ];
 
