@@ -79,6 +79,15 @@ const canRevokeAttestationPrivilege = computed(() => {
     return false;
 })
 
+const canAccessComments = computed(() => {
+    for (const p of page.props.auth.privileges) {
+        if (p.privilege === 'can_update_comments' && p.checked) {
+            return true;
+        }
+    }
+    return false;
+})
+
 function updateData() {
     combinedData.value = combine(page.props.attestations);
     subject_name.value = combinedData.value[0].subject_name;
@@ -265,7 +274,7 @@ const saveComment = () => {
                                           @change="extractData(data, index)"
                                           :disabled="(!canMakeAttestationPrivilege && !page.props.auth.user.admin) || !canRevokeAttestationPrivilege && !page.props.auth.user.admin && data[field]"
                                           v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
-                            <div class="ml-3 hidden group-hover:block text-gray-400">
+                            <div class="ml-3 hidden group-hover:block text-gray-400" v-if="canAccessComments || page.props.auth.user.admin">
                                 <span class="pi pi-comment cursor-pointer" @click="editComment(data, field, index,  $event)"></span>
                             </div>
                             </div>
@@ -275,7 +284,7 @@ const saveComment = () => {
             </div>
         </div>
 
-        <OverlayPanel ref="commentPanel">
+        <OverlayPanel ref="commentPanel" v-if="canAccessComments || page.props.auth.user.admin">
             <Textarea v-model="commentForm.comment" rows="5" cols="40" />
             <div class="flex">
                 <CustomProgressSpinner :processing="commentFormProcessing"></CustomProgressSpinner>
