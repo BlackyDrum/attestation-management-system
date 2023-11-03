@@ -38,6 +38,7 @@ const formData = ref([]);
 const checkedCount = ref({});
 const dataTable = ref();
 const userDataBackup = ref(null);
+const oldComment = ref(null)
 const commentPanel = ref();
 const commentFormProcessing = ref(false);
 
@@ -85,6 +86,10 @@ const canAccessComments = computed(() => {
         }
     }
     return false;
+})
+
+const isSameComment = computed(() => {
+    return commentForm.comment === oldComment.value
 })
 
 function updateData() {
@@ -174,7 +179,7 @@ const resetForm = (field) => {
 
 const editComment = (data, field, index,  event) => {
     commentForm.reset();
-    commentForm.comment = data[`comment_${field}`] || null;
+    commentForm.comment = oldComment.value = data[`comment_${field}`] || null;
     commentForm.user_id = data.user_id;
     commentForm.task_id = data[`task_id_${field}`];
 
@@ -287,7 +292,7 @@ const saveComment = () => {
             <div class="flex">
                 <CustomProgressSpinner :processing="commentFormProcessing"></CustomProgressSpinner>
                 <div class="ml-auto">
-                    <Button class="" label="Update comment" icon="pi pi-save" severity="success" @click="saveComment"></Button>
+                    <Button label="Update comment" icon="pi pi-save" severity="success" @click="saveComment" :disabled="isSameComment"></Button>
                 </div>
             </div>
         </OverlayPanel>
