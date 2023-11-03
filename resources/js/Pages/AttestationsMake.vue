@@ -294,13 +294,13 @@ const resetComment = () => {
         <OverlayPanel ref="commentPanel" v-if="canAccessComments || page.props.auth.user.admin">
             <Textarea v-model="commentForm.comment" rows="5" cols="40" />
             <div class="flex">
-                <CustomProgressSpinner :processing="commentFormProcessing"></CustomProgressSpinner>
                 <div>
                     <Button label="Reset" icon="pi pi-delete-left" severity="warning" @click="resetComment" :disabled="isSameComment"></Button>
                 </div>
-                <div class="ml-auto">
-                    <Button label="Update comment" icon="pi pi-save" severity="success" @click="saveComment" :disabled="isSameComment"></Button>
+                <div class="ml-1">
+                    <Button label="Save" icon="pi pi-save" severity="success" @click="saveComment" :disabled="isSameComment"></Button>
                 </div>
+                <CustomProgressSpinner :processing="commentFormProcessing"></CustomProgressSpinner>
             </div>
         </OverlayPanel>
     </AuthenticatedLayout>
