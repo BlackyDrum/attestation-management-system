@@ -215,6 +215,10 @@ const saveComment = () => {
             commentFormProcessing.value = false;
         })
 }
+
+const resetComment = () => {
+    commentForm.comment = oldComment.value;
+}
 </script>
 
 <template>
@@ -243,7 +247,7 @@ const saveComment = () => {
                                         @click="exportCSV($event)"/>
                             </div>
                             <div class="flex flex-wrap gap-1 cursor-not-allowed lg:ml-auto md:mr-4">
-                                <Button icon="pi pi-save"
+                                <Button icon="pi pi pi-delete-left"
                                         severity="warning" label="Reset"
                                         @click="resetForm"
                                         :disabled="formData.length === 0"/>
@@ -291,6 +295,9 @@ const saveComment = () => {
             <Textarea v-model="commentForm.comment" rows="5" cols="40" />
             <div class="flex">
                 <CustomProgressSpinner :processing="commentFormProcessing"></CustomProgressSpinner>
+                <div>
+                    <Button label="Reset" icon="pi pi-delete-left" severity="warning" @click="resetComment" :disabled="isSameComment"></Button>
+                </div>
                 <div class="ml-auto">
                     <Button label="Update comment" icon="pi pi-save" severity="success" @click="saveComment" :disabled="isSameComment"></Button>
                 </div>
