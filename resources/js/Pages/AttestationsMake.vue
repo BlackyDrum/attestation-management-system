@@ -38,7 +38,6 @@ const formData = ref([]);
 const checkedCount = ref({});
 const dataTable = ref();
 const userDataBackup = ref(null);
-const comment = ref(null);
 const commentPanel = ref();
 const commentFormProcessing = ref(false);
 
@@ -134,7 +133,6 @@ const extractData = (data, index) => {
             user_id: data.user_id,
             checked: Boolean(data[key]),
             task_id: data[`task_id_${key}`],
-            comment: comment.value
         })
     }
 }
