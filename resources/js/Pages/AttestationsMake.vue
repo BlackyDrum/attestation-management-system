@@ -306,7 +306,7 @@ const clearComment = () => {
                     <Button label="Save" icon="pi pi-save" severity="" @click="saveComment(false)" :disabled="isSameComment"></Button>
                 </div>
                 <div class="ml-1">
-                    <Button label="Save & Submit" icon="pi pi-save" severity="success" @click="saveComment(true)" :disabled="isSameComment"></Button>
+                    <Button v-tooltip="'Save the comment and submit all (un)checked attestations'" label="Save & Submit" icon="pi pi-save" severity="success" @click="saveComment(true)" :disabled="isSameComment"></Button>
                 </div>
                 <CustomProgressSpinner :processing="commentFormProcessing"></CustomProgressSpinner>
             </div>
