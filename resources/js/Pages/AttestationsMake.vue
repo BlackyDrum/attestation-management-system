@@ -219,6 +219,10 @@ const saveComment = () => {
 const resetComment = () => {
     commentForm.comment = oldComment.value;
 }
+
+const clearComment = () => {
+    commentForm.comment = null;
+}
 </script>
 
 <template>
@@ -252,7 +256,7 @@ const resetComment = () => {
                                         @click="resetForm"
                                         :disabled="formData.length === 0"/>
                                 <Button icon="pi pi-save"
-                                        severity="success" label="Save changes"
+                                            severity="success" label="Save changes"
                                         @click="handleFormSend" :disabled="formData.length === 0"/>
                             </div>
                             <div class="flex justify-content-end">
@@ -295,6 +299,9 @@ const resetComment = () => {
             <Textarea v-model="commentForm.comment" rows="5" cols="40" />
             <div class="flex">
                 <div>
+                    <Button label="Clear" icon="pi pi-trash" severity="danger" @click="clearComment"></Button>
+                </div>
+                <div class="ml-1">
                     <Button label="Reset" icon="pi pi-delete-left" severity="warning" @click="resetComment" :disabled="isSameComment"></Button>
                 </div>
                 <div class="ml-1">
