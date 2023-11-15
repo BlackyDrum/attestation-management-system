@@ -84,8 +84,6 @@ $ php artisan db:seed --class=DemoSeeder
 14. **Visit http://localhost:8000 in your web browser to access the application.**
 
 
-<br>
-
 ## Manual User Creation for Full Access
 <p>In order to have full access to the Attestation Management System, you need to manually add a user and set the admin flag to true. You can use the following command:</p>
 
