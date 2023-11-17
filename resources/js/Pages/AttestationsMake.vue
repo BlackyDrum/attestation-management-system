@@ -12,6 +12,7 @@ import Checkbox from 'primevue/checkbox';
 import InputText from 'primevue/inputtext';
 import OverlayPanel from 'primevue/overlaypanel';
 import Textarea from 'primevue/textarea';
+import Chart from 'primevue/chart';
 
 import combine from '@/CombinedData.js';
 import reduce_tasks from '@/ReduceTasks.js';
@@ -41,6 +42,9 @@ const userDataBackup = ref(null);
 const oldComment = ref(null)
 const commentPanel = ref();
 const commentFormProcessing = ref(false);
+const chartData = ref([]);
+const chart = ref("Polar");
+const chartSelect = ref(["Pie", "Polar", "Bar"])
 
 const commentForm = useForm({
     comment: null,
@@ -48,17 +52,37 @@ const commentForm = useForm({
     task_id: null,
 })
 
+const colors = ref([
+    {rgb: "rgb(0, 0, 0)", label: "Black"},
+    {rgb: "rgb(255, 255, 255)", label: "White"},
+    {rgb: "rgb(255, 0, 0)", label: "Red"},
+    {rgb: "rgb(0, 255, 0)", label: "Green"},
+    {rgb: "rgb(0, 0, 255)", label: "Blue"},
+    {rgb: "rgb(255, 165, 0)", label: "Orange"},
+    {rgb: "rgb(128, 0, 128)", label: "Purple"},
+    {rgb: "rgb(255, 255, 0)", label: "Yellow"},
+    {rgb: "rgb(0, 128, 128)", label: "Teal"},
+    {rgb: "rgb(128, 128, 0)", label: "Olive"},
+    {rgb: "rgb(128, 0, 0)", label: "Maroon"},
+]);
+
 const filters = ref({
     'Name': {value: null, matchMode: 'contains'},
 });
 
 onMounted(() => {
     updateData();
+
+    chartData.value = [];
+    setupChart();
 });
 
 onBeforeUpdate(() => {
     updateData();
     formData.value = [];
+
+    chartData.value = [];
+    setupChart();
 })
 
 const canMakeAttestationPrivilege = computed(() => {
@@ -91,6 +115,35 @@ const canAccessComments = computed(() => {
 const isSameComment = computed(() => {
     return commentForm.comment === oldComment.value
 })
+
+const setupChart = () => {
+    for (let i = 0; i < combinedData.value.length; i++) {
+        chartData.value.push({
+            labels: [],
+            datasets: [
+                {
+                    label: 'Checked',
+                    data: [],
+                    backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 0, 0, 0.2)', 'rgba(0, 204, 153, 0.2)', 'rgba(51, 102, 204, 0.2)'],
+                    borderColor: ['rgb(255, 159, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)', 'rgba(255, 0, 0, 0.2)', 'rgba(0, 204, 153, 0.2)', 'rgba(51, 102, 204, 0.2)'],
+                    borderWidth: 1
+                }
+            ]
+        })
+        for (const item of combinedData.value[i].tasks[0]) {
+            chartData.value[i].labels.push(item.title)
+            chartData.value[i].datasets[0].data.push(0);
+        }
+        for (const user of combinedData.value[i].tasks) {
+            for (const item of user) {
+                if (item.checked) {
+                    let index = chartData.value[i].labels.findIndex((label) => label === item.title);
+                    chartData.value[i].datasets[0].data[index]++;
+                }
+            }
+        }
+    }
+}
 
 function updateData() {
     combinedData.value = combine(page.props.attestations);
@@ -244,6 +297,17 @@ const clearComment = () => {
         </div>
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8">
+                <div class="grid grid-cols-3 max-lg:hidden mb-10 gap-2">
+                    <div class="bg-gray-800 rounded-lg p-5">
+                        <Chart class="md:w-1/2 mx-auto" type="pie" :data="chartData[0]"/>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-5">
+                        <Chart type="bar" :data="chartData[0]"/>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-5">
+                        <Chart class="md:w-1/2 mx-auto" type="polarArea" :data="chartData[0]"/>
+                    </div>
+                </div>
                 <DataTable showGridlines stripedRows ref="dataTable"
                            :exportFilename="(subject_name + '_' + Date.now()).replaceAll(' ', '_')"
                            v-model:filters="filters" :value="userData" :paginator="true"

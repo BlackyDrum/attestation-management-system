@@ -59,10 +59,13 @@ const subject_name = ref("");
 const tasks = ref([]);
 const userWithMatriculationNumber = ref([]);
 const headers = ref(null);
+/*
 const chartData = ref([]);
 const chart = ref("Polar");
 const chartSelect = ref(["Pie", "Polar", "Bar"])
+*/
 const op = ref();
+const selectedSemester = ref(null);
 
 const attestationForm = useForm({
     id: null,
@@ -84,6 +87,7 @@ const userFileForm = useForm({
     userfile: null,
 })
 
+/*
 const colors = ref([
     {rgb: "rgb(0, 0, 0)", label: "Black"},
     {rgb: "rgb(255, 255, 255)", label: "White"},
@@ -97,20 +101,27 @@ const colors = ref([
     {rgb: "rgb(128, 128, 0)", label: "Olive"},
     {rgb: "rgb(128, 0, 0)", label: "Maroon"},
 ]);
-
+*/
 
 onMounted(() => {
     combinedData.value = combine(page.props.attestations);
     createNameWithMatNumber();
-    chartData.value = [];
-    setupChart();
+    //chartData.value = [];
+    //setupChart();
+
+    if (localStorage.getItem("attestation_semester")) {
+        for (const semester of page.props.semester) {
+            if (semester.id.toString() === localStorage.getItem("attestation_semester"))
+                selectedSemester.value = semester;
+        }
+    }
 })
 
 onBeforeUpdate(() => {
     combinedData.value = combine(page.props.attestations);
     createNameWithMatNumber();
-    chartData.value = [];
-    setupChart();
+    //chartData.value = [];
+    //setupChart();
 })
 
 const noAttestations = computed(() => {
@@ -173,6 +184,7 @@ const createNameWithMatNumber = () => {
     })
 }
 
+/*
 const setupChart = () => {
     for (let i = 0; i < combinedData.value.length; i++) {
         chartData.value.push({
@@ -201,6 +213,7 @@ const setupChart = () => {
         }
     }
 }
+*/
 
 const handleDialogOpen = () => {
     resetForm();
@@ -411,13 +424,11 @@ const handleUserFileUpload = (attestation) => {
     })
 }
 
-const combinedDataSorted = computed(() => {
-    return id => {
-        if (combinedData.value) {
-            return combinedData.value.filter(item => item.semester_id === id);
-        }
+const combinedDataSorted = () => {
+    if (combinedData.value) {
+        return combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
     }
-})
+}
 
 const toggle = (event, attestation_id) => {
     includeUserForm.users = [];
@@ -459,6 +470,10 @@ const handleIncludeUserToAdditionalAttestation = () => {
         }
     })
 }
+
+const handleSemesterChange = () => {
+    localStorage.setItem("attestation_semester",selectedSemester.value.id);
+}
 </script>
 
 <template>
@@ -478,101 +493,85 @@ const handleIncludeUserToAdditionalAttestation = () => {
             </div>
         </template>
         <div class="py-12">
-            <div v-if="!noAttestations" class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <Accordion :activeIndex="0">
-                    <AccordionTab v-for="(s, index1) in semester">
-                        <template #header>
-                            <i class="pi pi-calendar mr-2"></i>
-                            <span>{{s.semester}}</span>
-                        </template>
-
-
-                        <Accordion class="shadow-xl">
-                            <AccordionTab v-for="(attestation, index) in combinedDataSorted(s.id)" :key="`${s.id}_${index1}_${attestation.id}_${index}`" :header="`${attestation.subject_name} (${attestation.subject_number})`">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex">
+                    <Dropdown class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"
+                              v-model="selectedSemester" @change="handleSemesterChange"
+                              :options="semester" optionLabel="semester"/>
+                </div>
+            </div>
+            <div class="flex" v-if="!selectedSemester">
+                <div class="mx-auto">
+                    <div class="text-gray-700 text-center">
+                        <div class="pi pi-calendar custom-icon"></div>
+                    </div>
+                    <div class="text-gray-500 text-center mt-4">
+                        Please select a semester
+                    </div>
+                </div>
+            </div>
+            <div class="flex" v-else-if="combinedDataSorted().length === 0">
+                <div class="mx-auto">
+                    <div class="text-gray-700 text-center">
+                        <div class="pi pi-book custom-icon"></div>
+                    </div>
+                    <div class="text-gray-500 text-center mt-4">
+                        Nothing here
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-2 max-w-7xl mx-auto sm:px-6 lg:px-8" v-else>
+                <div class="mx-auto" v-for="(attestation, index) in combinedDataSorted()" :key="attestation.id">
+                    <Card class="break-words border my-2 w-[25rem] h-[25rem] max-lg:w-[23rem]">
+                        <template #title>
+                            <div v-tooltip="{ value: `${attestation.subject_name} (${attestation.subject_number})`, showDelay: 300 }" class="grid grid-cols-[80%,20%] h-32 text-ellipsis overflow-hidden">
                                 <div>
-                                    <div class="shadow-xl">
-                                        <Card class="break-words border">
-                                            <template #title>
-                                                <div class="grid grid-cols-[80%,20%]">
-                                                    <div>
-                                                        {{ attestation.subject_name }}
-                                                    </div>
-                                                    <div class="ml-auto self-center">
-                                                        <Button v-if="$page.props.auth.user.admin || attestation.creator_id === $page.props.auth.user.id" icon="pi pi-user" aria-label="Submit" @click="toggle($event,attestation.id)"/>
-                                                    </div>
-                                                </div>
-                                            </template>
-                                            <template #subtitle>Subject Number: {{ attestation.subject_number }}</template>
-                                            <template #content>
-                                                <div class="grid grid-cols-2 justify-evenly gap-2 max-md:grid-cols-1">
-                                                    <div>
-                                                        <span class="p-input-icon-left w-full">
-                                                            <i class="pi pi-user"/>
-                                                            <InputText class="w-full custom-input-text" disabled
-                                                                       placeholder="Search"
-                                                                       :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`">
-                                                            </InputText>
-                                                        </span>
-                                                    </div>
-                                                    <div>
-                                                        <span class="p-input-icon-left w-full">
-                                                            <i class="pi pi-file"/>
-                                                            <InputText class="w-full custom-input-text" disabled
-                                                                       placeholder="Search"
-                                                                       :value="`Tasks: ${attestation.tasks[0].length}`">
-                                                            </InputText>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="flex">
-                                                    <SelectButton class="mx-auto my-2" v-model="chart" :options="chartSelect"/>
-                                                </div>
-                                                <div>
-                                                    <Chart class="md:w-1/2 mx-auto" v-if="chart === 'Pie'" type="pie" :data="chartData[attestation.index]"/>
-                                                    <Chart class="md:w-1/2 mx-auto" v-else-if="chart === 'Polar'" type="polarArea" :data="chartData[attestation.index]"/>
-                                                    <Chart v-else-if="chart === 'Bar'" type="bar" :data="chartData[attestation.index]"/>
-                                                </div>
-                                            </template>
-                                            <template #footer>
-                                                <div class="grid grid-cols-2 max-md:grid-cols-1">
-                                                    <div class="flex flex-wrap gap-2">
-                                                        <Button label="Edit"
-                                                                severity="success"
-                                                                v-if="page.props.auth.user.admin || checkEditSubjectPrivilege"
-                                                                :disabled="userFileForm.processing"
-                                                                @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit"/>
-                                                        <Button label="Delete"
-                                                                severity="danger"
-                                                                v-if="page.props.auth.user.admin || checkDeleteSubjectPrivilege"
-                                                                :disabled="userFileForm.processing"
-                                                                @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash"/>
-                                                        <FileUpload
-                                                            accept="text/csv"
-                                                            customUpload chooseLabel="Upload"
-                                                            v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject'"
-                                                            v-if="page.props.auth.user.admin || checkEditSubjectPrivilege"
-                                                            :disabled="userFileForm.processing" mode="basic" name="userfile[]"
-                                                            :maxFileSize="1e7"
-                                                            :auto="false"
-                                                            @uploader="handleUserFileUpload(attestation)"
-                                                            @input="userFileForm.userfile = $event.target.files[0];" :multiple="false"/>
-                                                    </div>
-                                                    <div class="self-center md:ml-auto md:mr-5 max-md:mt-4">
-                                                        <Button icon="pi pi-arrow-right"
-                                                                label="Make attestations" severity="info"
-                                                                v-if="page.props.auth.user.admin || checkCanAccessAttestationPage"
-                                                                :disabled="userFileForm.processing"
-                                                                @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"/>
-                                                    </div>
-                                                </div>
-                                            </template>
-                                        </Card>
-                                    </div>
+                                    {{ attestation.subject_name }} ({{attestation.subject_number}})
                                 </div>
-                            </AccordionTab>
-                        </Accordion>
-                    </AccordionTab>
-                </Accordion>
+                                <div class="ml-auto ">
+                                    <Button v-if="$page.props.auth.user.admin || attestation.creator_id === $page.props.auth.user.id" icon="pi pi-user" aria-label="Submit" @click="toggle($event,attestation.id)"/>
+                                </div>
+                            </div>
+                        </template>
+                        <template #subtitle>
+                            <InputText class="w-full custom-input-text" disabled
+                                       placeholder="Search"
+                                       :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`">
+                            </InputText>
+                        </template>
+                        <template #content>
+                            <Button class="w-full" icon="pi pi-arrow-right"
+                                    label="Make attestations" severity="info"
+                                    v-if="page.props.auth.user.admin || checkCanAccessAttestationPage"
+                                    :disabled="userFileForm.processing"
+                                    @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"/>
+                        </template>
+                        <template #footer>
+                            <div class="flex gap-2">
+                                <Button label="Edit"
+                                        severity="success"
+                                        v-if="page.props.auth.user.admin || checkEditSubjectPrivilege"
+                                        :disabled="userFileForm.processing"
+                                        @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit"/>
+                                <Button label="Delete"
+                                        severity="danger"
+                                        v-if="page.props.auth.user.admin || checkDeleteSubjectPrivilege"
+                                        :disabled="userFileForm.processing"
+                                        @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash"/>
+                                <FileUpload
+                                    accept="text/csv"
+                                    customUpload chooseLabel="Upload"
+                                    v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject'"
+                                    v-if="page.props.auth.user.admin || checkEditSubjectPrivilege"
+                                    :disabled="userFileForm.processing" mode="basic" name="userfile[]"
+                                    :maxFileSize="1e7"
+                                    :auto="false"
+                                    @uploader="handleUserFileUpload(attestation)"
+                                    @input="userFileForm.userfile = $event.target.files[0];" :multiple="false"/>
+                            </div>
+                        </template>
+                    </Card>
+                </div>
             </div>
         </div>
 
