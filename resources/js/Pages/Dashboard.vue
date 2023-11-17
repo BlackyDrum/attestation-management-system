@@ -62,7 +62,7 @@ const notificationForm = useForm({
     severity: null,
 })
 
-const severities = ref(["info", "error", "warn", "success"]);
+const severities = ref(["Info", "Error", "Warn", "Success"]);
 
 const chartOptionsBarTotal = ref({
     scales: {
@@ -171,6 +171,7 @@ const setupChartDataPie = () => {
 }
 
 const handleDialogSend = () => {
+    notificationForm.severity = notificationForm.severity.toLowerCase();
     notificationForm.post('/notifications', {
         onSuccess: () => {
             notificationForm.reset();
