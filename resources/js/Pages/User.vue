@@ -1,6 +1,6 @@
 <script setup>
 import {Head, Link, usePage, useForm} from '@inertiajs/vue3';
-import {computed, onMounted, ref} from 'vue';
+import {computed, onBeforeUnmount, onBeforeUpdate, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -25,6 +25,7 @@ import Column from 'primevue/column';
 import Tag from 'primevue/tag';
 import Dropdown from 'primevue/dropdown';
 import Textarea from 'primevue/textarea';
+import Chart from 'primevue/chart';
 
 
 defineProps({
@@ -48,6 +49,8 @@ const selectedUser = ref(null);
 const showUserCreateDialog = ref(false);
 const showSendNotificationDialog = ref(false);
 const receiver = ref(null);
+const chartData = ref([]);
+const chart = ref("Polar");
 
 const userEditForm = useForm({
     id: null,
@@ -84,6 +87,20 @@ const severities = ref(["info", "error", "warn", "success"]);
 
 const roles = ref([]);
 
+const colors = ref([
+    {rgb: "rgb(0, 0, 0)", label: "Black"},
+    {rgb: "rgb(255, 255, 255)", label: "White"},
+    {rgb: "rgb(255, 0, 0)", label: "Red"},
+    {rgb: "rgb(0, 255, 0)", label: "Green"},
+    {rgb: "rgb(0, 0, 255)", label: "Blue"},
+    {rgb: "rgb(255, 165, 0)", label: "Orange"},
+    {rgb: "rgb(128, 0, 128)", label: "Purple"},
+    {rgb: "rgb(255, 255, 0)", label: "Yellow"},
+    {rgb: "rgb(0, 128, 128)", label: "Teal"},
+    {rgb: "rgb(128, 128, 0)", label: "Olive"},
+    {rgb: "rgb(128, 0, 0)", label: "Maroon"},
+]);
+
 
 onMounted(() => {
     emptyUsers.value = page.props.users.length === 0;
@@ -94,6 +111,14 @@ onMounted(() => {
             id: role.id
         });
     }
+
+    chartData.value = [];
+    setupChart();
+})
+
+onBeforeUpdate(() => {
+    chartData.value = [];
+    setupChart();
 })
 
 const disableNotificationFormButton = computed(() => {
@@ -140,6 +165,33 @@ const checkCreateUserPrivilege = computed(() => {
     }
     return false;
 })
+
+const setupChart = () => {
+    chartData.value.push({
+        labels: [],
+        datasets: [
+            {
+                label: 'Count',
+                data: [],
+                backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 0, 0, 0.2)', 'rgba(0, 204, 153, 0.2)', 'rgba(51, 102, 204, 0.2)'],
+                borderColor: ['rgb(255, 159, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)', 'rgba(255, 0, 0, 0.2)', 'rgba(0, 204, 153, 0.2)', 'rgba(51, 102, 204, 0.2)'],
+                borderWidth: 1
+            }
+        ]
+    })
+    let roles = [];
+    for (const item of page.props.roles) {
+        roles.push({role: item.role, id: item.id})
+        chartData.value[0].labels.push(item.role)
+        chartData.value[0].datasets[0].data.push(0);
+    }
+
+    for (const user of page.props.users) {
+        if (user.admin) continue;
+        let index = roles.findIndex((role) => role.id === user.role_id);
+        chartData.value[0].datasets[0].data[index]++;
+    }
+}
 
 const handleUserEdit = (user) => {
     if (user.admin && !page.props.auth.user.admin) {
@@ -357,6 +409,22 @@ const getSeverity = data => {
 
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8 ">
+                <div class="grid grid-cols-3 max-lg:hidden mb-10 gap-2">
+                    <div class="bg-gray-800 rounded-lg p-5 text-gray-400 grid grid-cols-2">
+                        <div class="text-gray-700 self-center">
+                            <div class="pi pi-user custom-icon"></div>
+                        </div>
+                        <div class="self-center text-4xl">
+                            {{users.length}}
+                        </div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-5">
+                        <Chart class="md:w-1/2 mx-auto" type="pie" :data="chartData[0]"/>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-5">
+
+                    </div>
+                </div>
                 <DataTable stateStorage="local" stateKey="dt-state-demo-session" stripedRows paginator :rows="10"
                            :rowsPerPageOptions="[5, 10, 20, 50]" v-model:filters="filters" :value="users">
                     <template #header>
@@ -641,5 +709,9 @@ const getSeverity = data => {
     padding: 0.5rem;
     width: 2rem;
     font-size: 0.5rem;
+}
+
+.custom-icon {
+    font-size: 10rem
 }
 </style>
