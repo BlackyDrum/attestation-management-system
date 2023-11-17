@@ -365,12 +365,12 @@ const deleteNotification = (index, clear) => {
             </header>
 
             <!-- Dialogs -->
-            <Dialog modal header="Imprint"
+            <Dialog modal header="Imprint" :draggable="false"
                     class="bg-gray-200 font-bold p-2 rounded-md"
                     :style="{ width: '90vw' }" v-model:visible="showImprint">
                 <imprint></imprint>
             </Dialog>
-            <Dialog modal header="Privacy Statement"
+            <Dialog modal header="Privacy Statement" :draggable="false"
                     class="bg-gray-200 font-bold p-2 rounded-md"
                     :style="{ width: '90vw' }" v-model:visible="showPrivacyStatement">
                 <privacy-statement></privacy-statement>
