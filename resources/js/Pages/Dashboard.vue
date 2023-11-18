@@ -302,13 +302,35 @@ const deleteNotification = (index, clear) => {
                 <div v-else>
                     <div class="grid grid-cols-1 xl:grid-cols-[67%,30%] xl:gap-10">
                         <div class="dashboard__item">
-                            <Chart type="bar" :data="chartDataBarTotal" :options="chartOptionsBarTotal"/>
+                            <div class="flex h-full" v-if="combinedData.length === 0">
+                                <div class="m-auto">
+                                    <div class="text-gray-700 text-center">
+                                        <div class="pi pi-chart-bar custom-icon"></div>
+                                    </div>
+                                    <div class="text-gray-500 text-center mt-4">
+                                        No Data available
+                                    </div>
+                                </div>
+                            </div>
+                            <Chart v-else type="bar" :data="chartDataBarTotal" :options="chartOptionsBarTotal"/>
                         </div>
                         <div class="dashboard__item max-xl:mt-4">
-                            <Chart type="doughnut" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
-                            <div class="mt-6">
-                                <ProgressBar
-                                    :value="Math.round(totalCheckedCount / totalTaskCount * 100) || 0"></ProgressBar>
+                            <div class="flex h-full" v-if="combinedData.length === 0">
+                                <div class="m-auto">
+                                    <div class="text-gray-700 text-center">
+                                        <div class="pi pi-chart-pie custom-icon"></div>
+                                    </div>
+                                    <div class="text-gray-500 text-center mt-4">
+                                        No Data available
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <Chart type="doughnut" :data="chartDataPieTotal" :options="chartOptionsPieTotal"/>
+                                <div class="mt-6">
+                                    <ProgressBar
+                                        :value="Math.round(totalCheckedCount / totalTaskCount * 100) || 0"></ProgressBar>
+                                </div>
                             </div>
                         </div>
                     </div>
