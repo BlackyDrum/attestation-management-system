@@ -58,6 +58,7 @@ const subject_name = ref("");
 const tasks = ref([]);
 const userWithMatriculationNumber = ref([]);
 const headers = ref(null);
+const selectedSubject = ref(null);
 /*
 const chartData = ref([]);
 const chart = ref("Polar");
@@ -368,6 +369,7 @@ const confirmAttestationDeletion = (attestation) => {
 
 const handleAttestationEdit = (attestation) => {
     resetForm();
+    selectedSubject.value = attestation;
     isEdit.value = true;
     showAttestationDialog.value = true;
     attestationForm.subjectName = attestation.subject_name;
@@ -423,7 +425,10 @@ const handleUserFileUpload = (attestation) => {
                 })
             }
         },
-        onFinish: () => userFileForm.reset()
+        onFinish: () => {
+            userFileForm.reset();
+            showAttestationDialog.value = false;
+        }
     })
 }
 
@@ -578,6 +583,18 @@ const handleSemesterChange = () => {
                     <error-message :show="errors.users">
                         {{ errors.users }}
                     </error-message>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        <FileUpload
+                            accept="text/csv"
+                            customUpload chooseLabel="CSV"
+                            v-if="page.props.auth.user.admin || checkEditSubjectPrivilege"
+                            :disabled="userFileForm.processing" mode="basic" name="userfile[]"
+                            :maxFileSize="1e7"
+                            :auto="false"
+                            @uploader="handleUserFileUpload(selectedSubject)"
+                            @input="userFileForm.userfile = $event.target.files[0];" :multiple="false"/>
+                        <InlineMessage severity="info">Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject</InlineMessage>
+                    </div>
                     <span v-for="(error, key) in errors">
                         <error-message :show="true" v-if="key.includes('users.')">
                             {{ error }}
