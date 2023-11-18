@@ -20,11 +20,10 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import Editor from 'primevue/editor';
 import Chart from 'primevue/chart';
 import FileUpload from 'primevue/fileupload';
-import Accordion from 'primevue/accordion';
-import AccordionTab from 'primevue/accordiontab';
-import SelectButton from 'primevue/selectbutton';
 import OverlayPanel from 'primevue/overlaypanel';
 import InlineMessage from 'primevue/inlinemessage';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 
 import combine from '@/CombinedData.js';
 
@@ -59,6 +58,7 @@ const subject_name = ref("");
 const tasks = ref([]);
 const userWithMatriculationNumber = ref([]);
 const headers = ref(null);
+const selectedSubject = ref(null);
 /*
 const chartData = ref([]);
 const chart = ref("Polar");
@@ -66,6 +66,10 @@ const chartSelect = ref(["Pie", "Polar", "Bar"])
 */
 const op = ref();
 const selectedSemester = ref(null);
+
+const filters = ref({
+    'global': {value: null, matchMode: 'contains'},
+});
 
 const attestationForm = useForm({
     id: null,
@@ -365,6 +369,7 @@ const confirmAttestationDeletion = (attestation) => {
 
 const handleAttestationEdit = (attestation) => {
     resetForm();
+    selectedSubject.value = attestation;
     isEdit.value = true;
     showAttestationDialog.value = true;
     attestationForm.subjectName = attestation.subject_name;
@@ -420,7 +425,10 @@ const handleUserFileUpload = (attestation) => {
                 })
             }
         },
-        onFinish: () => userFileForm.reset()
+        onFinish: () => {
+            userFileForm.reset();
+            showAttestationDialog.value = false;
+        }
     })
 }
 
@@ -493,97 +501,71 @@ const handleSemesterChange = () => {
             </div>
         </template>
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="flex">
-                    <Dropdown class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"
-                              v-model="selectedSemester" @change="handleSemesterChange"
-                              :options="semester" optionLabel="semester"/>
-                </div>
-            </div>
-            <div class="flex" v-if="!selectedSemester">
-                <div class="mx-auto">
-                    <div class="text-gray-700 text-center">
-                        <div class="pi pi-calendar custom-icon"></div>
-                    </div>
-                    <div class="text-gray-500 text-center mt-4">
-                        Please select a semester
-                    </div>
-                </div>
-            </div>
-            <div class="flex" v-else-if="combinedDataSorted().length === 0">
-                <div class="mx-auto">
-                    <div class="text-gray-700 text-center">
-                        <div class="pi pi-book custom-icon"></div>
-                    </div>
-                    <div class="text-gray-500 text-center mt-4">
-                        Nothing here
-                    </div>
-                </div>
-            </div>
-            <div class="flex flex-wrap gap-2 max-w-7xl mx-auto sm:px-6 lg:px-8" v-else>
-                <div class="mx-auto" v-for="(attestation, index) in combinedDataSorted()" :key="attestation.id">
-                    <Card class="break-words border my-2 w-[25rem] h-[25rem] max-lg:w-[23rem]">
-                        <template #title>
-                            <div v-tooltip="{ value: `${attestation.subject_name} (${attestation.subject_number})`, showDelay: 300 }" class="grid grid-cols-[80%,20%] h-32 text-ellipsis overflow-hidden">
-                                <div>
-                                    {{ attestation.subject_name }} ({{attestation.subject_number}})
-                                </div>
-                                <div class="ml-auto ">
-                                    <Button v-if="$page.props.auth.user.admin || attestation.creator_id === $page.props.auth.user.id" icon="pi pi-user" aria-label="Submit" @click="toggle($event,attestation.id)"/>
-                                </div>
+            <div class="mx-auto sm:px-6 lg:px-8">
+                <DataTable :value="combinedDataSorted()"  stripedRows ref="dataTable"
+                           v-model:filters="filters" paginator :rows="10">
+                    <template #header>
+                        <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="flex justify-content-end">
+                                        <span class="p-input-icon-left">
+                                            <i class="pi pi-search"/>
+                                            <InputText v-model="filters['global'].value" placeholder="Search"/>
+                                        </span>
                             </div>
+                            <div class="ml-auto">
+                                <Dropdown class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"
+                                          v-model="selectedSemester" @change="handleSemesterChange"
+                                          :options="semester" optionLabel="semester"/>
+                            </div>
+                        </div>
+                    </template>
+                    <Column class="font-semibold" field="subject_number" header="Subject Number">
+                    </Column>
+                    <Column class="font-semibold" field="subject_name" header="Subject Name"></Column>
+                    <Column class="font-semibold" field="category" header="Current Users">
+                        <template #body="{data}">
+                            {{data.tasks[0][0].user_id ? data.tasks.length : 0}}
                         </template>
-                        <template #subtitle>
-                            <InputText class="w-full custom-input-text" disabled
-                                       placeholder="Search"
-                                       :value="`Current Users: ${attestation.tasks[0][0].user_id ? attestation.tasks.length : 0}`">
-                            </InputText>
-                        </template>
-                        <template #content>
-                            <Button class="w-full" icon="pi pi-arrow-right"
-                                    label="Make attestations" severity="info"
+                    </Column>
+                    <Column field="Name" header="Make">
+                        <template #body="{ index, field, data }">
+                            <Button icon="pi pi-arrow-right"
+                                    severity="info"
                                     v-if="page.props.auth.user.admin || checkCanAccessAttestationPage"
                                     :disabled="userFileForm.processing"
-                                    @click="router.get(`/attestations/${attestation.id}`,{},{preserveScroll:true})"/>
+                                    @click="router.get(`/attestations/${data.id}`,{},{preserveScroll:true})"/>
                         </template>
-                        <template #footer>
+                    </Column>
+                    <Column field="quantity" header="Options">
+                        <template #body="{ index, field, data}">
                             <div class="flex gap-2">
-                                <Button label="Edit"
-                                        severity="success"
+                                <Button severity="success"
                                         v-if="page.props.auth.user.admin || checkEditSubjectPrivilege"
                                         :disabled="userFileForm.processing"
-                                        @click="handleAttestationEdit(attestation)" icon="pi pi-file-edit"/>
-                                <Button label="Delete"
-                                        severity="danger"
+                                        @click="handleAttestationEdit(data)" icon="pi pi-file-edit"/>
+                                <Button severity="danger"
                                         v-if="page.props.auth.user.admin || checkDeleteSubjectPrivilege"
                                         :disabled="userFileForm.processing"
-                                        @click="confirmAttestationDeletion(attestation)" icon="pi pi-trash"/>
+                                        @click="confirmAttestationDeletion(data)" icon="pi pi-trash"/>
+                                <Button v-if="$page.props.auth.user.admin || data.creator_id === $page.props.auth.user.id" icon="pi pi-user" aria-label="Submit" @click="toggle($event,data.id)"/>
+                                <!--
                                 <FileUpload
                                     accept="text/csv"
-                                    customUpload chooseLabel="Upload"
+                                    customUpload chooseLabel=""
                                     v-tooltip.right="'Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject'"
                                     v-if="page.props.auth.user.admin || checkEditSubjectPrivilege"
                                     :disabled="userFileForm.processing" mode="basic" name="userfile[]"
                                     :maxFileSize="1e7"
                                     :auto="false"
-                                    @uploader="handleUserFileUpload(attestation)"
+                                    @uploader="handleUserFileUpload(data)"
                                     @input="userFileForm.userfile = $event.target.files[0];" :multiple="false"/>
+                                    -->
                             </div>
                         </template>
-                    </Card>
-                </div>
+                    </Column>
+                </DataTable>
             </div>
         </div>
-
-        <template
-            v-if="noAttestations">
-            <div class="text-gray-700 text-center">
-                <div class="pi pi-book custom-icon"></div>
-            </div>
-            <div class="text-gray-500 text-center mt-4">
-                No Subjects available
-            </div>
-        </template>
 
             <ConfirmDialog class="bg-white p-4 custom-confirm-dialog rounded-md gap-8 break-words" ref="confirmDialog"/>
 
@@ -601,6 +583,18 @@ const handleSemesterChange = () => {
                     <error-message :show="errors.users">
                         {{ errors.users }}
                     </error-message>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        <FileUpload
+                            accept="text/csv"
+                            customUpload chooseLabel="CSV"
+                            v-if="page.props.auth.user.admin || checkEditSubjectPrivilege"
+                            :disabled="userFileForm.processing" mode="basic" name="userfile[]"
+                            :maxFileSize="1e7"
+                            :auto="false"
+                            @uploader="handleUserFileUpload(selectedSubject)"
+                            @input="userFileForm.userfile = $event.target.files[0];" :multiple="false"/>
+                        <InlineMessage severity="info">Provide a CSV file containing the matriculation numbers of the users for simultaneous inclusion to this subject</InlineMessage>
+                    </div>
                     <span v-for="(error, key) in errors">
                         <error-message :show="true" v-if="key.includes('users.')">
                             {{ error }}
