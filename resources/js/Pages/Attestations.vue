@@ -433,7 +433,7 @@ const handleUserFileUpload = (attestation) => {
 }
 
 const combinedDataSorted = () => {
-    if (combinedData.value) {
+    if (combinedData.value && selectedSemester.value) {
         return combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
     }
 }
