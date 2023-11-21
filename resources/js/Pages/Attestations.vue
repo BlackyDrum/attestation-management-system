@@ -583,7 +583,7 @@ const handleSemesterChange = () => {
                     <error-message :show="errors.users">
                         {{ errors.users }}
                     </error-message>
-                    <div class="mt-2 flex flex-wrap gap-2">
+                    <div class="mt-2 flex flex-wrap gap-2" v-if="isEdit">
                         <FileUpload
                             accept="text/csv"
                             customUpload chooseLabel="CSV"
