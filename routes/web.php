@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware(\App\Http\Middleware\CheckPrivileges::class)->group(function() {
         Route::post('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'create_to_do'])->name('create_to_do');
+        Route::get('/dashboard/users', [\App\Http\Controllers\DashboardController::class, 'get_users'])->name('get_users');
 
         Route::get('/attestations/{id}', [\App\Http\Controllers\AttestationsMakeController::class, 'show'])->name('show_make_attestation');
         Route::patch('/attestations', [\App\Http\Controllers\AttestationsMakeController::class, 'make'])->name('make_attestation');

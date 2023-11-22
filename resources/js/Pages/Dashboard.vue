@@ -84,8 +84,6 @@ onMounted(() => {
     if (selectedSemester.value)
         loadSemesterData();
 
-    userWithMatriculationNumber.value = Helper.getUsersWithMatriculationNumbers(JSON.parse(JSON.stringify(page.props.users)));
-
     window.addEventListener('resize', handleWindowResize);
 })
 
@@ -124,6 +122,26 @@ const handleDialogSend = () => {
             })
         },
     })
+}
+
+const handleDialogOpen = () => {
+    showSendNotificationDialog.value = true
+
+    if (page.props.users.length !== 0) return;
+
+    window.axios.get('/dashboard/users')
+        .then(result => {
+            page.props.users = result.data;
+            userWithMatriculationNumber.value = Helper.getUsersWithMatriculationNumbers(JSON.parse(JSON.stringify(page.props.users)));
+        })
+        .catch(error => {
+            window.toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 8000,
+            })
+        })
 }
 
 const handleDialogClose = () => {
@@ -211,7 +229,7 @@ const deleteNotification = (index, clear) => {
                     </h2>
                 </div>
                 <div class="ml-auto">
-                    <primary-button v-if="isAdmin || checkPrivilege('can_send_notification', privileges)" @click="showSendNotificationDialog = true">Send
+                    <primary-button v-if="isAdmin || checkPrivilege('can_send_notification', privileges)" @click="handleDialogOpen">Send
                         Notification
                     </primary-button>
                 </div>
@@ -309,7 +327,7 @@ const deleteNotification = (index, clear) => {
                     <span class="p-inputgroup-addon">
                         <i class="pi pi-user mr-2"></i>
                     </span>
-                    <MultiSelect class="w-full md:w-20rem" placeholder="Users" :disabled="notificationForm.processing" :loading="!$props.users"
+                    <MultiSelect class="w-full md:w-20rem" placeholder="Users" :disabled="notificationForm.processing" :loading="page.props.users.length === 0"
                                  v-model="notificationForm.users" :options="userWithMatriculationNumber" filter
                                  optionLabel="name" :maxSelectedLabels="3"
                                  :virtualScrollerOptions="{ itemSize: 44 }"/>

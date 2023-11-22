@@ -29,22 +29,19 @@ class DashboardController extends Controller
             ->orderBy('id')
             ->get();
 
-        $privileges = HandleInertiaRequests::get_privileges();
-        $canSeeUsers = false;
-        foreach ($privileges as $privilege)
-        {
-            if ($privilege['privilege'] === 'can_send_notification' && $privilege['checked'] === true) {
-                $canSeeUsers = true;
-                break;
-            }
-        }
-
         return Inertia::render('Dashboard', [
-            'users' => Auth::user()->admin || $canSeeUsers ? User::all() : [],
+            'users' => [],
             'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
             'data' => $data,
             'todos' => $todos,
         ]);
+    }
+
+    public function get_users(Request $request)
+    {
+        $users = User::all();
+
+        return response()->json($users);
     }
 
     public function delete(Request $request)
