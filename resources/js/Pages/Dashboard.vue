@@ -1,27 +1,28 @@
 <script setup>
-import {Head, router, useForm, usePage} from '@inertiajs/vue3';
-import {computed, onBeforeUpdate, onMounted, ref, watch} from 'vue';
+import {Head, useForm, usePage} from '@inertiajs/vue3';
+import {computed, onBeforeUpdate, onMounted, ref} from 'vue';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 import ToDoList from '@/Components/ToDoList.vue';
 import ButtonBar from '@/Components/ButtonBar.vue';
 
 import Dialog from 'primevue/dialog';
 import MultiSelect from 'primevue/multiselect';
-import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import Chart from 'primevue/chart';
-import ProgressSpinner from 'primevue/progressspinner';
 import ProgressBar from 'primevue/progressbar';
 import Message from 'primevue/message';
 import ScrollPanel from 'primevue/scrollpanel';
 import Textarea from 'primevue/textarea';
 
 import combine from "@/CombinedData.js";
+import checkPrivilege from "@/CheckPrivilege.js";
+import {chartOptionsBar, setupChartDataBar} from "@/ChartDataBar.js";
+import {chartOptionsPie, setupChartDataPie} from "@/ChartDataPie.js";
+
+import * as Helper from "@/Helper.js";
 
 
 defineProps({
@@ -43,6 +44,10 @@ defineProps({
 const page = usePage();
 
 const SCREEN_WIDTH_RESIZE = 1280;
+const SEVERITIES = ref(["Info", "Error", "Warn", "Success"]);
+
+const isAdmin = ref(false);
+const privileges = ref([]);
 const notifications = ref([]);
 const selectedSemester = ref(null);
 const semester_id = ref(null);
@@ -54,7 +59,7 @@ const showSendNotificationDialog = ref(false);
 const userWithMatriculationNumber = ref([]);
 const chartDataBarTotal = ref(null);
 const chartDataPieTotal = ref(null);
-const loadingData = ref(false);
+
 
 const notificationForm = useForm({
     users: null,
@@ -62,75 +67,40 @@ const notificationForm = useForm({
     severity: null,
 })
 
-const severities = ref(["Info", "Error", "Warn", "Success"]);
+const chartOptionsBarTotal = ref(chartOptionsBar());
 
-const chartOptionsBarTotal = ref({
-    scales: {
-        y: {
-            beginAtZero: true,
-            ticks: {
-                stepSize: 1
-            }
-        },
-    },
-    responsive: true,
-});
-
-const chartOptionsPieTotal = ref({
-    plugins: {
-        legend: {
-            display: true,
-        },
-    },
-    responsive: true,
-    aspectRatio: 1,
-})
+const chartOptionsPieTotal = ref(chartOptionsPie())
 
 
 onMounted(() => {
-    notifications.value = page.props.auth.notifications;
-    semester_id.value = localStorage.getItem('dashboard_semester_id');
-    selectedSemester.value = page.props.semester[page.props.semester.findIndex(item => item.id === parseInt(semester_id.value))] ?? null;
+    notifications.value = JSON.parse(JSON.stringify(page.props.auth.notifications));
+    isAdmin.value = JSON.parse(JSON.stringify(page.props.auth.user.admin));
+    privileges.value = JSON.parse(JSON.stringify(page.props.auth.privileges));
 
-    if (selectedSemester.value) {
+    semester_id.value = localStorage.getItem('ams_dashboard_semester_id');
+    if (semester_id.value)
+        selectedSemester.value = JSON.parse(JSON.stringify(page.props.semester[page.props.semester.findIndex(item => item.id === parseInt(semester_id.value))]));
+
+    if (selectedSemester.value)
         loadSemesterData();
-    }
 
-    userWithMatriculationNumber.value = page.props.users;
-    userWithMatriculationNumber.value = userWithMatriculationNumber.value.slice().sort((a, b) => {
-        const surnameA = a.name.split(' ').slice(-1)[0];
-        const surnameB = b.name.split(' ').slice(-1)[0];
-        return surnameA.localeCompare(surnameB);
-    });
-    userWithMatriculationNumber.value.map(user => {
-        user.name = `${user.name} (${user.matriculation_number})`;
-    })
+    userWithMatriculationNumber.value = Helper.getUsersWithMatriculationNumbers(JSON.parse(JSON.stringify(page.props.users)));
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleWindowResize);
 })
 
 onBeforeUpdate(() => {
-    notifications.value = page.props.auth.notifications;
+    notifications.value = JSON.parse(JSON.stringify(page.props.auth.notifications));
 
-    if (selectedSemester.value) {
+    if (selectedSemester.value)
         handleSemesterSelection();
-    }
 })
 
 const disableNotificationFormButton = computed(() => {
     return notificationForm.processing || (!notificationForm.users || !notificationForm.severity || !notificationForm.message)
 })
 
-const checkSendNotificationPrivilege = computed(() => {
-    for (const p of page.props.auth.privileges) {
-        if (p.privilege === 'can_send_notification' && p.checked) {
-            return true;
-        }
-    }
-    return false;
-})
-
-const handleResize = () => {
+const handleWindowResize = () => {
     if (!selectedSemester.value) return;
 
     if (window.innerWidth > SCREEN_WIDTH_RESIZE) {
@@ -138,36 +108,6 @@ const handleResize = () => {
         return;
     }
     chartOptionsPieTotal.value.aspectRatio = 3;
-}
-
-const setupChartDataBar = () => {
-    return {
-        labels: [],
-        datasets: [
-            {
-                label: 'Checked Tasks',
-                data: [],
-                backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)'],
-                borderColor: ['rgb(255, 159, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)'],
-                borderWidth: 1
-            }
-        ]
-    }
-}
-
-const setupChartDataPie = () => {
-    const documentStyle = getComputedStyle(document.body);
-
-    return {
-        labels: ["Done", "To Do"],
-        datasets: [
-            {
-                data: [0, 0],
-                backgroundColor: [documentStyle.getPropertyValue('--blue-500'), documentStyle.getPropertyValue('--yellow-500'), documentStyle.getPropertyValue('--green-500')],
-                hoverBackgroundColor: [documentStyle.getPropertyValue('--blue-400'), documentStyle.getPropertyValue('--yellow-400'), documentStyle.getPropertyValue('--green-400')]
-            }
-        ]
-    };
 }
 
 const handleDialogSend = () => {
@@ -193,7 +133,7 @@ const handleDialogClose = () => {
 }
 
 const handleSemesterSelection = (event) => {
-    localStorage.setItem('dashboard_semester_id',selectedSemester.value.id);
+    localStorage.setItem('ams_dashboard_semester_id',selectedSemester.value.id);
     semester_id.value = selectedSemester.value.id;
 
     loadSemesterData()
@@ -202,8 +142,8 @@ const handleSemesterSelection = (event) => {
 const loadSemesterData = () => {
     acronyms.value = [];
 
-    chartDataBarTotal.value = setupChartDataBar();
-    chartDataPieTotal.value = setupChartDataPie();
+    chartDataBarTotal.value = setupChartDataBar([],'Finished');
+    chartDataPieTotal.value = setupChartDataPie(["Done", "To Do"], getComputedStyle(document.body));
 
     chartOptionsPieTotal.value.aspectRatio = window.innerWidth > SCREEN_WIDTH_RESIZE ? 1 : 3;
 
@@ -247,7 +187,6 @@ const deleteNotification = (index, clear) => {
     })
         .then(response => {
             notifications.value.splice(index, 1);
-            //router.reload();
         })
         .catch(error => {
             window.toast.add({
@@ -272,7 +211,7 @@ const deleteNotification = (index, clear) => {
                     </h2>
                 </div>
                 <div class="ml-auto">
-                    <primary-button v-if="$page.props.auth.user.admin || checkSendNotificationPrivilege" @click="showSendNotificationDialog = true">Send
+                    <primary-button v-if="isAdmin || checkPrivilege('can_send_notification', privileges)" @click="showSendNotificationDialog = true">Send
                         Notification
                     </primary-button>
                 </div>
@@ -292,11 +231,6 @@ const deleteNotification = (index, clear) => {
                     </div>
                     <div class="text-gray-500 text-center mt-4">
                         Please select a semester to access your dashboard
-                    </div>
-                </div>
-                <div class="flex" v-else-if="loadingData">
-                    <div class="mx-auto">
-                        <ProgressSpinner class="custom-progress-spinner"/>
                     </div>
                 </div>
                 <div v-else>
@@ -367,13 +301,14 @@ const deleteNotification = (index, clear) => {
             </div>
         </div>
 
+        <!-- Send Notification Dialog -->
         <Dialog class="lg:w-[50%] md:w-[75%] w-[90%]"
                 v-model:visible="showSendNotificationDialog" :closable="false" modal header="Send notification">
             <form @submit.prevent="handleDialogSend">
                 <div class="p-inputgroup">
-                        <span class="p-inputgroup-addon">
-                            <i class="pi pi-user mr-2"></i>
-                        </span>
+                    <span class="p-inputgroup-addon">
+                        <i class="pi pi-user mr-2"></i>
+                    </span>
                     <MultiSelect class="w-full md:w-20rem" placeholder="Users" :disabled="notificationForm.processing" :loading="!$props.users"
                                  v-model="notificationForm.users" :options="userWithMatriculationNumber" filter
                                  optionLabel="name" :maxSelectedLabels="3"
@@ -394,7 +329,7 @@ const deleteNotification = (index, clear) => {
                         </span>
                         <Dropdown class="max-md:w-[16rem] w-80" placeholder="Severity"
                                   :disabled="notificationForm.processing" v-model="notificationForm.severity"
-                                  :options="severities"/>
+                                  :options="SEVERITIES"/>
                     </div>
                     <error-message :show="errors.severity">
                         {{ errors.severity }}
@@ -426,15 +361,5 @@ const deleteNotification = (index, clear) => {
 }
 .custom-scroll-panel {
     height: 24rem;
-}
-.custom-progress-spinner {
-    width: 10vw;
-    height: 10vw
-}
-@media (max-width: 1280px) {
-    .custom-progress-spinner {
-        width: 25vw;
-        height: 25vw
-    }
 }
 </style>

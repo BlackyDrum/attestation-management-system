@@ -10,12 +10,10 @@ use App\Models\User;
 use App\Rules\NoPipeCharacter;
 use App\Rules\ValidateToDoCreator;
 use App\Rules\ValidSeverity;
-use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
-use Predis\Command\Argument\Server\To;
 
 class DashboardController extends Controller
 {
@@ -35,7 +33,7 @@ class DashboardController extends Controller
         $canSeeUsers = false;
         foreach ($privileges as $privilege)
         {
-            if ($privilege['privilege'] === 'can_send_notification') {
+            if ($privilege['privilege'] === 'can_send_notification' && $privilege['checked'] === true) {
                 $canSeeUsers = true;
                 break;
             }
