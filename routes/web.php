@@ -24,9 +24,9 @@ Route::delete('/notifications', [\App\Http\Controllers\DashboardController::clas
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'show'])->name('dashboard');
-    Route::get('/dashboard/data', [\App\Http\Controllers\DashboardController::class, 'get_data']);
-    Route::patch('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'check_to_do']);
-    Route::delete('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'delete_to_do']);
+    Route::get('/dashboard/data', [\App\Http\Controllers\DashboardController::class, 'getData']);
+    Route::patch('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'checkToDo']);
+    Route::delete('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'deleteToDo']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -35,15 +35,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/my_attestations', [\App\Http\Controllers\MyAttestationsController::class, 'show'])->name('my_attestations');
 
     Route::middleware(\App\Http\Middleware\CheckPrivileges::class)->group(function() {
-        Route::post('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'create_to_do'])->name('create_to_do');
-        Route::get('/dashboard/users', [\App\Http\Controllers\DashboardController::class, 'get_users'])->name('get_users');
+        Route::post('/dashboard/todo', [\App\Http\Controllers\DashboardController::class, 'createToDo'])->name('create_to_do');
+        Route::get('/dashboard/users', [\App\Http\Controllers\DashboardController::class, 'getUsers'])->name('get_users');
 
         Route::get('/attestations/{id}', [\App\Http\Controllers\AttestationsMakeController::class, 'show'])->name('show_make_attestation');
         Route::patch('/attestations', [\App\Http\Controllers\AttestationsMakeController::class, 'make'])->name('make_attestation');
         Route::get('/attestations', [\App\Http\Controllers\AttestationController::class, 'show'])->name('attestations');
         Route::post('/attestations', [\App\Http\Controllers\AttestationController::class, 'create'])->name('create_subject');
         Route::post('/attestations/users/upload', [\App\Http\Controllers\AttestationController::class, 'upload'])->name('upload_user_subject');
-        Route::post('/attestations/users/include', [\App\Http\Controllers\AttestationController::class, 'include_users_to_attestation']);
+        Route::post('/attestations/users/include', [\App\Http\Controllers\AttestationController::class, 'includeUsersToAttestation']);
         Route::delete('/attestations', [\App\Http\Controllers\AttestationController::class, 'delete'])->name('delete_subject');
         Route::put('/attestations', [\App\Http\Controllers\AttestationController::class, 'edit'])->name('edit_subject');
 

@@ -37,8 +37,8 @@ class AttestationController extends Controller
         $attestationQuery = AttestationController::createQuery();
 
         if (!Auth::user()->admin) {
-            $tmp = UserCanAccessAdditionalAttestation::query()->where('user_id', '=', Auth::id())->select(['attestation_id'])->get();
-            $attestationQuery->whereIn('attestation.id',$tmp)->orWhere('attestation.creator_id', '=', Auth::id());
+            $additionalAttestations = UserCanAccessAdditionalAttestation::query()->where('user_id', '=', Auth::id())->select(['attestation_id'])->get();
+            $attestationQuery->whereIn('attestation.id',$additionalAttestations)->orWhere('attestation.creator_id', '=', Auth::id());
         }
 
         $additional = UserCanAccessAdditionalAttestation::query()
@@ -339,7 +339,7 @@ class AttestationController extends Controller
         return to_route('attestations');
     }
 
-    public function include_users_to_attestation(Request $request)
+    public function includeUsersToAttestation(Request $request)
     {
         $request->validate([
             'attestation_id' => 'required|integer|exists:attestation,id',

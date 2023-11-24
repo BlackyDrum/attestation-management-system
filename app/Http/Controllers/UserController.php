@@ -31,7 +31,6 @@ class UserController extends Controller
             ])
             ->get();
 
-
         return Inertia::render('User', [
             'users' => $user,
             'roles' => Role::all(),
@@ -181,6 +180,5 @@ class UserController extends Controller
         }
 
         return to_route('user');
-
     }
 }

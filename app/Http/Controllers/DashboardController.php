@@ -31,14 +31,14 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function get_users(Request $request)
+    public function getUsers(Request $request)
     {
         $users = User::all();
 
         return response()->json($users);
     }
 
-    public function get_data(Request $request)
+    public function getData(Request $request)
     {
         $request->validate([
             'semester_id' => 'required|integer|exists:semester,id'
@@ -92,7 +92,7 @@ class DashboardController extends Controller
         return redirect()->back();
     }
 
-    public function create_to_do(Request $request)
+    public function createToDo(Request $request)
     {
         $request->validate([
             'task' => 'required|string|max:255'
@@ -113,7 +113,7 @@ class DashboardController extends Controller
         return \response($item);
     }
 
-    public function check_to_do(Request $request)
+    public function checkToDo(Request $request)
     {
         $request->validate([
             'id' => ['bail','required', 'integer', 'exists:todos,id', new ValidateToDoCreator],
@@ -125,7 +125,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function delete_to_do(Request $request)
+    public function deleteToDo(Request $request)
     {
         $request->validate([
             'id' => ['bail','required', 'integer', 'exists:todos,id', new ValidateToDoCreator],
