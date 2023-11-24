@@ -10,43 +10,46 @@ use App\Models\User;
 use App\Rules\NoPipeCharacter;
 use App\Rules\ValidateToDoCreator;
 use App\Rules\ValidSeverity;
-use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
-use Predis\Command\Argument\Server\To;
 
 class DashboardController extends Controller
 {
     public function show(Request $request)
     {
-        $data = AttestationController::createQuery()
-            ->where('users.id', '=', Auth::id())
-            ->get();
-
         $todos = ToDoList::query()
             ->where('creator_id', '=', Auth::id())
             ->orderBy('checked')
             ->orderBy('id')
             ->get();
 
-        $privileges = HandleInertiaRequests::get_privileges();
-        $canSeeUsers = false;
-        foreach ($privileges as $privilege)
-        {
-            if ($privilege['privilege'] === 'can_send_notification') {
-                $canSeeUsers = true;
-                break;
-            }
-        }
-
         return Inertia::render('Dashboard', [
-            'users' => Auth::user()->admin || $canSeeUsers ? User::all() : [],
             'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
-            'data' => $data,
             'todos' => $todos,
         ]);
+    }
+
+    public function get_users(Request $request)
+    {
+        $users = User::all();
+
+        return response()->json($users);
+    }
+
+    public function get_data(Request $request)
+    {
+        $request->validate([
+            'semester_id' => 'required|integer|exists:semester,id'
+        ]);
+
+        $data = AttestationController::createQuery()
+            ->where('users.id', '=', Auth::id())
+            ->where('semester.id', '=', $request->input('semester_id'))
+            ->get();
+
+        return response()->json($data);
     }
 
     public function delete(Request $request)

@@ -39,6 +39,7 @@ class CheckPrivileges
             'upload_user_subject' => 'can_edit_subject',
             'delete_subject' => 'can_delete_subject',
             'create_to_do' => 'can_create_todo',
+            'get_users' => 'can_send_notification',
             'update_comment' => 'can_update_comments',
         ];
 
