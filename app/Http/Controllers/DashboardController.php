@@ -19,10 +19,6 @@ class DashboardController extends Controller
 {
     public function show(Request $request)
     {
-        $data = AttestationController::createQuery()
-            ->where('users.id', '=', Auth::id())
-            ->get();
-
         $todos = ToDoList::query()
             ->where('creator_id', '=', Auth::id())
             ->orderBy('checked')
@@ -32,7 +28,7 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard', [
             'users' => [],
             'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
-            'data' => $data,
+            'data' => [],
             'todos' => $todos,
         ]);
     }
@@ -42,6 +38,20 @@ class DashboardController extends Controller
         $users = User::all();
 
         return response()->json($users);
+    }
+
+    public function get_data(Request $request)
+    {
+        $request->validate([
+            'semester_id' => 'required|integer|exists:semester,id'
+        ]);
+
+        $data = AttestationController::createQuery()
+            ->where('users.id', '=', Auth::id())
+            ->where('semester.id', '=', $request->input('semester_id'))
+            ->get();
+
+        return response()->json($data);
     }
 
     public function delete(Request $request)

@@ -7,6 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ErrorMessage from '@/Components/ErrorMessage.vue';
 import ToDoList from '@/Components/ToDoList.vue';
 import ButtonBar from '@/Components/ButtonBar.vue';
+import CustomProgressSpinner from '@/Components/CustomProgressSpinner.vue';
 
 import Dialog from 'primevue/dialog';
 import MultiSelect from 'primevue/multiselect';
@@ -49,6 +50,8 @@ const SEVERITIES = ref(["Info", "Error", "Warn", "Success"]);
 const isAdmin = ref(false);
 const privileges = ref([]);
 const notifications = ref([]);
+const data = ref([]);
+const isLoadingData = ref(false);
 const selectedSemester = ref(null);
 const semester_id = ref(null);
 const acronyms = ref([]);
@@ -158,38 +161,60 @@ const handleSemesterSelection = (event) => {
 }
 
 const loadSemesterData = () => {
-    acronyms.value = [];
-
-    chartDataBarTotal.value = setupChartDataBar([],'Finished');
-    chartDataPieTotal.value = setupChartDataPie(["Done", "To Do"], getComputedStyle(document.body));
-
-    chartOptionsPieTotal.value.aspectRatio = window.innerWidth > SCREEN_WIDTH_RESIZE ? 1 : 3;
-
-    combinedData.value = combine(page.props.data);
-    combinedData.value = combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
-
-    let totalTasks = 0;
-    let totalChecked = 0;
-    for (const subject of combinedData.value) {
-        chartDataBarTotal.value.labels.push(subject.acronym);
-        acronyms.value.push(subject.acronym);
-
-        let checkedCount = 0;
-        for (const task of subject.tasks[0]) {
-            totalTasks++;
-            if (task.checked) {
-                checkedCount++;
-                totalChecked++;
-            }
+    isLoadingData.value = true;
+    window.axios.get('/dashboard/data', {
+        params: {
+            semester_id: semester_id.value
         }
-        chartDataBarTotal.value.datasets[0].data.push(checkedCount);
-    }
+    })
+        .then(result => {
+            data.value = result.data;
+        })
+        .catch(error => {
+            window.toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response.data.message,
+                life: 8000,
+            })
+        })
+        .then(() => {
+            isLoadingData.value = false;
 
-    chartDataPieTotal.value.datasets[0].data[0] = totalChecked;
-    chartDataPieTotal.value.datasets[0].data[1] = totalTasks - totalChecked;
+            acronyms.value = [];
 
-    totalTaskCount.value = totalTasks;
-    totalCheckedCount.value = totalChecked;
+            chartDataBarTotal.value = setupChartDataBar([],'Finished');
+            chartDataPieTotal.value = setupChartDataPie(["Done", "To Do"], getComputedStyle(document.body));
+
+            chartOptionsPieTotal.value.aspectRatio = window.innerWidth > SCREEN_WIDTH_RESIZE ? 1 : 3;
+
+            combinedData.value = combine(data.value);
+            combinedData.value = combinedData.value.filter(item => item.semester_id === selectedSemester.value.id);
+
+            let totalTasks = 0;
+            let totalChecked = 0;
+            for (const subject of combinedData.value) {
+                chartDataBarTotal.value.labels.push(subject.acronym);
+                acronyms.value.push(subject.acronym);
+
+                let checkedCount = 0;
+                for (const task of subject.tasks[0]) {
+                    totalTasks++;
+                    if (task.checked) {
+                        checkedCount++;
+                        totalChecked++;
+                    }
+                }
+                chartDataBarTotal.value.datasets[0].data.push(checkedCount);
+            }
+
+            chartDataPieTotal.value.datasets[0].data[0] = totalChecked;
+            chartDataPieTotal.value.datasets[0].data[1] = totalTasks - totalChecked;
+
+            totalTaskCount.value = totalTasks;
+            totalCheckedCount.value = totalChecked;
+        })
+
 
     if (window.innerWidth < SCREEN_WIDTH_RESIZE) {
         chartDataBarTotal.value.labels = acronyms.value;
@@ -249,6 +274,11 @@ const deleteNotification = (index, clear) => {
                     </div>
                     <div class="text-gray-500 text-center mt-4">
                         Please select a semester to access your dashboard
+                    </div>
+                </div>
+                <div class="flex" v-else-if="isLoadingData">
+                    <div class="mx-auto">
+                        <CustomProgressSpinner :processing="true"/>
                     </div>
                 </div>
                 <div v-else>
