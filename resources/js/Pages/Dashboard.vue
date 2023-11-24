@@ -149,6 +149,8 @@ const handleDialogClose = () => {
 }
 
 const handleSemesterSelection = (event) => {
+    if (parseInt(semester_id.value) === selectedSemester.value.id) return;
+
     localStorage.setItem('ams_dashboard_semester_id',selectedSemester.value.id);
     semester_id.value = selectedSemester.value.id;
 
