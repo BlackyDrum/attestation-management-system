@@ -26,9 +26,7 @@ class DashboardController extends Controller
             ->get();
 
         return Inertia::render('Dashboard', [
-            'users' => [],
             'semester' => Semester::query()->orderBy('id', 'DESC')->limit(5)->get(),
-            'data' => [],
             'todos' => $todos,
         ]);
     }

@@ -27,16 +27,10 @@ import * as Helper from "@/Helper.js";
 
 
 defineProps({
-    users: {
-        type: Array
-    },
     errors: {
         type: Array
     },
     semester: {
-        type: Array
-    },
-    data: {
         type: Array
     },
 })
@@ -52,6 +46,7 @@ const privileges = ref([]);
 const notifications = ref([]);
 const data = ref([]);
 const isLoadingData = ref(false);
+const users = ref([]);
 const selectedSemester = ref(null);
 const semester_id = ref(null);
 const acronyms = ref([]);
@@ -130,12 +125,12 @@ const handleDialogSend = () => {
 const handleDialogOpen = () => {
     showSendNotificationDialog.value = true
 
-    if (page.props.users.length !== 0) return;
+    if (users.value.length !== 0) return;
 
     window.axios.get('/dashboard/users')
         .then(result => {
-            page.props.users = result.data;
-            userWithMatriculationNumber.value = Helper.getUsersWithMatriculationNumbers(JSON.parse(JSON.stringify(page.props.users)));
+            users.value = result.data;
+            userWithMatriculationNumber.value = Helper.getUsersWithMatriculationNumbers(users.value);
         })
         .catch(error => {
             window.toast.add({
@@ -357,7 +352,7 @@ const deleteNotification = (index, clear) => {
                     <span class="p-inputgroup-addon">
                         <i class="pi pi-user mr-2"></i>
                     </span>
-                    <MultiSelect class="w-full md:w-20rem" placeholder="Users" :disabled="notificationForm.processing" :loading="page.props.users.length === 0"
+                    <MultiSelect class="w-full md:w-20rem" placeholder="Users" :disabled="notificationForm.processing" :loading="users.length === 0"
                                  v-model="notificationForm.users" :options="userWithMatriculationNumber" filter
                                  optionLabel="name" :maxSelectedLabels="3"
                                  :virtualScrollerOptions="{ itemSize: 44 }"/>
