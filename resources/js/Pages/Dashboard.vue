@@ -41,7 +41,6 @@ const page = usePage();
 const SCREEN_WIDTH_RESIZE = 1280;
 const SEVERITIES = ref(["Info", "Error", "Warn", "Success"]);
 
-const isAdmin = ref(false);
 const privileges = ref([]);
 const notifications = ref([]);
 const data = ref([]);
@@ -71,9 +70,8 @@ const chartOptionsPieTotal = ref(chartOptionsPie())
 
 
 onMounted(() => {
-    notifications.value = JSON.parse(JSON.stringify(page.props.auth.notifications));
-    isAdmin.value = JSON.parse(JSON.stringify(page.props.auth.user.admin));
-    privileges.value = JSON.parse(JSON.stringify(page.props.auth.privileges));
+    notifications.value = page.props.auth.notifications;
+    privileges.value = page.props.auth.privileges;
 
     semester_id.value = localStorage.getItem('ams_dashboard_semester_id');
     if (semester_id.value)
@@ -86,7 +84,7 @@ onMounted(() => {
 })
 
 onBeforeUpdate(() => {
-    notifications.value = JSON.parse(JSON.stringify(page.props.auth.notifications));
+    notifications.value = page.props.auth.notifications;
 
     if (selectedSemester.value)
         handleSemesterSelection();
@@ -251,7 +249,7 @@ const deleteNotification = (index, clear) => {
                     </h2>
                 </div>
                 <div class="ml-auto">
-                    <primary-button v-if="isAdmin || checkPrivilege('can_send_notification', privileges)" @click="handleDialogOpen">Send
+                    <primary-button v-if="$page.props.auth.user.admin || checkPrivilege('can_send_notification', privileges)" @click="handleDialogOpen">Send
                         Notification
                     </primary-button>
                 </div>

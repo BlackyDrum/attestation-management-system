@@ -18,11 +18,14 @@ import Message from 'primevue/message';
 import Button from 'primevue/button';
 import ScrollTop from 'primevue/scrolltop';
 
+import checkPrivilege from "@/CheckPrivilege.js";
+
 
 const page = usePage();
 window.toast = useToast();
 
 const notifications = ref([]);
+const privileges = ref([]);
 const showNavigationDropdown = ref(false);
 const showImprint = ref(false);
 const showPrivacyStatement = ref(false);
@@ -30,6 +33,9 @@ const notificationOverlayPanel = ref();
 
 
 onBeforeMount(() => {
+    privileges.value = page.props.auth.privileges;
+    notifications.value = page.props.auth.notifications;
+
     Echo.private(`notification.${page.props.auth.user.id}`)
         .listen('NotificationEvent', event => {
             window.toast.add({
@@ -49,39 +55,8 @@ onBeforeUnmount(() => {
     Echo.leave(`notification.${page.props.auth.user.id}`);
 });
 
-onMounted(() => {
-    notifications.value = page.props.auth.notifications;
-})
-
 onBeforeUpdate(() => {
     notifications.value = page.props.auth.notifications;
-})
-
-const checkUserPageAccessPrivilege = computed(() => {
-    for (const p of page.props.auth.privileges) {
-        if (p.privilege === 'can_access_user_page' && p.checked) {
-            return true;
-        }
-    }
-    return false;
-})
-
-const checkRolePageAccessPrivilege = computed(() => {
-    for (const p of page.props.auth.privileges) {
-        if (p.privilege === 'can_access_role_page' && p.checked) {
-            return true;
-        }
-    }
-    return false;
-})
-
-const checkAttestationAccessPrivilege = computed(() => {
-    for (const p of page.props.auth.privileges) {
-        if (p.privilege === 'can_access_subject_page' && p.checked) {
-            return true;
-        }
-    }
-    return false;
 })
 
 const toggleNotificationOverlayPanel = (event) => {
@@ -145,7 +120,7 @@ const deleteNotification = (index, clear) => {
                                     <span class="pi pi-inbox mr-1"></span>
                                     Dashboard
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.admin || checkAttestationAccessPrivilege" :href="route('attestations')" :active="route().current('attestations')">
+                                <NavLink v-if="$page.props.auth.user.admin || checkPrivilege('can_access_subject_page', privileges)" :href="route('attestations')" :active="route().current('attestations')">
                                     <span class="pi pi-book mr-1"></span>
                                     Subjects
                                 </NavLink>
@@ -153,12 +128,12 @@ const deleteNotification = (index, clear) => {
                                     <span class="pi pi-map mr-1"></span>
                                     My Attestations
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.admin || checkUserPageAccessPrivilege" :href="route('user')"
+                                <NavLink v-if="$page.props.auth.user.admin || checkPrivilege('can_access_user_page', privileges)" :href="route('user')"
                                          :active="route().current('user')">
                                     <span class="pi pi-users mr-1"></span>
                                     Users
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.admin || checkRolePageAccessPrivilege" :href="route('roles')"
+                                <NavLink v-if="$page.props.auth.user.admin || checkPrivilege('can_access_role_page', privileges)" :href="route('roles')"
                                          :active="route().current('roles')">
                                     <span class="pi pi-paperclip mr-1"></span>
                                     Roles
@@ -304,7 +279,7 @@ const deleteNotification = (index, clear) => {
                             <span class="pi pi-inbox mr-1"></span>
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkAttestationAccessPrivilege" :href="route('attestations')" :active="route().current('attestations')">
+                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkPrivilege('can_access_subject_page', privileges)" :href="route('attestations')" :active="route().current('attestations')">
                             <span class="pi pi-book mr-1"></span>
                             Subjects
                         </ResponsiveNavLink>
@@ -312,12 +287,12 @@ const deleteNotification = (index, clear) => {
                             <span class="pi pi-map mr-1"></span>
                             My Attestations
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkUserPageAccessPrivilege" :href="route('user')"
+                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkPrivilege('can_access_user_page', privileges)" :href="route('user')"
                                            :active="route().current('user')">
                             <span class="pi pi-users mr-1"></span>
                             Users
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkRolePageAccessPrivilege" :href="route('roles')"
+                        <ResponsiveNavLink v-if="$page.props.auth.user.admin || checkPrivilege('can_access_role_page', privileges)" :href="route('roles')"
                                            :active="route().current('roles')">
                             <span class="pi pi-paperclip mr-1"></span>
                             Roles
