@@ -209,11 +209,6 @@ const loadSemesterData = () => {
             totalTaskCount.value = totalTasks;
             totalCheckedCount.value = totalChecked;
         })
-
-
-    if (window.innerWidth < SCREEN_WIDTH_RESIZE) {
-        chartDataBarTotal.value.labels = acronyms.value;
-    }
 }
 
 const deleteNotification = (index, clear) => {
