@@ -506,13 +506,13 @@ const handleSemesterChange = () => {
                            v-model:filters="filters" paginator :rows="10">
                     <template #header>
                         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="flex justify-content-end">
+                            <div>
                                         <span class="p-input-icon-left">
                                             <i class="pi pi-search"/>
                                             <InputText v-model="filters['global'].value" placeholder="Search"/>
                                         </span>
                             </div>
-                            <div class="ml-auto">
+                            <div class="lg:ml-auto">
                                 <Dropdown class="max-md:w-[16rem] w-80 ml-auto mb-4" placeholder="Select semester"
                                           v-model="selectedSemester" @change="handleSemesterChange"
                                           :options="semester" optionLabel="semester"/>
