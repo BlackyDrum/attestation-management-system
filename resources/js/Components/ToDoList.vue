@@ -61,6 +61,8 @@ const handleNewTask = () => {
             .then(() => {
                 taskInput.value = null;
                 processing.value = false;
+
+                router.reload();
             })
 }
 
@@ -93,6 +95,8 @@ const handleTaskChecking = (task) => {
         })
         .then(() => {
             processing.value = false;
+
+            router.reload();
         })
 
 }
@@ -123,6 +127,8 @@ const handleTaskDeletion = (task, index) => {
         })
         .then(() => {
             processing.value = false;
+
+            router.reload();
         })
 }
 </script>
