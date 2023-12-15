@@ -27,6 +27,8 @@ export default function combine(data) {
             editor_name: item.editor_name,
             updated_at: item.updated_at,
             comment: item.comment,
+            comment_editor_name: item.comment_editor_name,
+            comment_updated_at: item.comment_updated_at
         };
 
         // If an entry with the same properties exists, check if the task is already present

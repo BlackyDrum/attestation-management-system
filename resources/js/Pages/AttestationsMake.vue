@@ -47,6 +47,8 @@ const chartData = ref([]);
 const chart = ref("Polar");
 const chartSelect = ref(["Pie", "Polar", "Bar"])
 const showCommentDialog = ref(false);
+const comment_editor_name = ref(null);
+const comment_editor_timestamp = ref(null);
 
 const commentForm = useForm({
     comment: null,
@@ -238,6 +240,9 @@ const editComment = (data, field, index,  event) => {
     commentForm.user_id = data.user_id;
     commentForm.task_id = data[`task_id_${field}`];
 
+    comment_editor_name.value = data[`comment_editor_name_${field}`] || "no one yet";
+    comment_editor_timestamp.value = data[`comment_updated_at_${field}`]
+
     //commentPanel.value.toggle(event);
     showCommentDialog.value = true;
 }
@@ -271,7 +276,7 @@ const saveComment = (submit) => {
             })
         })
         .then(() => {
-            commentPanel.value.toggle();
+            showCommentDialog.value = false;
             commentFormProcessing.value = false;
         })
 }
@@ -372,6 +377,9 @@ const clearComment = () => {
                     <Textarea v-model="commentForm.comment" id="comment" autoResize :rows="3"/>
                     <label>Your comment</label>
                 </div>
+            </div>
+            <div class="italic text-xs">
+                Edited by {{comment_editor_name}} {{comment_editor_timestamp}}
             </div>
             <div class="flex justify-end gap-2">
                 <Button label="Clear" @click="clearComment"/>
