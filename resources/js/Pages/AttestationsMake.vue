@@ -13,6 +13,7 @@ import InputText from 'primevue/inputtext';
 import OverlayPanel from 'primevue/overlaypanel';
 import Textarea from 'primevue/textarea';
 import Chart from 'primevue/chart';
+import Dialog from 'primevue/dialog';
 
 import combine from '@/CombinedData.js';
 import reduce_tasks from '@/ReduceTasks.js';
@@ -45,6 +46,7 @@ const commentFormProcessing = ref(false);
 const chartData = ref([]);
 const chart = ref("Polar");
 const chartSelect = ref(["Pie", "Polar", "Bar"])
+const showCommentDialog = ref(false);
 
 const commentForm = useForm({
     comment: null,
@@ -231,12 +233,13 @@ const resetForm = (field) => {
 }
 
 const editComment = (data, field, index,  event) => {
-    commentForm.reset();
+    //commentForm.reset();
     commentForm.comment = oldComment.value = data[`comment_${field}`] || null;
     commentForm.user_id = data.user_id;
     commentForm.task_id = data[`task_id_${field}`];
 
-    commentPanel.value.toggle(event);
+    //commentPanel.value.toggle(event);
+    showCommentDialog.value = true;
 }
 
 const saveComment = (submit) => {
@@ -363,17 +366,17 @@ const clearComment = () => {
             </div>
         </div>
 
-        <OverlayPanel ref="commentPanel" v-if="canAccessComments || page.props.auth.user.admin">
-            <Textarea v-model="commentForm.comment" rows="5" cols="40" />
-            <div class="flex">
-                <div class="">
-                    <Button label="Save" icon="pi pi-save" severity="" @click="saveComment(false)" :disabled="isSameComment"></Button>
+        <Dialog v-model:visible="showCommentDialog" modal header="Comments" :style="{ width: '40rem' }" v-if="canAccessComments || page.props.auth.user.admin">
+            <div class="p-fluid mt-5">
+                <div class="p-float-label">
+                    <Textarea v-model="commentForm.comment" id="comment" autoResize :rows="3"/>
+                    <label>Your comment</label>
                 </div>
-                <div class="ml-1">
-                    <Button v-tooltip="'Save the comment and submit all (un)checked attestations'" label="Save & Submit" icon="pi pi-save" severity="success" @click="saveComment(true)" :disabled="isSameComment"></Button>
-                </div>
-                <CustomProgressSpinner :processing="commentFormProcessing"></CustomProgressSpinner>
             </div>
-        </OverlayPanel>
+            <div class="flex justify-end gap-2">
+                <Button label="Clear" @click="clearComment"/>
+                <Button label="Save" @click="saveComment(true)" :disabled="isSameComment"/>
+            </div>
+        </Dialog>
     </AuthenticatedLayout>
 </template>
