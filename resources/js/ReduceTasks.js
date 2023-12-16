@@ -8,7 +8,7 @@ export default function reduce_tasks(tasks, userData, headers) {
 
     tasks.flat().forEach((item) => {
         // Extract relevant properties from the 'item'
-        const {name, title, task_id, checked, user_id, editor_name, updated_at, matriculation_number, comment} = item;
+        const {name, title, task_id, checked, user_id, editor_name, updated_at, matriculation_number, comment, comment_editor_name, comment_updated_at} = item;
         //console.log(item)
         // Create a unique key based on 'name' and 'user_id'
         const key = `${name}-${user_id}`;
@@ -28,6 +28,8 @@ export default function reduce_tasks(tasks, userData, headers) {
         usersData[key][`editor_name_${title}`] = editor_name;
         usersData[key][`updated_at_${title}`] = updated_at;
         usersData[key][`comment_${title}`] = comment;
+        usersData[key][`comment_editor_name_${title}`] = comment_editor_name;
+        usersData[key][`comment_updated_at_${title}`] = comment_updated_at;
     });
 
     userData = Object.values(usersData);
@@ -40,7 +42,7 @@ export default function reduce_tasks(tasks, userData, headers) {
     });
 
     // Filter and reorder the 'headers' array based on specific criteria
-    headers = Object.keys(userData[0]).filter((key) => key !== 'Name' && key !== 'matriculation_number' && key !== 'user_id' && key !== 'editor_id' && !key.startsWith('comment') && !key.startsWith('updated_at') && !key.startsWith('editor_name') && !key.startsWith('task_id'));
+    headers = Object.keys(userData[0]).filter((key) => key !== 'Name' && key !== 'matriculation_number' && key !== 'user_id' && key !== 'editor_id' && !key.startsWith('comment') && !key.startsWith('comment_editor_name') && !key.startsWith('comment_updated_at') && !key.startsWith('updated_at') && !key.startsWith('editor_name') && !key.startsWith('task_id'));
 
     // Create a sortable array from the filtered headers and sort it based on task_ids
     let sortable = [];

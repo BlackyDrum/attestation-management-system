@@ -13,6 +13,7 @@ import InputText from 'primevue/inputtext';
 import OverlayPanel from 'primevue/overlaypanel';
 import Textarea from 'primevue/textarea';
 import Chart from 'primevue/chart';
+import Dialog from 'primevue/dialog';
 
 import combine from '@/CombinedData.js';
 import reduce_tasks from '@/ReduceTasks.js';
@@ -45,6 +46,9 @@ const commentFormProcessing = ref(false);
 const chartData = ref([]);
 const chart = ref("Polar");
 const chartSelect = ref(["Pie", "Polar", "Bar"])
+const showCommentDialog = ref(false);
+const comment_editor_name = ref(null);
+const comment_editor_timestamp = ref(null);
 
 const commentForm = useForm({
     comment: null,
@@ -231,12 +235,16 @@ const resetForm = (field) => {
 }
 
 const editComment = (data, field, index,  event) => {
-    commentForm.reset();
+    //commentForm.reset();
     commentForm.comment = oldComment.value = data[`comment_${field}`] || null;
     commentForm.user_id = data.user_id;
     commentForm.task_id = data[`task_id_${field}`];
 
-    commentPanel.value.toggle(event);
+    comment_editor_name.value = data[`comment_editor_name_${field}`] || "no one yet";
+    comment_editor_timestamp.value = data[`comment_updated_at_${field}`]
+
+    //commentPanel.value.toggle(event);
+    showCommentDialog.value = true;
 }
 
 const saveComment = (submit) => {
@@ -268,7 +276,7 @@ const saveComment = (submit) => {
             })
         })
         .then(() => {
-            commentPanel.value.toggle();
+            showCommentDialog.value = false;
             commentFormProcessing.value = false;
         })
 }
@@ -336,7 +344,7 @@ const clearComment = () => {
                         </div>
                     </template>
                     <Column style="font-weight: bold" field="Name" header="Name"/>
-                    <Column class="group" v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
+                    <Column v-for="header in headers" :field="header" :key="header" style="white-space: nowrap">
                         <template #header>
                             <div class="mx-auto break-words">
                                 <div>
@@ -353,7 +361,7 @@ const clearComment = () => {
                                           @change="extractData(data, index)"
                                           :disabled="(!canMakeAttestationPrivilege && !page.props.auth.user.admin) || !canRevokeAttestationPrivilege && !page.props.auth.user.admin && data[field]"
                                           v-tooltip.left="{ value: data[`editor_name_${field}`] ? `Edited by ${data[`editor_name_${field}`]} ${data[`updated_at_${field}`].split('T')[0]} ${data[`updated_at_${field}`].split('T')[1].split('.')[0]}` : 'No changes made', showDelay: 500, hideDelay: 0 }"/>
-                            <div class="ml-3 hidden group-hover:block text-gray-400" v-if="canAccessComments || page.props.auth.user.admin">
+                            <div class="ml-3 text-gray-400" v-if="canAccessComments || page.props.auth.user.admin">
                                 <span class="pi pi-comment cursor-pointer" @click="editComment(data, field, index,  $event)"></span>
                             </div>
                             </div>
@@ -363,17 +371,20 @@ const clearComment = () => {
             </div>
         </div>
 
-        <OverlayPanel ref="commentPanel" v-if="canAccessComments || page.props.auth.user.admin">
-            <Textarea v-model="commentForm.comment" rows="5" cols="40" />
-            <div class="flex">
-                <div class="">
-                    <Button label="Save" icon="pi pi-save" severity="" @click="saveComment(false)" :disabled="isSameComment"></Button>
+        <Dialog v-model:visible="showCommentDialog" modal header="Comments" :style="{ width: '40rem' }" v-if="canAccessComments || page.props.auth.user.admin">
+            <div class="p-fluid mt-5">
+                <div class="p-float-label">
+                    <Textarea v-model="commentForm.comment" id="comment" autoResize :rows="3"/>
+                    <label>Your comment</label>
                 </div>
-                <div class="ml-1">
-                    <Button v-tooltip="'Save the comment and submit all (un)checked attestations'" label="Save & Submit" icon="pi pi-save" severity="success" @click="saveComment(true)" :disabled="isSameComment"></Button>
-                </div>
-                <CustomProgressSpinner :processing="commentFormProcessing"></CustomProgressSpinner>
             </div>
-        </OverlayPanel>
+            <div class="italic text-xs">
+                Edited by {{comment_editor_name}} {{comment_editor_timestamp}}
+            </div>
+            <div class="flex justify-end gap-2">
+                <Button label="Clear" @click="clearComment"/>
+                <Button label="Save" @click="saveComment(true)" :disabled="isSameComment"/>
+            </div>
+        </Dialog>
     </AuthenticatedLayout>
 </template>

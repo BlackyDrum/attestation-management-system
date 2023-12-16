@@ -382,7 +382,9 @@ class AttestationController extends Controller
             ->where('user_id', '=', $request->input('user_id'))
             ->where('task_id', '=', $request->input('task_id'))
             ->update([
-                'comment' => htmlspecialchars($request->input('comment'))
+                'comment' => htmlspecialchars($request->input('comment')),
+                'comment_editor_id' => Auth::id(),
+                'comment_updated_at' => date('Y-m-d H:i:s'),
             ]);
     }
 
@@ -439,6 +441,7 @@ class AttestationController extends Controller
             })
             ->leftJoin('users', 'users.id', '=', 'user_has_attestation.user_id')
             ->leftJoin('users AS editor', 'editor.id', '=', 'user_has_checked_task.editor_id')
+            ->leftJoin('users AS comment_editor', 'comment_editor.id', '=', 'user_has_checked_task.comment_editor_id')
             ->orderByRaw($order)
             ->select([
                 'attestation.id',
@@ -458,6 +461,8 @@ class AttestationController extends Controller
                 'user_has_checked_task.id AS checked_id',
                 'user_has_checked_task.updated_at',
                 'user_has_checked_task.comment',
+                'comment_editor.name AS comment_editor_name',
+                'user_has_checked_task.comment_updated_at'
             ])
             ->orderBy('attestation_tasks.id');
 
