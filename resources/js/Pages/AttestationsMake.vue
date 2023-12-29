@@ -378,7 +378,7 @@ const clearComment = () => {
                     <label>Your comment</label>
                 </div>
             </div>
-            <div class="italic text-xs">
+            <div class="italic text-xs mb-3">
                 Edited by {{comment_editor_name}} {{comment_editor_timestamp}}
             </div>
             <div class="flex justify-end gap-2">
